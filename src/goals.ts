@@ -167,3 +167,26 @@ export type GoalsResponseCategoryBased = z.infer<
 export type Pagination = z.infer<typeof PaginationSchema>;
 export type GoalDetails = z.infer<typeof GoalDetailsSchema>;
 export type GoalDetailsResponse = z.infer<typeof GoalDetailsResponseSchema>;
+
+// Goal Actions Schema - for checkGoalActions function
+export const GoalActionsSchema = z.object({
+  delete: z.boolean().optional(),
+  switchToIndividual: z.boolean().optional(),
+});
+
+export const GoalActionResultSchema = z.object({
+  delete: z
+    .object({
+      canDelete: z.boolean(),
+    })
+    .optional(),
+  switchToIndividual: z
+    .object({
+      canSwitch: z.boolean(),
+    })
+    .optional(),
+});
+
+// Infer types for goal actions
+export type GoalActions = z.infer<typeof GoalActionsSchema>;
+export type GoalActionResult = z.infer<typeof GoalActionResultSchema>;
