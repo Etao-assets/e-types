@@ -173,6 +173,7 @@ export const GoalActionsSchema = z.object({
   delete: z.boolean().optional(),
   switchToIndividual: z.boolean().optional(),
   removeGroup: z.boolean().optional(),
+  leaveGroup: z.boolean().optional(),
 });
 
 export const GoalActionResultSchema = z.object({
@@ -189,6 +190,11 @@ export const GoalActionResultSchema = z.object({
   removeGroup: z
     .object({
       canRemove: z.boolean(),
+    })
+    .optional(),
+  leaveGroup: z
+    .object({
+      canLeave: z.boolean(),
     })
     .optional(),
 });
