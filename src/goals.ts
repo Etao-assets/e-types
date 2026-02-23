@@ -172,6 +172,7 @@ export type GoalDetailsResponse = z.infer<typeof GoalDetailsResponseSchema>;
 export const GoalActionsSchema = z.object({
   delete: z.boolean().optional(),
   switchToIndividual: z.boolean().optional(),
+  removeGroup: z.boolean().optional(),
 });
 
 export const GoalActionResultSchema = z.object({
@@ -183,6 +184,11 @@ export const GoalActionResultSchema = z.object({
   switchToIndividual: z
     .object({
       canSwitch: z.boolean(),
+    })
+    .optional(),
+  removeGroup: z
+    .object({
+      canRemove: z.boolean(),
     })
     .optional(),
 });
