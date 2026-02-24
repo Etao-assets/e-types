@@ -180,21 +180,25 @@ export const GoalActionResultSchema = z.object({
   delete: z
     .object({
       canDelete: z.boolean(),
+      visible: z.boolean(),
     })
     .optional(),
   switchToIndividual: z
     .object({
       canSwitch: z.boolean(),
+      visible: z.boolean(),
     })
     .optional(),
   removeGroup: z
     .object({
       canRemove: z.boolean(),
+      visible: z.boolean(),
     })
     .optional(),
   leaveGroup: z
     .object({
       canLeave: z.boolean(),
+      visible: z.boolean(),
     })
     .optional(),
 });
