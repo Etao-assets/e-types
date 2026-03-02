@@ -61,3 +61,4 @@ export * from './bankAccount';
 export * from './sip';
 export * from './fcmEvents';
 export * from './oneLinkQueryKey'
+export * from  './2fa'
