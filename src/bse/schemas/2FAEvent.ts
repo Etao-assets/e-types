@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { TwoFAEvents } from './enums/v2Events2fa';
+import { TwoFAEvents } from '../enums/v2Events2fa';
 
 // ─── Request ─────────────────────────────────────────────────────────────────
 
