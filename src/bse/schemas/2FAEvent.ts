@@ -13,7 +13,7 @@ export const TwoFAEventRequestItemSchema = z.object({
   event: z.nativeEnum(TwoFAEvents),
   investor: TwoFAEventInvestorSchema,
   parent_client_code: z.string().optional(),
-  member: z.string(),
+  member_code: z.string(),
 });
 
 export const TwoFAEventRequestSchema = z.object({
