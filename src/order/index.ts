@@ -88,5 +88,20 @@ export const cancelLumpSumOrderSchema = z.object({
 });
 export type CancelLumpSumOrder = z.infer<typeof cancelLumpSumOrderSchema>;
 
+export const OrderActionsSchema = z.object({
+  cancel: z.boolean().optional(),
+});
+export type OrderActions = z.infer<typeof OrderActionsSchema>;
+
+export const OrderActionResultSchema = z.object({
+  cancel: z
+    .object({
+      canCancel: z.boolean(),
+      visible: z.boolean(),
+    })
+    .optional(),
+});
+export type OrderActionResult = z.infer<typeof OrderActionResultSchema>;
+
 // Export order get schema
 export * from './orderGetSchema';
