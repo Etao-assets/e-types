@@ -82,5 +82,11 @@ export const lumpSumOrderSchema = z.object({
 });
 export type LumpSumOrder = z.infer<typeof lumpSumOrderSchema>;
 
+export const cancelLumpSumOrderSchema = z.object({
+  orderId: z.string(),
+  remark: z.string().optional(),
+});
+export type CancelLumpSumOrder = z.infer<typeof cancelLumpSumOrderSchema>;
+
 // Export order get schema
 export * from './orderGetSchema';
