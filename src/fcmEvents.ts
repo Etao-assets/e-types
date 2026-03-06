@@ -15,6 +15,7 @@ export enum FCMEventType {
   LUMPSUM_PAYMENT_SUCCESS = 'payment_success',
   LUMPSUM_PAYMENT_FAILED = 'payment_failed',
   UCC_ACTIVE = 'ucc_active',
+  UCC_AUTH_UCC = 'ucc_auth_ucc',
 }
 
 /**
