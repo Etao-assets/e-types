@@ -67,5 +67,6 @@ export enum NAVIGATION {
   BANK_DETAILS = 'bank-details',
   SIP_CANCEL = 'sip-cancel',
   SIP_TOPUP = 'sip-topup',
+  ORDER_CANCEL = 'order-cancel',
   WEBVIEW_SCREEN = 'webview-screen',
 }
