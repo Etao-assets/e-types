@@ -6,31 +6,54 @@ export enum WebhookEventType {
   PAYMENT_GATEWAY = 'PAYMENT GATEWAY',
 }
 
+//2FA Included Members
 export enum UccWebhookEvent {
-  // State 0: User registered, awaiting authentication
+  // flowCode: 0
+  // desc: This will be the initial event triggered (Client authentication pending)
   PENDING_AUTHENTICATION = 'PENDING_AUTHENTICATION',
   
-  // State 1: Authentication completed
+  // flowCode: 1
+  // desc: This event will be triggered when client authentication is accepted by the Client.
   UCC_AUTH_UCC = 'ucc_auth_ucc',
   
-  // State 1: Demat account verification (for demat clients)
-  UCC_DP_ACC = 'ucc_dp_acc',
-  
-  // State 2: Submitted to KRA/Bank for verification
+  // flowCode: 2
+  // desc: This event indicates that the client's details are undergoing third party verifications (PAN/KYC/Bank etc.).
   PENDING_VERIFICATION = 'PENDING_VERIFICATION',
   
-  // State 3: Parallel verification steps
+  // flowCode: 2
+  // desc: This event will be triggered (Client Elog authentication is pending).
+  UCC_ELOG_VERIFICATION = 'ucc_elog_verification',
+  
+  // flowCode: 3
+  // desc: This event indicates UCC KYC Verification is Completed.
   UCC_KYC_VERIFICATION = 'ucc_kyc_verification',
+  
+  // flowCode: 3
+  // desc: This event indicates UCC Pan Verification is Completed.
   UCC_PAN_VERIFICATION = 'ucc_pan_verification',
+  
+  // flowCode: 3,5
+  // desc: This event indicates UCC Bank Verification is Completed.
   UCC_BANK_ACC = 'ucc_bank_acc',
-  // State 4: All verifications complete - Ready to trade
-  ACTIVE = 'ACTIVE',  
-  // State S: Account suspended
-  SUSPENDED = 'suspended',
-  UCC_AUTH_NOMINEE = 'ucc_auth_nominee',
+  
+  // flowCode: 3
+  // desc: Its status is contingent upon user acceptance and can be triggered at any stage of the workflow cycle after (ucc_elog_verification).
   UCC_AUTH_ELOG = 'ucc_auth_elog',
+  
+  // flowCode: 3
+  // desc: Its status is contingent upon user acceptance and can be triggered at any stage of the workflow cycle after (PENDING_VERIFICATION).
+  UCC_AUTH_NOMINEE = 'ucc_auth_nominee',
+  
+  // flowCode: 4
+  // desc: The event indicates the UCC is active and available for Transaction.
+  ACTIVE = 'ACTIVE',
+  
+  // flowCode: 5
+  // desc: This event will only trigger if the UCC has been suspended by Exchange.
+  SUSPENDED = 'suspended',
 }
 
+//lumpsum
 export enum OrderWebhookEvent {
   // State 0: Order Received
   RECEIVED = 'received',
