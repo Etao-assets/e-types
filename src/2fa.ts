@@ -5,6 +5,7 @@ export const TwoFARequestBodySchema = z.object({
   eventType: z.nativeEnum(TwoFAEvents),
   bseMandateReqId: z.string().optional(), // Optional, only needed for certain event types
   bseSxpId: z.string().optional(), // Optional, only needed for SxP event types
+  orderId: z.string().optional(), // Optional, only needed for order-related events
 });
 
 export type TwoFARequestBody = z.infer<typeof TwoFARequestBodySchema>;
@@ -14,4 +15,3 @@ export const TwoFALinkResultSchema = z.object({
 });
 
 export type TwoFALinkResult = z.infer<typeof TwoFALinkResultSchema>;
-
