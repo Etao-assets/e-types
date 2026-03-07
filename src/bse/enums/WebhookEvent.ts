@@ -102,6 +102,9 @@ export enum OrderWebhookEvent {
   
   // State S1: Ops rejected - Threshold is not approved by Ops team
   OPS_REJECTED = 'ops_rejected',
+
+  // Not mentioned in BSE doc but observed in webhook logs
+  CANCELLED = 'cancelled',
 }
 
 export enum SxpWebhookEvent {
