@@ -24,6 +24,24 @@ export type TwoFAEventRequest = z.infer<typeof TwoFAEventRequestSchema>;
 export type TwoFAEventRequestItem = z.infer<typeof TwoFAEventRequestItemSchema>;
 export type TwoFAEventInvestor = z.infer<typeof TwoFAEventInvestorSchema>;
 
+// ─── Order Event Request (Simplified) ───────────────────────────────────────
+
+export const TwoFAOrderEventRequestItemSchema = z.object({
+  event: z.nativeEnum(TwoFAEvents),
+  order: z.string(),
+});
+
+export const TwoFAOrderEventRequestSchema = z.object({
+  data: z.array(TwoFAOrderEventRequestItemSchema),
+});
+
+export type TwoFAOrderEventRequest = z.infer<
+  typeof TwoFAOrderEventRequestSchema
+>;
+export type TwoFAOrderEventRequestItem = z.infer<
+  typeof TwoFAOrderEventRequestItemSchema
+>;
+
 // ─── Response ─────────────────────────────────────────────────────────────────
 
 export const TwoFAEventObjectSchema = z.object({
