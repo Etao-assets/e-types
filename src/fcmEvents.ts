@@ -12,11 +12,11 @@ export enum FCMEventType {
   ENACH_MANDATE_SUCCESS = 'enach_mandate_success',
   // ENACH_ACTIVE = 'ACTIVE',
   LUMPSUM_TWO_FA_SUCCESS = 'lumpsum_2fa_success',
-  LUMPSUM_PAYMENT_SUCCESS = 'payment_success',
+  LUMPSUM_PAYMENT_SUCCESS = 'payment_success', // When a lumpsum order is successful (after 2FA)
   LUMPSUM_PAYMENT_FAILED = 'payment_failed',
   UCC_ACTIVE = 'ucc_active',
   UCC_AUTH_UCC = 'ucc_auth_ucc',
-  LUMPSUM_ORDER_CANCELLED = 'cancelled',
+  LUMPSUM_ORDER_CANCELLED = 'cancelled', // When a lumpsum order is cancelled (after 2FA)
 }
 
 /**
