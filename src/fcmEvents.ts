@@ -10,7 +10,6 @@
 export enum FCMEventType {
   UPI_MANDATE_SUCCESS = 'upi_mandate_success',
   ENACH_MANDATE_SUCCESS = 'enach_mandate_success',
-  // ENACH_ACTIVE = 'ACTIVE',
   LUMPSUM_TWO_FA_SUCCESS = 'lumpsum_2fa_success',
   LUMPSUM_PAYMENT_SUCCESS = 'payment_success',
   LUMPSUM_PAYMENT_FAILED = 'payment_failed',
