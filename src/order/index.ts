@@ -90,6 +90,7 @@ export type CancelLumpSumOrder = z.infer<typeof cancelLumpSumOrderSchema>;
 
 export const OrderActionsSchema = z.object({
   cancel: z.boolean().optional(),
+  redeem: z.boolean().optional(),
 });
 export type OrderActions = z.infer<typeof OrderActionsSchema>;
 
@@ -100,8 +101,20 @@ export const OrderActionResultSchema = z.object({
       visible: z.boolean(),
     })
     .optional(),
+
+  redeem: z
+    .object({
+      canRedeem: z.boolean(),
+      visible: z.boolean(),
+    })
+    .optional(),
 });
 export type OrderActionResult = z.infer<typeof OrderActionResultSchema>;
+
+export const redeemLumpSumOrderSchema = z.object({
+  orderId: z.string(),
+});
+export type RedeemLumpSumOrder = z.infer<typeof redeemLumpSumOrderSchema>;
 
 // Export order get schema
 export * from './orderGetSchema';
