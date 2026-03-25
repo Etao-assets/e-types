@@ -14,3 +14,8 @@ export const MandateActionResultSchema = z.object({
     .optional(),
 });
 export type MandateActionResult = z.infer<typeof MandateActionResultSchema>;
+
+export const cancelMandateSchema = z.object({
+  id: z.string(),
+});
+export type CancelMandate = z.infer<typeof cancelMandateSchema>;
