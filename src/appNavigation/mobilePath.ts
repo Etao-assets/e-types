@@ -69,4 +69,5 @@ export enum NAVIGATION {
   SIP_TOPUP = 'sip-topup',
   ORDER_CANCEL = 'order-cancel',
   WEBVIEW_SCREEN = 'webview-screen',
+  MANDATE_DETAILS = 'mandate-details',
 }
