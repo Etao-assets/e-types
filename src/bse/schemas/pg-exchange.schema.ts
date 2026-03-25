@@ -39,10 +39,18 @@ export type BsePgExchangeRequest = z.infer<typeof bsePgExchangeRequestSchema>;
 
 // ── BSE API Response ─────────────────────────────────────────────────────────
 
-export const bsePgExchangeResponseSchema = z.object({
-  status: z.string(),
-  data: z.unknown(),
-  messages: z.array(z.unknown()).optional(),
+export const bsePgPaymentInformationSchema = z.object({
+  payment_mode: z.string(),
+  get_bank_account_details_row: z.unknown().nullable(),
+  mode_additional_info: z.string(),
 });
 
+export const bsePgExchangeResponseSchema = z.object({
+  data: z.object({
+    exch_pg_page_link: z.string(),
+    payment_information: bsePgPaymentInformationSchema,
+  })
+});
+
+export type BsePgPaymentInformation = z.infer<typeof bsePgPaymentInformationSchema>;
 export type BsePgExchangeResponse = z.infer<typeof bsePgExchangeResponseSchema>;
