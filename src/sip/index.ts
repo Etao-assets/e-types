@@ -42,3 +42,4 @@ export type UpdateDraftSip = z.infer<typeof updateDraftSipSchema>;
 export type sxpCancelSip = z.infer<typeof sxpCancelDataSchema>;
 export type sxpTopupSip = z.infer<typeof sxpTopupDataSchema>;
 export * from './sxpRequest';
+export * from './sipScheduling';
