@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 export const pgExchangeApiRequestSchema = z.object({
   order_ids: z
-    .array(z.number().int().positive())
+    .array(z.string().min(1, 'Order ID must be a non-empty string'))
     .min(1, 'At least one order ID is required'),
   redirection_url: z.string().url().optional(),
 });
