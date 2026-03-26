@@ -214,19 +214,10 @@ export enum MandateWebhookUpiEvent {
   INVESTOR_AUTH_AWAITED = 'investor_auth_awaited',
 }
 
-export enum PaymentGatewayWebhookEvent {
-  // State 3: Payment captured successfully (resumes order processing)
-  AGENCY_APPROVED = 'agency_approved',
-  
-  // State 3: Payment failed/declined
-  AGENCY_REJECTED = 'agency_rejected',
-}
-
 export type WebhookEvent = 
   | UccWebhookEvent 
   | OrderWebhookEvent 
   | SxpWebhookEvent 
   | MandateWebhookEnachEvent
-  | MandateWebhookUpiEvent
-  | PaymentGatewayWebhookEvent;
+  | MandateWebhookUpiEvent;
 
