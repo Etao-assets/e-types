@@ -19,6 +19,7 @@ export enum FCMEventType {
   SXP_ACTIVE = 'sxp_active', // When client completes 2FA authentication for SIP registration
   SXP_ORDER_TRIGGERED = 'sxp_order_triggered', // When a SIP installment order is triggered
   PAYMENT_PENDING = 'payment_pending', // When payment is pending after placing lumpsum order
+  ENACH_MANDATE_ACTIVE = 'enach_mandate_active', // When eNACH mandate becomes active
 }
 
 /**
