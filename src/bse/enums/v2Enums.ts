@@ -348,13 +348,16 @@ export enum OrderStatus {
 }
 
 export enum OrderLifecycleStatus {
+  SXP_ORDER_TRIGGERED = 'sxp_order_triggered',
   RECEIVED = 'received',
   OPS_REJECTED = 'ops_rejected',
   ORDER_2FA_PENDING = 'order_2fa_pending',
   BANK_TPV_PENDING = 'bank_tpv_pending',
+  MATCH_PENDING = 'match_pending',
   MATCHED = 'matched',
   QUEUED_FOR_RTA = 'queued_for_rta',
   SENT_TO_RTA = 'sent_to_rta',
+  RTA_ERROR = 'rta_error',
   RTA_RESP_RCVD = 'rta_resp_rcvd',
   UNITS_PAYOUT_SENT = 'units_payout_sent',
   DP_UNITS_MATCHED = 'dp_units_matched',
@@ -362,13 +365,24 @@ export enum OrderLifecycleStatus {
   DONE = 'done',
   PARTIAL_UNITS_DONE = 'partial_units_done',
   REDEMPT_RTA_SETTLED = 'redempt_rta_settled',
+  REDEMPT_EXCH_SETTLED = 'redempt_exch_settled',
   QUEUED_FOR_DP = 'queued_for_dp',
   RTA_REJECTED = 'rta_rejected',
+  DP_REJECTED = 'dp_rejected',
+  UCC_REJECTED = 'ucc_rejected',
   PLATFORM_REJECTED = 'platform_rejected',
+  THRESHOLD_APPROVAL_PENDING = 'threshold_approval_pending',
   REFUND_PENDING = 'refund_pending',
+  REFUND_APPROVED = 'refund_approved',
   EXCH_REFUND_INIT = 'exch_refund_init',
+  EXCH_REFUND_DONE = 'exch_refund_done',
   EXCH_REFUND_ATTEMPTED = 'exch_refund_attempted',
   EXCH_REFUND_FAILED = 'exch_refund_failed',
+  REDEMPT_PAYOUT_ATTEMPTED = 'redempt_payout_attempted',
+  REDEMPT_PAYOUT_FAILED = 'redempt_payout_failed',
+  REDEMPT_FUND_RETURNED_AMC = 'redempt_fund_returned_amc',
+  FUNDS_TO_UNCLAIMED = 'funds_to_unclaimed',
+  EXPIRED = 'expired',
 }
 
 //this order status internal is for our system internal tracking
