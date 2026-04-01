@@ -1,22 +1,15 @@
 import { z } from 'zod';
+import { OrderStatus } from './bse/enums/v2Enums';
 
 /**
- * Order List Request Body Schema
- * Request format for fetching list of orders from BSE
+ * Order List Query Parameters Schema
+ * Request format for fetching list of orders from BSE via query params
  */
-export const OrderListRequestBodySchema = z.object({
-  open_close: z.enum(['o', 'c']), // 'o' for open, 'c' for closed - Mandatory
+export const OrderListParamsSchema = z.object({
+  open_close: z.nativeEnum(OrderStatus), // 'o' for open, 'c' for closed - Mandatory
 });
 
-export type OrderListRequestBody = z.infer<typeof OrderListRequestBodySchema>;
-
-/**
- * Order List Request Schema
- * Used in API route to validate incoming request
- */
-export const OrderListRequestSchema = OrderListRequestBodySchema;
-
-export type OrderListRequest = z.infer<typeof OrderListRequestSchema>;
+export type OrderListParams = z.infer<typeof OrderListParamsSchema>;
 
 /**
  * BSE Order List Request Schema (with data wrapper)
