@@ -134,7 +134,7 @@ export type BseOrderListResponse = z.infer<typeof BseOrderListResponseSchema>;
 export interface ApiOrderListResponse {
   status: 'success' | 'error';
   data?: {
-    total_count: number;
+    totalCount: number;
     lists: OrderListItem[];
   };
   messages?: string[];
