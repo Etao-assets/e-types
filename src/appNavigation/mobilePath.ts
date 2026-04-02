@@ -71,6 +71,6 @@ export enum NAVIGATION {
   WEBVIEW_SCREEN = 'webview-screen',
   MANDATE_DETAILS = 'mandate-details',
   BSE_PG_SCREEN = 'bse-pg-screen',
-  GOAL_TAB = 'goal-tab',
+  ORDER_TAB = 'order-tab',
   MY_ORDER_DETAILS = 'my-order-details',
 }
