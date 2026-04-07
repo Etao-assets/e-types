@@ -34,9 +34,21 @@ export const NotificationType = {
   COMMUNITY_GOAL_CANCELLED: 'COMMUNITY_GOAL_CANCELLED',
   // General
   GENERAL: 'GENERAL',
+  GROUP_GOAL_INVITATION: 'GROUP_GOAL_INVITATION',
 } as const;
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType];
+
+export const NotificationEntityType = {
+  ORDER: 'order',
+  SIP: 'sip',
+  MANDATE: 'mandate',
+  UCC: 'ucc',
+  GOAL: 'goal',
+  COMMUNITY_GOAL: 'communityGoal',
+} as const;
+
+export type NotificationEntityType = (typeof NotificationEntityType)[keyof typeof NotificationEntityType];
 
 export interface NotificationItem {
   id: string;
@@ -49,7 +61,7 @@ export interface NotificationItem {
   icon?: string | null;
   isRead: boolean;
   readAt?: Date | null;
-  entityType?: string | null;
+  entityType?: NotificationEntityType | null;
   entityId?: string | null;
   metadata?: Record<string, unknown> | null;
   createdAt: Date;
@@ -70,7 +82,7 @@ export interface CreateNotificationInput {
   title: string;
   description: string;
   icon?: string;
-  entityType?: string;
+  entityType?: NotificationEntityType;
   entityId?: string;
   metadata?: Record<string, unknown>;
 }
