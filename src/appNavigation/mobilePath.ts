@@ -73,4 +73,5 @@ export enum NAVIGATION {
   BSE_PG_SCREEN = 'bse-pg-screen',
   ORDER_TAB = 'order-tab',
   MY_ORDER_DETAILS = 'my-order-details',
+  NOTIFICATIONS = 'notifications',
 }
