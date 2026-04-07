@@ -1,4 +1,5 @@
 import { PaginatedResponse } from './api';
+import { InvestmentGoalTypeExtra } from './goalType';
 
 // Order & Investment
 export const NotificationType = {
@@ -66,6 +67,11 @@ export interface NotificationItem {
   metadata?: Record<string, unknown> | null;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface GoalInviteMetadata {
+  invitationId: string;
+  inviteType: InvestmentGoalTypeExtra;
 }
 
 export type NotificationListResponse = PaginatedResponse<NotificationItem>;
