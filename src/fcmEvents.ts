@@ -20,6 +20,7 @@ export enum FCMEventType {
   SXP_ORDER_TRIGGERED = 'sxp_order_triggered', // When a SIP installment order is triggered
   PAYMENT_PENDING = 'payment_pending', // When payment is pending after placing lumpsum order
   ENACH_MANDATE_ACTIVE = 'enach_mandate_active', // When eNACH mandate becomes active
+  NOTIFICATION_COUNT_REFRESH = 'notif_refresh', // Silent push to trigger unread count refresh
 }
 
 /**
