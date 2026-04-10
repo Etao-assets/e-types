@@ -105,7 +105,7 @@ export type BseSipHistoryResponse = z.infer<typeof BseSipHistoryResponseSchema>;
  */
 export const ApiSipHistoryResponseSchema = z.object({
   status: z.string(),
-  data: BseSipHistoryResponseDataSchema.or(z.unknown()),
+  data: BseSipHistoryResponseDataSchema,
   messages: z.array(z.unknown()),
 });
 
