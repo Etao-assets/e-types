@@ -21,6 +21,7 @@ export enum FCMEventType {
   PAYMENT_PENDING = 'payment_pending', // When payment is pending after placing lumpsum order
   ENACH_MANDATE_ACTIVE = 'enach_mandate_active', // When eNACH mandate becomes active
   NOTIFICATION_COUNT_REFRESH = 'notif_refresh', // Silent push to trigger unread count refresh
+  MANDATE_CANCELLED = 'mandate_cancelled', // When a mandate (UPI or eNACH) is cancelled
 }
 
 /**
