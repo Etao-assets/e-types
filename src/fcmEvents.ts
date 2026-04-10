@@ -17,6 +17,10 @@ export enum FCMEventType {
   UCC_AUTH_UCC = 'ucc_auth_ucc',
   LUMPSUM_ORDER_CANCELLED = 'cancelled', // When a lumpsum order is cancelled (after 2FA)
   SXP_ACTIVE = 'sxp_active', // When client completes 2FA authentication for SIP registration
+  SXP_ORDER_TRIGGERED = 'sxp_order_triggered', // When a SIP installment order is triggered
+  PAYMENT_PENDING = 'payment_pending', // When payment is pending after placing lumpsum order
+  ENACH_MANDATE_ACTIVE = 'enach_mandate_active', // When eNACH mandate becomes active
+  NOTIFICATION_COUNT_REFRESH = 'notif_refresh', // Silent push to trigger unread count refresh
   LUMPSUM_ORDER_REDEEMED = 'lumpsum_redeemed', // When a lumpsum order is redeemed successfully
 }
 

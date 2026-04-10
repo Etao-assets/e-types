@@ -70,4 +70,8 @@ export enum NAVIGATION {
   ORDER_CANCEL = 'order-cancel',
   WEBVIEW_SCREEN = 'webview-screen',
   MANDATE_DETAILS = 'mandate-details',
+  BSE_PG_SCREEN = 'bse-pg-screen',
+  ORDER_TAB = 'order-tab',
+  MY_ORDER_DETAILS = 'my-order-details',
+  NOTIFICATIONS = 'notifications',
 }
