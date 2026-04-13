@@ -52,3 +52,6 @@ export {
 
 // Nomination Enums
 export { NominationOpt, NominationAuthenticationMode } from './nomination';
+
+// Payment Mode Enum
+export { PaymentMode } from './paymentMode';

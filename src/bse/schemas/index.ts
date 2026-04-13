@@ -15,3 +15,4 @@ export * from './payment-gateway.schema';
 export * from './webhook-event.schema';
 export * from './api-request-log.schema';
 export * from './order-payment.schema';
+export * from './send-payment-info.schema';
