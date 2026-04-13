@@ -394,6 +394,7 @@ export enum StatusInternal {
   DRAFT = 'DRAFT',
   FAILED = 'FAILED',
   SUBMITTED = 'SUBMITTED',
+  CANCEL_INITIATED = 'CANCEL_INITIATED',
 }
 
 // ===============================
@@ -498,11 +499,14 @@ export enum MandateStatus {
   REJECTED = 'R',
 }
 
-export const MandateStatusLabel: Record<MandateStatus, string> = {
+export const MandateStatusLabel: Partial<
+  Record<MandateStatus | StatusInternal, string>
+> = {
   [MandateStatus.PENDING]: 'Pending',
   [MandateStatus.VERIFIED]: 'Verified',
   [MandateStatus.CANCELLED]: 'Cancelled',
   [MandateStatus.REJECTED]: 'Rejected',
+  [StatusInternal.CANCEL_INITIATED]: 'Cancel Initiated',
 };
 
 // ===============================
