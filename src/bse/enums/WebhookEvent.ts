@@ -183,6 +183,9 @@ export enum MandateWebhookEnachEvent {
   
   // State S: Mandate completed (end date reached)
   COMPLETED = 'completed',
+
+  // Event recevied in Webhook logs but not mentioned in BSE doc
+  IN_PROCESS_AGENCY = 'in_process_agency',
 }
 
 export enum MandateWebhookUpiEvent {
