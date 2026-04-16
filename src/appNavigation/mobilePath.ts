@@ -75,4 +75,5 @@ export enum NAVIGATION {
   MY_ORDER_DETAILS = 'my-order-details',
   NOTIFICATIONS = 'notifications',
   HOW_TO_INVEST = 'how-to-invest',
+  ORDER_LISTING = 'order-listing',
 }
