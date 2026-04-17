@@ -74,4 +74,6 @@ export enum NAVIGATION {
   ORDER_TAB = 'order-tab',
   MY_ORDER_DETAILS = 'my-order-details',
   NOTIFICATIONS = 'notifications',
+  PAYMENT_METHOD = 'payment-method',
+  PAYMENT_WAITING = 'payment-waiting',
 }
