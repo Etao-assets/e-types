@@ -42,6 +42,7 @@ export const OrderListItemSchema = z.object({
   investor: z.any().optional(),
   member: z.string().optional(),
   scheme: z.string().optional(),
+  src_scheme_name: z.string().optional(),
   amount: z.string().optional(),
   cur: z.string().optional(),
   is_units: z.boolean().optional(),
