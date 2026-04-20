@@ -115,3 +115,18 @@ export enum InvestmentGoalTypeExtra {
   CUSTOM_GROUP = 'c',
   COMMUNITY_GOAL = 'g',
 }
+
+export const InvestmentGoalOptions = [
+  { label: 'Education', value: InvestmentGoalType.EDUCATION },
+  { label: 'Home', value: InvestmentGoalType.HOME },
+  { label: 'Marriage', value: InvestmentGoalType.MARRIAGE },
+  { label: 'Health', value: InvestmentGoalType.HEALTH },
+  { label: 'Travel', value: InvestmentGoalType.TRAVEL },
+  { label: 'Vehicle', value: InvestmentGoalType.VEHICLE },
+  { label: 'Career', value: InvestmentGoalType.CAREER },
+  { label: 'Retirement', value: InvestmentGoalType.RETIREMENT },
+  { label: 'Gadget', value: InvestmentGoalType.GADGET },
+  { label: 'Emergency Fund', value: InvestmentGoalType.EMERGENCY_FUND },
+  { label: 'Start Business', value: InvestmentGoalType.START_BUSINESS },
+  { label: 'Other', value: InvestmentGoalType.OTHER },
+];
