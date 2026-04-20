@@ -39,7 +39,7 @@ export const bseSendPaymentInfoRequestSchema = z.object({
         is_retail: z.boolean(),
         is_corporate: z.boolean(),
       }),
-      exch_mandate_id: z.union([z.string(), z.number()]),
+      exch_mandate_id: z.number().nullable(),
     }),
   }),
 });
