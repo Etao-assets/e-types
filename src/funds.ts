@@ -138,6 +138,83 @@ export const UpdateFundsSchema = fundsSchema
   .omit({ plan_id: true, createdAt: true, updatedAt: true })
   .partial();
 
+export const fundInfoSchema = z.object({
+  plan_id: z.string(),
+  scheme_name: z.string(),
+  min_subsequent_sip_investment: z.number().nullable().optional(),
+  min_initial_investment: z.number().nullable().optional(),
+  min_investment_multiples: z.number().nullable().optional(),
+  min_subsequent_investment_unit: z.number().nullable().optional(),
+  issue_open: z.string().nullable().optional(),
+  sip_allowed: z.boolean().nullable().optional(),
+  lumpsum_allowed: z.boolean().nullable().optional(),
+  amc: z
+    .object({
+      amc_short_name: z.string(),
+      amc_full_name: z.string(),
+    })
+    .nullable()
+    .optional(),
+  marketCapCategory: z
+    .object({
+      category_name: z.string(),
+    })
+    .nullable()
+    .optional(),
+  colourCode: z
+    .object({
+      risk: z.string(),
+    })
+    .nullable()
+    .optional(),
+  fundRatings: z
+    .object({
+      fund_rating: z.number(),
+    })
+    .nullable()
+    .optional(),
+  fundReturns: z
+    .object({
+      ret_1year: z.number().nullable().optional(),
+      ret_2year: z.number().nullable().optional(),
+      ret_3year: z.number().nullable().optional(),
+      ret_4year: z.number().nullable().optional(),
+      ret_5year: z.number().nullable().optional(),
+    })
+    .nullable()
+    .optional(),
+  navRecords: z
+    .object({
+      nav: z.number(),
+      nav_date: DateObjOrString,
+    })
+    .nullable()
+    .optional(),
+  fundExpenses: z
+    .object({
+      expense_ratio: z.number(),
+      as_on_date: DateObjOrString,
+    })
+    .nullable()
+    .optional(),
+  fundAum: z
+    .object({
+      aum: z.number(),
+      as_on_date: DateObjOrString,
+    })
+    .nullable()
+    .optional(),
+  fundManagers: z.array(
+    z.object({
+      name: z.string().nullable().optional(),
+      education: z.string().nullable().optional(),
+      person_type: z.string().nullable().optional(),
+      date_from: DateObjOrString.nullable().optional(),
+    }),
+  ),
+});
+
 export type Funds = z.infer<typeof fundsSchema>;
 export type NewFunds = z.infer<typeof NewFundsSchema>;
 export type UpdateFunds = z.infer<typeof UpdateFundsSchema>;
+export type FundInfoApiResponse = z.infer<typeof fundInfoSchema>;
