@@ -214,7 +214,28 @@ export const fundInfoSchema = z.object({
   ),
 });
 
+export const fundPerformanceSchema = z.object({
+  plan_id: z.string(),
+  navHistory: z.array(
+    z.object({
+      nav: z.number(),
+      nav_date: DateObjOrString,
+    }),
+  ),
+  fundReturns: z
+    .object({
+      ret_1year: z.number().nullable().optional(),
+      ret_2year: z.number().nullable().optional(),
+      ret_3year: z.number().nullable().optional(),
+      ret_4year: z.number().nullable().optional(),
+      ret_5year: z.number().nullable().optional(),
+    })
+    .nullable()
+    .optional(),
+});
+
 export type Funds = z.infer<typeof fundsSchema>;
 export type NewFunds = z.infer<typeof NewFundsSchema>;
 export type UpdateFunds = z.infer<typeof UpdateFundsSchema>;
 export type FundInfoApiResponse = z.infer<typeof fundInfoSchema>;
+export type FundPerformanceApiResponse = z.infer<typeof fundPerformanceSchema>;
