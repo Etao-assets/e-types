@@ -79,4 +79,6 @@ export enum NAVIGATION {
   CIRCLE_GOAL_DETAILS = 'circle-goal-details',
   MUTUAL_FUNDS = 'mutual-funds',
   MUTUAL_FUNDS_DETAIL = 'mutual-funds-detail',
+  START_SIP_INVESTMENT = 'start-sip-investment',
+  START_LUMPSUM_INVESTMENT = 'start-lumpsum-investment',
 }
