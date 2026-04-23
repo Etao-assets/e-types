@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 export const fixerraRegisterUserRequestSchema = z.object({
   /** Mobile number of the user */
-  mobile: z.string().min(10).max(15),
+  phone: z.string().min(10).max(15),
 });
 
 export type FixerraRegisterUserRequest = z.infer<
@@ -18,12 +18,14 @@ export type FixerraRegisterUserRequest = z.infer<
 // ── Fixerra → Our API Response ────────────────────────────────────────────────
 
 export const fixerraRegisterUserResponseSchema = z.object({
-  /** Unique partner user identifier issued by Fixerra */
-  f_partner_user_id: z.string(),
-  /** Our global partner ID as acknowledged by Fixerra */
-  f_partner_id: z.string(),
+  partnerUser: z.object({
+    /** Our global partner ID as acknowledged by Fixerra */
+    f_partner_id: z.string(),
+    /** Unique partner user identifier issued by Fixerra */
+    f_partner_user_id: z.string(),
+  }),
   /** Optional referral / deep-link URL returned by Fixerra */
-  referral_link: z.string().optional(),
+  referralLink: z.string().optional(),
 });
 
 export type FixerraRegisterUserResponse = z.infer<

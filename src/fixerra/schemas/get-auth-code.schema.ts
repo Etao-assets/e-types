@@ -18,10 +18,14 @@ export type FixerraGetAuthCodeRequest = z.infer<
 // ── Fixerra → Our API Response ────────────────────────────────────────────────
 
 export const fixerraGetAuthCodeResponseSchema = z.object({
+  /** Decrypted mobile number echoed back by Fixerra */
+  decrypted: z.string(),
+  /** Session identifier (may be empty) */
+  sessionId: z.string(),
+  /** Partner code used for the request */
+  partner_code: z.string(),
   /** Encrypted auth code returned by Fixerra — do not log */
-  auth_code: z.string(),
-  /** ISO 8601 expiry timestamp */
-  expires_at: z.string(),
+  authcode: z.string(),
 });
 
 export type FixerraGetAuthCodeResponse = z.infer<
