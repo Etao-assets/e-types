@@ -67,3 +67,4 @@ export * from './fcmEvents';
 export * from './notification';
 export * from './app-update';
 export * from './mandate';
+export * from './fixerra';
