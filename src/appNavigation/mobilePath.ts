@@ -81,4 +81,5 @@ export enum NAVIGATION {
   MUTUAL_FUNDS_DETAIL = 'mutual-funds-detail',
   START_SIP_INVESTMENT = 'start-sip-investment',
   START_LUMPSUM_INVESTMENT = 'start-lumpsum-investment',
+  CHOOSE_INVESTMENT = 'choose-investment',
 }
