@@ -26,6 +26,8 @@ export interface DashboardLoanRate {
   maxRate: number;
 }
 
+import type { FundFilterMasterData } from './masterData/fundsFilter';
+
 export interface MasterData {
   businessLoan: BusinessLoanMasterData;
   dashboard: {
@@ -35,4 +37,5 @@ export interface MasterData {
     usedCarLoan: DashboardLoanRate;
     emiCalculator: DashboardLoanRate;
   };
+  fundFilter: FundFilterMasterData;
 }

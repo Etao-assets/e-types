@@ -50,6 +50,8 @@ export const businessLoanMasterData: Readonly<BusinessLoanMasterData> =
     }),
   });
 
+export * from './fundsFilter';
+
 export const dashboard = Object.freeze({
   personalLoan: { minRate: 10.5, maxRate: 24 },
   businessLoan: { minRate: 11, maxRate: 20 },
