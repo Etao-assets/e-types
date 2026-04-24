@@ -68,3 +68,5 @@ export * from './notification';
 export * from './app-update';
 export * from './mandate';
 export * from './fixerra';
+export * from './nullValue';
+export * from './investmentGoalDetails';

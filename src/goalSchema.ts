@@ -43,13 +43,15 @@ export const goalSchema = z.object({
   id: z.string(),
   userId: z.string(), // Required field from DB
   type: z.string(),
-  name: z.string(),
+  name: z.string().optional(),
   targetAmt: z
     .union([z.number(), z.string()])
-    .transform(val => (typeof val === 'string' ? val : val.toString())), // Keep as string to match backend
+    .transform(val => (typeof val === 'string' ? val : val.toString()))
+    .optional(), // Keep as string to match backend
   targetDate: z
     .union([z.string(), z.date()])
-    .transform(val => (val instanceof Date ? val.toISOString() : val)),
+    .transform(val => (val instanceof Date ? val.toISOString() : val))
+    .optional(),
   description: z.string(),
   investedAmt: z
     .union([z.number(), z.string(), z.null()])
@@ -108,7 +110,7 @@ export const createGroupSchema = z.object({
   selectedPackages: z.array(z.string().cuid()).optional().default([]),
   selectedServices: z.array(z.string().cuid()).optional().default([]),
   selectedDateId: z.string().cuid().optional().nullable(),
-  targetDate: z.coerce.date(),
+  targetDate: z.coerce.date().optional(),
   targetAmount: z.number().positive().optional(),
   customAmount: z.number().positive().optional().nullable(),
   investmentGoalType: z.string()?.optional(),
