@@ -84,4 +84,5 @@ export enum NAVIGATION {
   CHOOSE_INVESTMENT = 'choose-investment',
   PAYMENT_METHOD = 'payment-method',
   PAYMENT_WAITING = 'payment-waiting',
+  FIXERRA_WEBVIEW = 'fixerra-webview',
 }
