@@ -147,11 +147,12 @@ export const FundRatingItemSchema = z.object({
   isActive: z.boolean(),
 });
 
-/** Wraps a filter options array with a UI-facing label for the filter group */
+/** Wraps a filter options array with a UI-facing label and active flag for the filter group */
 const makeFundFilterGroup = <T extends z.ZodTypeAny>(itemSchema: T) =>
   z.object({
-    label:   z.string(),
-    options: z.array(itemSchema),
+    label:    z.string(),
+    isActive: z.boolean(),
+    options:  z.array(itemSchema),
   });
 
 export const FundFilterMasterDataSchema = z.object({
@@ -186,7 +187,7 @@ export type FundFilterGroup<T>          = { label: string; options: T[] };
 // --- Constants ---
 
 export const fundSortByOptions: readonly FundSortByItem[] = Object.freeze([
-  { value: FundSortByEnum.POPULARITY,          label: 'Popularity',          isActive: true },
+  { value: FundSortByEnum.POPULARITY,          label: 'Popularity',          isActive: false },
   { value: FundSortByEnum.RETURNS_HIGH_TO_LOW, label: 'Returns: High to Low', isActive: true },
   { value: FundSortByEnum.RETURNS_LOW_TO_HIGH, label: 'Returns: Low to High', isActive: true },
   { value: FundSortByEnum.RISK_HIGH_TO_LOW,    label: 'Risk: High to Low',    isActive: true },
@@ -286,9 +287,9 @@ export const fundRatingOptions: readonly FundRatingItem[] = Object.freeze([
  * `fundHouses` is always empty here — populate it from the AMC/fund-house API at runtime.
  */
 export const fundFilterMasterData: FundFilterMasterData = {
-  sortBy:     { label: 'Sort By',    options: [...fundSortByOptions]    },
-  categories: { label: 'Categories',   options: [...fundCategoryOptions]  },
-  risk:       { label: 'Risk',       options: [...fundRiskOptions]      },
-  ratings:    { label: 'Ratings',     options: [...fundRatingOptions]    },
-  fundHouses: { label: 'Fund House', options: []                        },
+  sortBy:     { label: 'Sort By',    isActive: true, options: [...fundSortByOptions]   },
+  categories: { label: 'Categories', isActive: true, options: [...fundCategoryOptions] },
+  risk:       { label: 'Risk',       isActive: true, options: [...fundRiskOptions]     },
+  ratings:    { label: 'Ratings',    isActive: true, options: [...fundRatingOptions]   },
+  fundHouses: { label: 'Fund House', isActive: true, options: []                       },
 };
