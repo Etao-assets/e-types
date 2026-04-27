@@ -57,6 +57,7 @@ export * from './sms';
 export * from './communityGoal';
 export * from './ucc';
 export * from './sipCalculator';
+export * from './fdRdCalculator';
 export * from './bankAccount';
 export * from './sip';
 export * from './fcmEvents';
