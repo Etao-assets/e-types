@@ -71,3 +71,4 @@ export * from './mandate';
 export * from './fixerra';
 export * from './nullValue';
 export * from './investmentGoalDetails';
+export * from './companyInfo';
