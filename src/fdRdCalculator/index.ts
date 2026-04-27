@@ -6,6 +6,7 @@
  */
 
 import Decimal from 'decimal.js';
+import { z } from 'zod';
 
 // ---------------------------------------------------------------------------
 // Enums
@@ -13,10 +14,10 @@ import Decimal from 'decimal.js';
 
 /** Compounding frequency — number of times interest is compounded per year. */
 export enum CompoundingFrequencyEnum {
-  YEARLY      = 1,
+  YEARLY = 1,
   HALF_YEARLY = 2,
-  QUARTERLY   = 4,
-  MONTHLY     = 12,
+  QUARTERLY = 4,
+  MONTHLY = 12,
 }
 
 /** Calculator mode — Fixed Deposit or Recurring Deposit. */
@@ -42,6 +43,44 @@ export interface FdRdParams {
   /** Calculator mode — 'fd' or 'rd' (default: 'fd') */
   mode?: FdRdModeEnum;
 }
+
+/**
+ * Form schema for RD/FD calculator inputs.
+ * All fields are required and validated for sensible numeric ranges.
+ */
+export const FdRdFormSchema = z.object({
+  amount: z.coerce
+    .number({
+      required_error: 'Amount is required',
+      invalid_type_error: 'Amount is required',
+    })
+    .gt(0, 'Amount must be greater than 0'),
+  annualRate: z.coerce
+    .number({
+      required_error: 'Interest rate is required',
+      invalid_type_error: 'Interest rate is required',
+    })
+    .gt(0, 'Interest rate must be greater than 0')
+    .lte(100, 'Interest rate must be less than or equal to 100'),
+  tenureMonths: z.coerce
+    .number({
+      required_error: 'Tenure is required',
+      invalid_type_error: 'Tenure is required',
+    })
+    .int('Tenure must be a whole number')
+    .gte(1, 'Tenure must be at least 1 month')
+    .lte(90, 'Tenure cannot exceed 90 months'),
+  compoundingFrequency: z.nativeEnum(CompoundingFrequencyEnum, {
+    required_error: 'Compounding frequency is required',
+    invalid_type_error: 'Compounding frequency is required',
+  }),
+  mode: z.nativeEnum(FdRdModeEnum, {
+    required_error: 'Calculator mode is required',
+    invalid_type_error: 'Calculator mode is required',
+  }),
+});
+
+export type FdRdFormValues = z.infer<typeof FdRdFormSchema>;
 
 /** Result returned by calculateFdRd. */
 export interface FdRdResult {
@@ -84,10 +123,10 @@ export function calculateFdRd({
   mode = FdRdModeEnum.FD,
 }: FdRdParams): FdRdResult {
   const P = new Decimal(amount);
-  const r = new Decimal(annualRate).div(100);       // annual rate as decimal
+  const r = new Decimal(annualRate).div(100); // annual rate as decimal
   const n = new Decimal(compoundingFrequency);
-  const rOverN = r.div(n);                          // r/n
-  const base = rOverN.plus(1);                      // (1 + r/n)
+  const rOverN = r.div(n); // r/n
+  const base = rOverN.plus(1); // (1 + r/n)
 
   let maturity: Decimal;
   let principal: Decimal;
@@ -112,9 +151,11 @@ export function calculateFdRd({
   const interest = maturity.minus(principal);
 
   return {
-    maturityAmount: maturity.toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toNumber(),
-    principal:      principal.toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toNumber(),
-    interest:       interest.toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toNumber(),
+    maturityAmount: maturity
+      .toDecimalPlaces(2, Decimal.ROUND_HALF_UP)
+      .toNumber(),
+    principal: principal.toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toNumber(),
+    interest: interest.toDecimalPlaces(2, Decimal.ROUND_HALF_UP).toNumber(),
     params: {
       amount,
       annualRate,
@@ -130,15 +171,11 @@ export function calculateFdRd({
 // ---------------------------------------------------------------------------
 
 /** Calculate FD maturity with quarterly compounding (default). */
-export function calculateFd(
-  params: Omit<FdRdParams, 'mode'>,
-): FdRdResult {
+export function calculateFd(params: Omit<FdRdParams, 'mode'>): FdRdResult {
   return calculateFdRd({ ...params, mode: FdRdModeEnum.FD });
 }
 
 /** Calculate RD maturity with quarterly compounding (default). */
-export function calculateRd(
-  params: Omit<FdRdParams, 'mode'>,
-): FdRdResult {
+export function calculateRd(params: Omit<FdRdParams, 'mode'>): FdRdResult {
   return calculateFdRd({ ...params, mode: FdRdModeEnum.RD });
 }

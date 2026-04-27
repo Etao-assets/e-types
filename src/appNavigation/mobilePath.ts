@@ -35,6 +35,7 @@ export enum NAVIGATION {
   SECTOR_ALLOCATIONS = 'sector-allocations',
   HOLDING_ANALYSIS = 'holding-analysis',
   SIP_CALCULATOR = 'sip-calculator',
+  RD_FD_CALCULATOR = 'rd-fd-calculator',
   HLV_CALCULATOR = 'hlv-calculator',
   EMI_CALCULATOR = 'emi-calculator',
   COMMUNITIES_LIST = 'communities-list',
