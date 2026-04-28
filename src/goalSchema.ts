@@ -82,9 +82,9 @@ export const goalSchema = z.object({
     .nullable(),
 });
 
- // Group Creation
+// Group Creation
 export const createGroupSchema = z.object({
-  name: z.string().min(1).max(255),
+  name: z.string().min(1).max(255).optional(),
   description: z.string().optional(),
   communityGoalId: z.string().cuid().optional(),
   maxMembers: z.number().int().positive().optional(),
