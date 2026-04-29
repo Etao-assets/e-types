@@ -45,3 +45,29 @@ export const UpdateInvestmentGoalSchema = InvestmentGoalSchema.partial()
 export type NewInvestmentGoal = z.infer<typeof NewInvestmentGoalSchema>;
 export type UpdateInvestmentGoal = z.infer<typeof UpdateInvestmentGoalSchema>;
 export type InvestmentGoal = z.infer<typeof InvestmentGoalSchema>;
+
+// --- Goal list response types ---
+
+/** Group-level aggregated investment summary returned inside a GoalListItem */
+export const GoalListItemGroupInvestmentSchema = z.object({
+  communityGoalGroupId:      z.string(),
+  groupName:                z.string(),
+  totalInvestedByGroup:     z.number(), // Decimal — do not use as Float
+  groupTargetAmt:           z.number(), // Decimal — sum of all active members' targetAmt
+  groupCompletionPercentage: z.number(), // 0–100, rounded to 2 dp
+});
+
+/** Lightweight goal summary returned by the getAllGoals list endpoint */
+export const GoalListItemSchema = z.object({
+  id:                   z.string(),
+  type:                 z.string(),
+  targetAmt:            z.number().nullable(),  // Decimal
+  investedAmt:          z.number().nullable(),  // Decimal
+  goalType:             z.enum(['INDIVIDUAL_GOAL', 'GROUP_GOAL']),
+  name:                 z.string().nullable(),
+  completionPercentage: z.number(),             // 0–100, computed
+  groupInvestment:      GoalListItemGroupInvestmentSchema.nullable(),
+});
+
+export type GoalListItemGroupInvestment = z.infer<typeof GoalListItemGroupInvestmentSchema>;
+export type GoalListItem = z.infer<typeof GoalListItemSchema>;
