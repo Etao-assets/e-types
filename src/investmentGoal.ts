@@ -71,3 +71,21 @@ export const GoalListItemSchema = z.object({
 
 export type GoalListItemGroupInvestment = z.infer<typeof GoalListItemGroupInvestmentSchema>;
 export type GoalListItem = z.infer<typeof GoalListItemSchema>;
+
+export const NetworthDetailsSchema = z.object({
+  totalNetworth: z.number(),
+  investmentReturns: z.object({
+    day1ReturnValue: z.number(),
+    day1ReturnPercentage: z.number(),
+    totalReturnValue: z.number(),
+    totalReturnPercentage: z.number(),
+  }),
+  mutualFunds: z.object({
+    totalInvestedAmount: z.number(),
+  }),
+  bankDeposits: z.object({
+    totalInvestedAmount: z.number(),
+  }),
+});
+
+export type NetworthDetails = z.infer<typeof NetworthDetailsSchema>;
