@@ -130,3 +130,14 @@ export const InvestmentGoalOptions = [
   { label: 'Start Business', value: InvestmentGoalType.START_BUSINESS },
   { label: 'Other', value: InvestmentGoalType.OTHER },
 ];
+
+export enum GoalName {
+  UNNAMED_GOAL = 'unnamed goal'
+}
+
+export enum GoalTypeEnum {
+  INDIVIDUAL_GOAL = 'INDIVIDUAL_GOAL',
+  GROUP_GOAL = 'GROUP_GOAL',
+}
+
+

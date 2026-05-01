@@ -35,6 +35,14 @@ export const sxpTopupDataSchema = z.object({
   startDate: DateObjOrString,
 });
 
+// Direct investment (no goal ID required — goal is created implicitly)
+export const instantSipSchema = z.object({
+  planId: z.string(),
+  amount: z.number().positive('Amount must be greater than 0'),
+  startDate: DateObjOrString,
+});
+export type InstantSip = z.infer<typeof instantSipSchema>;
+
 // Type inference from the schema
 export type sxpDraftFormData = z.infer<typeof sxpDraftFormDataSchema>;
 export type sxpConfirmFormData = z.infer<typeof sxpConfirmFormDataSchema>;

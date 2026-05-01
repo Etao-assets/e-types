@@ -82,6 +82,13 @@ export const lumpSumOrderSchema = z.object({
 });
 export type LumpSumOrder = z.infer<typeof lumpSumOrderSchema>;
 
+// Direct lumpsum investment (no goal ID required — goal is created implicitly)
+export const instantLumpsumOrderSchema = z.object({
+  planId: z.string(),
+  amount: z.number().positive('Amount must be greater than 0'),
+});
+export type InstantLumpsumOrder = z.infer<typeof instantLumpsumOrderSchema>;
+
 export const cancelLumpSumOrderSchema = z.object({
   orderId: z.string(),
   remark: z.string().optional(),
