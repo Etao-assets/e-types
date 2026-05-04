@@ -3,9 +3,9 @@
  */
 
 import { z } from 'zod';
-import { ApiStatus, StatusInternal, SxPFrequency, SxPStatus, SxPType } from '../bse/enums/v2Enums';
+import { SxPFrequency, SxPType } from '../bse/enums/v2Enums';
 import { SxpWebhookEvent } from '../bse/enums/WebhookEvent';
-import { ApiStatusInternal } from '../api';
+import { DateObjOrString } from '../date';
 
 /**
  * Duck-typed interface compatible with Prisma's Decimal and plain number.
@@ -17,7 +17,7 @@ export interface DecimalLike {
 }
 
 /** Zod schema accepting Prisma Decimal or plain number for financial fields. */
-const DecimalOrNumber = z.custom<DecimalLike | number>((v) => v != null);
+const DecimalOrNumber = z.custom<DecimalLike | number>(v => v != null);
 
 // ─── Shared base schema (mirrors the Prisma SIP model shape) ─────────────────
 
@@ -35,15 +35,15 @@ export const SipRecordSchema = z.object({
   sxpType: z.nativeEnum(SxPType).or(z.string()),
   planId: z.string(),
   schemeCode: z.string(),
-  amount: DecimalOrNumber, // Decimal(15,2) — do not log raw value
+  amount: z.number(), // Decimal(15,2) — do not log raw value
   frequency: z.nativeEnum(SxPFrequency).or(z.string()),
-  startDate: z.date(),
-  validTill: z.date(),
-  regDate: z.date(),
+  startDate: DateObjOrString,
+  validTill: DateObjOrString,
+  regDate: DateObjOrString,
   nInstallments: z.number().int().nullable(),
   executedInstallments: z.number().int(),
-  lastExecutedAt: z.date().nullable(),
-  pausedFrom: z.date().nullable(),
+  lastExecutedAt: DateObjOrString.nullable(),
+  pausedFrom: DateObjOrString.nullable(),
   bseSxpRegNum: z.string().nullable(),
   sipStatus: z.nativeEnum(SxpWebhookEvent).or(z.string()),
   apiStatus: z.string(),
@@ -51,7 +51,7 @@ export const SipRecordSchema = z.object({
   errorMessage: z.string().nullable(),
   currentState: z.string().nullable(),
   stateHistory: z.unknown().nullable(),
-  lastWebhookAt: z.date().nullable(),
+  lastWebhookAt: DateObjOrString.nullable(),
   webhookEventId: z.string().nullable(),
   consecutiveFailures: z.number().int(),
   lastInstallmentOrderId: z.string().nullable(),
@@ -67,10 +67,12 @@ export type SipRecord = z.infer<typeof SipRecordSchema>;
 
 export const SipRegisterDraftResponseSchema = SipRecordSchema.extend({
   /** Computed first SIP installment date (after FOT gap calculation) */
-  firstSipDate: z.date(),
+  firstSipDate: DateObjOrString,
 });
 
-export type SipRegisterDraftResponse = z.infer<typeof SipRegisterDraftResponseSchema>;
+export type SipRegisterDraftResponse = z.infer<
+  typeof SipRegisterDraftResponseSchema
+>;
 
 // ─── confirmDraftSip response ─────────────────────────────────────────────────
 
@@ -87,11 +89,15 @@ export const SipConfirmDraftResponseSchema = z.object({
   orderId: z.string().nullable(),
 });
 
-export type SipConfirmDraftResponse = z.infer<typeof SipConfirmDraftResponseSchema>;
+export type SipConfirmDraftResponse = z.infer<
+  typeof SipConfirmDraftResponseSchema
+>;
 
 // ─── updateDraftSip response ──────────────────────────────────────────────────
 
 /** Return type for updateDraftSip — the full updated SIP record. */
 export const SipUpdateDraftResponseSchema = SipRecordSchema;
 
-export type SipUpdateDraftResponse = z.infer<typeof SipUpdateDraftResponseSchema>;
+export type SipUpdateDraftResponse = z.infer<
+  typeof SipUpdateDraftResponseSchema
+>;
