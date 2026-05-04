@@ -7,18 +7,6 @@ import { SxPFrequency, SxPType } from '../bse/enums/v2Enums';
 import { SxpWebhookEvent } from '../bse/enums/WebhookEvent';
 import { DateObjOrString } from '../date';
 
-/**
- * Duck-typed interface compatible with Prisma's Decimal and plain number.
- * Decimal(15,2): 15 total digits, 2 decimal places — do not log raw value.
- */
-export interface DecimalLike {
-  toNumber(): number;
-  toString(): string;
-}
-
-/** Zod schema accepting Prisma Decimal or plain number for financial fields. */
-const DecimalOrNumber = z.custom<DecimalLike | number>(v => v != null);
-
 // ─── Shared base schema (mirrors the Prisma SIP model shape) ─────────────────
 
 /**
