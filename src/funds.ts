@@ -158,6 +158,7 @@ export const fundInfoSchema = z.object({
   marketCapCategory: z
     .object({
       category_name: z.string(),
+      primary_category_name: z.string(),
     })
     .nullable()
     .optional(),
