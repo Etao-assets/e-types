@@ -50,42 +50,68 @@ export type InvestmentGoal = z.infer<typeof InvestmentGoalSchema>;
 
 /** Group-level aggregated investment summary returned inside a GoalListItem */
 export const GoalListItemGroupInvestmentSchema = z.object({
-  communityGoalGroupId:      z.string(),
-  groupName:                z.string(),
-  totalInvestedByGroup:     z.number(), // Decimal — do not use as Float
-  groupTargetAmt:           z.number(), // Decimal — sum of all active members' targetAmt
+  communityGoalGroupId: z.string(),
+  groupName: z.string(),
+  totalInvestedByGroup: z.number(), // Decimal — do not use as Float
+  groupTargetAmt: z.number(), // Decimal — sum of all active members' targetAmt
   groupCompletionPercentage: z.number(), // 0–100, rounded to 2 dp
 });
 
 /** Lightweight goal summary returned by the getAllGoals list endpoint */
 export const GoalListItemSchema = z.object({
-  id:                   z.string(),
-  type:                 z.string(),
-  targetAmt:            z.number().nullable(),  // Decimal
-  investedAmt:          z.number().nullable(),  // Decimal
-  goalType:             z.enum(['INDIVIDUAL_GOAL', 'GROUP_GOAL']),
-  name:                 z.string().nullable(),
-  completionPercentage: z.number(),             // 0–100, computed
-  groupInvestment:      GoalListItemGroupInvestmentSchema.nullable(),
+  id: z.string(),
+  type: z.string(),
+  targetAmt: z.number().nullable(), // Decimal
+  investedAmt: z.number().nullable(), // Decimal
+  goalType: z.enum(['INDIVIDUAL_GOAL', 'GROUP_GOAL']),
+  name: z.string().nullable(),
+  completionPercentage: z.number(), // 0–100, computed
+  groupInvestment: GoalListItemGroupInvestmentSchema.nullable(),
 });
 
-export type GoalListItemGroupInvestment = z.infer<typeof GoalListItemGroupInvestmentSchema>;
+export type GoalListItemGroupInvestment = z.infer<
+  typeof GoalListItemGroupInvestmentSchema
+>;
 export type GoalListItem = z.infer<typeof GoalListItemSchema>;
 
-export const NetworthDetailsSchema = z.object({
-  totalNetworth: z.number(),
-  investmentReturns: z.object({
+/** MF / market-linked investment breakdown — includes day-1 return metrics. */
+export const InvestmentBreakdownSchema = z.object({
+  totalHolding: z.number().int(), // Count of individual holdings (schemes / instruments)
+  totalInvestedAmount: z.number(),
+  currentValue: z.number(),
+  returns: z.object({
     day1ReturnValue: z.number(),
     day1ReturnPercentage: z.number(),
     totalReturnValue: z.number(),
     totalReturnPercentage: z.number(),
   }),
-  mutualFunds: z.object({
-    totalInvestedAmount: z.number(),
-  }),
-  bankDeposits: z.object({
-    totalInvestedAmount: z.number(),
-  }),
 });
 
+/** Mutual-funds-specific breakdown — extends base with XIRR. */
+export const MutualFundsBreakdownSchema = InvestmentBreakdownSchema.extend({
+  xirr: z.number(), // Annualised internal rate of return (XIRR) for the MF portfolio
+});
+
+/**
+ * Bank-deposit breakdown (FD / RD).
+ * No day-1 return — interest accrues over the deposit tenure, not daily.
+ */
+export const BankDepositBreakdownSchema = z.object({
+  totalHolding: z.number().int(), // Count of individual deposit accounts (FD / RD)
+  investedAmt: z.number(), // Total principal deposited
+  accruedValue: z.number(), // Principal + interest accrued to date
+  interestEarned: z.number(), // Interest earned so far
+  effectiveYield: z.number(), // Annualised effective yield (%)
+});
+
+export const NetworthDetailsSchema = z.object({
+  mutualFunds: MutualFundsBreakdownSchema,
+  bankDeposits: BankDepositBreakdownSchema,
+  /** Aggregated breakdown combining mutualFunds + bankDeposits. combined.currentValue is the total networth. */
+  combined: InvestmentBreakdownSchema,
+});
+
+export type InvestmentBreakdown = z.infer<typeof InvestmentBreakdownSchema>;
+export type MutualFundsBreakdown = z.infer<typeof MutualFundsBreakdownSchema>;
+export type BankDepositBreakdown = z.infer<typeof BankDepositBreakdownSchema>;
 export type NetworthDetails = z.infer<typeof NetworthDetailsSchema>;
