@@ -71,7 +71,7 @@ export const FixerraWebhookPayloadSchema = z.object({
 export const FixerraWebhookResponseSchema = z.object({
   success: z.boolean(),
   message: z.string(),
-  eventId: z.string(),
+  eventId: z.string().optional(),
 });
 
 // --- Inferred Types ---

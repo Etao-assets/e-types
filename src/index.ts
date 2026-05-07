@@ -73,3 +73,5 @@ export * from './fixerra';
 export * from './nullValue';
 export * from './investmentGoalDetails';
 export * from './companyInfo';
+export * from './fixerra';
+export * from './utils';
