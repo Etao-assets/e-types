@@ -3,6 +3,7 @@
  */
 
 import { z } from 'zod';
+import { FixerraPageEnum } from '../fixerraPage';
 
 // ── Partner URL query parameter shapes ───────────────────────────────────────
 
@@ -26,7 +27,7 @@ export const fixerraRedirectParamsSchema = z.object({
   /** Maps to `renewal_option` query param */
   renewal: z.string().optional(),
   /** Generic redirection */
-  redirect: z.string().optional(),
+  redirect: z.nativeEnum(FixerraPageEnum).optional(),
   /** Campaign / agent-code redirection */
   campaign: z.string().optional(),
   agent_code: z.string().optional(),
