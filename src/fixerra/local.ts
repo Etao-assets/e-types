@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { fixerraRedirectParamsSchema, type FixerraRedirectParams } from "./schemas";
+import { DateObjOrString } from '../date';
 
 export interface FixerraUser {
   mobile: string;
@@ -44,3 +45,20 @@ export const SessionBodySchema = fixerraRedirectParamsSchema
   });
 
 export type FixerraSessionRequestBody = z.infer<typeof SessionBodySchema>;
+
+/**
+ * Fixerra Order List Item Schema
+ * Shape of a single FD/RD booking returned by the bookings list API.
+ */
+export const FixerraOrderListItemSchema = z.object({
+  id:              z.string(),
+  src_scheme_name: z.string(),
+  amount:          z.number(),
+  status:          z.string(),
+  info:            z.object({
+    src: z.string(),
+  }),
+  placed_at: DateObjOrString,
+});
+
+export type FixerraOrderListItem = z.infer<typeof FixerraOrderListItemSchema>;

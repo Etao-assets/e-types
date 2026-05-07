@@ -52,6 +52,7 @@ export * from './estimated-returns';
 export * from './userProfile';
 export * from './ifsc';
 export * from './order';
+export * from './order-list';
 export * from './goals';
 export * from './groupInvestment';
 export * from './sms';
