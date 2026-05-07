@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { fixerraRedirectParamsSchema, type FixerraRedirectParams } from "./schemas";
 
 export interface FixerraUser {
   mobile: string;
@@ -16,6 +17,8 @@ export interface GetSessionParams {
    * Omit when launching directly without a goal context (Flow 2).
    */
   goalId?: string;
+  /** Optional redirect query parameters forwarded to the Fixerra partner URL */
+  redirectData?: Omit<FixerraRedirectParams, 'authCode'>;
 }
 
 export interface GetSessionApiResponse {
@@ -34,8 +37,10 @@ export interface RegisterAndGetSessionApiResponse {
   webviewUrl: string;
 }
 
-export const SessionBodySchema = z.object({
-  goalId: z.string().optional(),
-});
+export const SessionBodySchema = fixerraRedirectParamsSchema
+  .omit({ authCode: true })
+  .extend({
+    goalId: z.string().optional(),
+  });
 
 export type FixerraSessionRequestBody = z.infer<typeof SessionBodySchema>;
