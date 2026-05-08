@@ -115,6 +115,7 @@ export const createGroupSchema = z.object({
   targetAmount: z.number().positive().optional(),
   customAmount: z.number().positive().optional().nullable(),
   investmentGoalType: z.string()?.optional(),
+  consentGiven: z.boolean(),
 });
 
 export type CreateGroupInput = z.infer<typeof createGroupSchema>;
