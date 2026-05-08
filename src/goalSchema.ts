@@ -98,6 +98,7 @@ export const createGroupSchema = z.object({
         phone: z.string().optional(),
         userId: z.string().optional(),
         message: z.string().optional(),
+        name: z.string().optional(),
       }),
     )
     .optional()
