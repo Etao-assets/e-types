@@ -98,6 +98,7 @@ export const createGroupSchema = z.object({
         phone: z.string().optional(),
         userId: z.string().optional(),
         message: z.string().optional(),
+        name: z.string().optional(),
       }),
     )
     .optional()
@@ -114,6 +115,7 @@ export const createGroupSchema = z.object({
   targetAmount: z.number().positive().optional(),
   customAmount: z.number().positive().optional().nullable(),
   investmentGoalType: z.string()?.optional(),
+  consentGiven: z.boolean(),
 });
 
 export type CreateGroupInput = z.infer<typeof createGroupSchema>;
