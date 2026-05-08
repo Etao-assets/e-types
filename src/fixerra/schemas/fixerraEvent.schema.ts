@@ -59,6 +59,20 @@ export enum FixerraSubStateEnum {
   DEDUPE_VERIFICATION = 'DEDUPE_VERIFICATION',
   PAYMENT_STATUS = 'PAYMENT_STATUS',
   CUSTOMER_CREATION = 'CUSTOMER_CREATION',
+
+  // Additional sub-states observed in issuer-specific flows
+  PAN_SSFB_VERIFICATION    = 'PAN_SSFB_VERIFICATION',
+  USFB_PAN_VERIFICATION    = 'USFB_PAN_VERIFICATION',
+  IIB_DEDUPE_VERIFICATION  = 'IIB_DEDUPE_VERIFICATION',
+  IIB_PAN_VERIFICATION     = 'IIB_PAN_VERIFICATION',
+  AADHAAR_MOBILE_VERIFICATION = 'AADHAAR_MOBILE_VERIFICATION',
+  AML_VERIFICATION         = 'AML_VERIFICATION',
+  PAN_AADHAAR_VERIFICATION = 'PAN_AADHAAR_VERIFICATION',
+  NAME_MATCH_VERIFICATION  = 'NAME_MATCH_VERIFICATION',
+
+  // FD lifecycle sub-states
+  FD_MATURED           = 'FD_MATURED',
+  PREMATURE_WITHDRAWAL = 'PREMATURE_WITHDRAWAL',
 }
 
 export enum FixerraEventStatusEnum {
@@ -74,6 +88,25 @@ export enum FixerraEventStatusEnum {
   //found during testing but not in doc
   PENDING = 'PENDING',
   FAILED= 'FAILED',
+
+  // VKYC verification statuses
+  OPEN               = 'OPEN',
+  AGENT_ASSIGNED     = 'AGENT_ASSIGNED',
+  AGENT_SUCCESS      = 'AGENT_SUCCESS',
+  AGENT_REJECTED     = 'AGENT_REJECTED',
+  AUDITOR_APPROVAL   = 'AUDITOR_APPROVAL',
+  AUDITOR_REJECTED   = 'AUDITOR_REJECTED',
+  AUDITOR_READY      = 'AUDITOR_READY',
+  AUDITOR_ASSIGNED   = 'AUDITOR_ASSIGNED',
+
+  // Booking / payment statuses
+  CONFIRMED                  = 'CONFIRMED',
+  REFUNDED                   = 'REFUNDED',
+  REFUND_INITIATED           = 'REFUND INITIATED',  // Fixerra sends a space-separated value
+  RENEWED                    = 'RENEWED',
+  WINBACK_MODAL_PAGE_LOAD    = 'WINBACK_MODAL_PAGE_LOAD',
+  WINBACK_MODAL_INITIATED    = 'WINBACK_MODAL_INITIATED',
+  WINBACK_MODAL_BACK_INITIATED = 'WINBACK_MODAL_BACK_INITIATED',
 }
 
 export enum FixerraProductTypeEnum {
@@ -210,6 +243,16 @@ export const FixerraStateSubStateMap = {
     FixerraSubStateEnum.IIB_EMAIL_VERIFICATION,
     FixerraSubStateEnum.IIB_MOBILE_VERIFICATION,
     FixerraSubStateEnum.ASSISTED_JOURNEY_KYC,
+    FixerraSubStateEnum.DEDUPE_VERIFICATION,
+    FixerraSubStateEnum.CUSTOMER_CREATION,
+    FixerraSubStateEnum.PAN_SSFB_VERIFICATION,
+    FixerraSubStateEnum.USFB_PAN_VERIFICATION,
+    FixerraSubStateEnum.IIB_DEDUPE_VERIFICATION,
+    FixerraSubStateEnum.IIB_PAN_VERIFICATION,
+    FixerraSubStateEnum.AADHAAR_MOBILE_VERIFICATION,
+    FixerraSubStateEnum.AML_VERIFICATION,
+    FixerraSubStateEnum.PAN_AADHAAR_VERIFICATION,
+    FixerraSubStateEnum.NAME_MATCH_VERIFICATION,
   ],
   [FixerraStateEnum.BANK_ACC_DETAILS]: [
     FixerraSubStateEnum.BANK_ACC_DETAILS,
@@ -225,6 +268,8 @@ export const FixerraStateSubStateMap = {
     FixerraSubStateEnum.HOLDING_STATUS,
     FixerraSubStateEnum.ASSISTED_JOURNEY_BOOKING,
     FixerraSubStateEnum.PAYMENT_STATUS,
+    FixerraSubStateEnum.FD_MATURED,
+    FixerraSubStateEnum.PREMATURE_WITHDRAWAL,
   ],
   [FixerraStateEnum.RD_BOOKING]: [
     FixerraSubStateEnum.RD_DETAILS,
