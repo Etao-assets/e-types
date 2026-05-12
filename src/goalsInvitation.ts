@@ -15,7 +15,7 @@ export const GroupInvitationMemberSchema = z.object({
 });
 
 export const FetchGroupMembersResponseSchema = z.object({
-  invitations: z.array(GroupInvitationMemberSchema),
+  members: z.array(GroupInvitationMemberSchema),
 });
 
 export type GoalInvitationStatusType = z.infer<
