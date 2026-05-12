@@ -1,18 +1,11 @@
 import { z } from 'zod';
 
-export const GoalInvitationStatusSchema = z.enum([
-  'PENDING',
-  'ACCEPTED',
-  'DECLINED',
-  'EXPIRED',
-]);
+export const GoalInvitationStatusSchema = z.enum(['PENDING', 'ACTIVE']);
 
 export const GroupInvitationMemberSchema = z.object({
-  id: z.string(),
   status: GoalInvitationStatusSchema,
   name: z.string().nullable(),
   phone: z.string().nullable(),
-  respondedAt: z.date().nullable(),
   isCreator: z.boolean(),
 });
 
