@@ -54,6 +54,7 @@ export * from './ifsc';
 export * from './order';
 export * from './order-list';
 export * from './goals';
+export * from './goalsInvitation';
 export * from './groupInvestment';
 export * from './sms';
 export * from './communityGoal';
