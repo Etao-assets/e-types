@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
-export const GoalInvitationStatusSchema = z.enum(['PENDING', 'ACTIVE']);
+export enum GoalInvitationStatus {
+  PENDING = 'PENDING',
+  ACTIVE = 'ACTIVE',
+}
+
+export const GoalInvitationStatusSchema = z.nativeEnum(GoalInvitationStatus);
 
 export const GroupInvitationMemberSchema = z.object({
   status: GoalInvitationStatusSchema,
@@ -13,7 +18,9 @@ export const FetchGroupMembersResponseSchema = z.object({
   invitations: z.array(GroupInvitationMemberSchema),
 });
 
-export type GoalInvitationStatus = z.infer<typeof GoalInvitationStatusSchema>;
+export type GoalInvitationStatusType = z.infer<
+  typeof GoalInvitationStatusSchema
+>;
 export type GroupInvitationMember = z.infer<typeof GroupInvitationMemberSchema>;
 export type GroupInvitationStatus = GroupInvitationMember['status'];
 export type FetchGroupMembersResponse = z.infer<
