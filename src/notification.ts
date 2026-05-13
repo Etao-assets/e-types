@@ -95,3 +95,7 @@ export interface CreateNotificationInput {
   entityId?: string;
   metadata?: Record<string, unknown>;
 }
+
+export interface InviteConsentMetadata {
+  consentId: string;
+}
