@@ -36,6 +36,8 @@ export const NotificationType = {
   // General
   GENERAL: 'GENERAL',
   GROUP_GOAL_INVITATION: 'GROUP_GOAL_INVITATION',
+  // Invite Consent
+  INVITE_CONSENT: 'INVITE_CONSENT',
 } as const;
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType];
@@ -47,6 +49,7 @@ export const NotificationEntityType = {
   UCC: 'ucc',
   GOAL: 'goal',
   COMMUNITY_GOAL: 'communityGoal',
+  CONSENT: 'consent',
 } as const;
 
 export type NotificationEntityType = (typeof NotificationEntityType)[keyof typeof NotificationEntityType];

@@ -23,6 +23,7 @@ export enum FCMEventType {
   NOTIFICATION_COUNT_REFRESH = 'notif_refresh', // Silent push to trigger unread count refresh
   UPI_MANDATE_CANCELLED = 'upi_mandate_cancelled', // When a UPI mandate is cancelled
   ENACH_MANDATE_CANCELLED = 'enach_mandate_cancelled', // When an eNACH mandate is cancelled
+  INVITE_CONSENT = 'invite_consent', // When a user responds to an invite consent request
 }
 
 /**
