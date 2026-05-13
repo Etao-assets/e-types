@@ -1,21 +1,21 @@
 import { z } from 'zod';
-import { DateObjOrString } from './date';
-import { amcSchema } from './amc';
-import { fundCategorySchema } from './fundCategory';
-import { fundReturnLatestSchema } from './fundReturnLatest';
-import { fundsRatingsSchema } from './fundsRatings';
-import { fundExpenseSchema } from './fundExpense';
-import { navSchema } from './nav';
-import { fundAumSchema } from './fundAum';
-import { holdingsSecurityLatestSchema } from './holdingsSecurityLatest';
-import { fundHoldingsSicSectorwiseImputedLatestSchema } from './fundHoldingsSicSectorwiseImputedLatest';
-import { fundManagerLatestSchema } from './fundManagerLatest';
-import { statsVariablesSchema } from './statsVariables';
-import { fundStyleboxSchema } from './fundStylebox';
-import { colourCodeSchema } from './colourCode';
-import { compositionSchema } from './composition';
-import { rtaCodesSchema } from './rtaCodes';
-import { fundEventsSchema } from './fundEvents';
+import { DateObjOrString } from '../date';
+import { amcSchema } from '../amc';
+import { fundCategorySchema } from '../fundCategory';
+import { fundReturnLatestSchema } from '../fundReturnLatest';
+import { fundsRatingsSchema } from '../fundsRatings';
+import { fundExpenseSchema } from '../fundExpense';
+import { navSchema } from '../nav';
+import { fundAumSchema } from '../fundAum';
+import { holdingsSecurityLatestSchema } from '../holdingsSecurityLatest';
+import { fundHoldingsSicSectorwiseImputedLatestSchema } from '../fundHoldingsSicSectorwiseImputedLatest';
+import { fundManagerLatestSchema } from '../fundManagerLatest';
+import { statsVariablesSchema } from '../statsVariables';
+import { fundStyleboxSchema } from '../fundStylebox';
+import { colourCodeSchema } from '../colourCode';
+import { compositionSchema } from '../composition';
+import { rtaCodesSchema } from '../rtaCodes';
+import { fundEventsSchema } from '../fundEvents';
 
 export const fundsSchema = z.object({
   plan_id: z.string(),
