@@ -44,3 +44,31 @@ export const SendInviteConsentSchema = z.object({
 
 export type SendInviteConsentInput = z.infer<typeof SendInviteConsentSchema>;
 
+export const InviteConsentGroupSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
+export const InviteConsentInviteeSchema = z.object({
+  phone: z.string(),
+  name: z.string().optional(),
+});
+
+export const InviteConsentRequesterSchema = z.object({
+  userId: z.string(),
+  name: z.string().nullable(),
+});
+
+export const InviteConsentDetailsSchema = z.object({
+  group: InviteConsentGroupSchema,
+  invitees: z.array(InviteConsentInviteeSchema),
+  requester: InviteConsentRequesterSchema,
+  status: z.nativeEnum(InviteConsentStatus),
+  expiresAt: z.date(),
+});
+
+export type InviteConsentGroup = z.infer<typeof InviteConsentGroupSchema>;
+export type InviteConsentInvitee = z.infer<typeof InviteConsentInviteeSchema>;
+export type InviteConsentRequester = z.infer<typeof InviteConsentRequesterSchema>;
+export type InviteConsentDetails = z.infer<typeof InviteConsentDetailsSchema>;
+
