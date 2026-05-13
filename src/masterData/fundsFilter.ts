@@ -8,14 +8,18 @@ import { z } from 'zod';
 
 // --- Enums ---
 
-export enum FundSortByEnum {
-  POPULARITY = 'POPULARITY',
-  RETURNS_HIGH_TO_LOW = 'RETURNS_HIGH_TO_LOW',
-  RETURNS_LOW_TO_HIGH = 'RETURNS_LOW_TO_HIGH',
-  RISK_HIGH_TO_LOW = 'RISK_HIGH_TO_LOW',
-  RISK_LOW_TO_HIGH = 'RISK_LOW_TO_HIGH',
-  NAME_A_TO_Z = 'NAME_A_TO_Z',
-  NAME_Z_TO_A = 'NAME_Z_TO_A',
+/** Sortable field names — used as the API/DB sort key */
+export enum FundSortingFieldEnum {
+  POPULARITY = 'popularity',
+  RETURNS = 'returns',
+  RISK = 'risk',
+  NAME = 'name',
+}
+
+/** Generic sort direction — reusable across any sortable list */
+export enum SortDirectionEnum {
+  ASC = 'asc',
+  DESC = 'desc',
 }
 
 export enum FundCategoryEnum {
@@ -98,7 +102,8 @@ export enum FundRatingEnum {
 
 // --- Schemas ---
 
-export const FundSortBySchema = z.nativeEnum(FundSortByEnum);
+export const FundSortingFieldSchema = z.nativeEnum(FundSortingFieldEnum);
+export const SortDirectionSchema = z.nativeEnum(SortDirectionEnum);
 export const FundCategorySchema = z.nativeEnum(FundCategoryEnum);
 export const FundEquitySubCategorySchema = z.nativeEnum(
   FundEquitySubCategoryEnum,
@@ -136,7 +141,8 @@ export const FundCategoryItemSchema = z.object({
 });
 
 export const FundSortByItemSchema = z.object({
-  value: FundSortBySchema,
+  value: FundSortingFieldSchema,
+  value2: SortDirectionSchema,
   label: z.string(),
   isActive: z.boolean(),
 });
@@ -177,6 +183,8 @@ export type FundHybridSubCategory = z.infer<typeof FundHybridSubCategorySchema>;
 export type FundCommoditiesSubCategory = z.infer<
   typeof FundCommoditiesSubCategorySchema
 >;
+export type FundSortingField = z.infer<typeof FundSortingFieldSchema>;
+export type SortDirection = z.infer<typeof SortDirectionSchema>;
 export type FundRisk = z.infer<typeof FundRiskSchema>;
 export type FundRating = z.infer<typeof FundRatingSchema>;
 export type FundHouseItem = z.infer<typeof FundHouseItemSchema>;
@@ -196,29 +204,48 @@ export type FundFilterGroup<T> = {
 // --- Constants ---
 
 export const fundSortByOptions: readonly FundSortByItem[] = Object.freeze([
-  { value: FundSortByEnum.POPULARITY, label: 'Popularity', isActive: false },
   {
-    value: FundSortByEnum.RETURNS_HIGH_TO_LOW,
+    value: FundSortingFieldEnum.POPULARITY,
+    value2: SortDirectionEnum.DESC,
+    label: 'Popularity',
+    isActive: false,
+  },
+  {
+    value: FundSortingFieldEnum.RETURNS,
+    value2: SortDirectionEnum.DESC,
     label: 'Returns: High to Low',
     isActive: true,
   },
   {
-    value: FundSortByEnum.RETURNS_LOW_TO_HIGH,
+    value: FundSortingFieldEnum.RETURNS,
+    value2: SortDirectionEnum.ASC,
     label: 'Returns: Low to High',
     isActive: true,
   },
   {
-    value: FundSortByEnum.RISK_HIGH_TO_LOW,
+    value: FundSortingFieldEnum.RISK,
+    value2: SortDirectionEnum.DESC,
     label: 'Risk: High to Low',
     isActive: true,
   },
   {
-    value: FundSortByEnum.RISK_LOW_TO_HIGH,
+    value: FundSortingFieldEnum.RISK,
+    value2: SortDirectionEnum.ASC,
     label: 'Risk: Low to High',
     isActive: true,
   },
-  { value: FundSortByEnum.NAME_A_TO_Z, label: 'Name: A to Z', isActive: true },
-  { value: FundSortByEnum.NAME_Z_TO_A, label: 'Name: Z to A', isActive: true },
+  {
+    value: FundSortingFieldEnum.NAME,
+    value2: SortDirectionEnum.ASC,
+    label: 'Name: A to Z',
+    isActive: true,
+  },
+  {
+    value: FundSortingFieldEnum.NAME,
+    value2: SortDirectionEnum.DESC,
+    label: 'Name: Z to A',
+    isActive: true,
+  },
 ]);
 
 export const fundCategoryOptions: readonly FundCategoryItem[] = Object.freeze([
