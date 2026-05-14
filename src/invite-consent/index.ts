@@ -56,7 +56,6 @@ export const InviteConsentInviteeSchema = z.object({
 
 export const InviteConsentRequesterSchema = z.object({
   userId: z.string(),
-  phone: z.string(),
   name: z.string().nullable(),
 });
 
