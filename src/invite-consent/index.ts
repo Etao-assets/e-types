@@ -58,7 +58,7 @@ export const InviteConsentInviteeSchema = z.object({
 export const InviteConsentInvestmentGoalsDetailsSchema = z.object({
   type: z.string(),
   targetAmount: z.number(),
-  targetDate: z.date().optional(),
+  targetDate: z.date().nullable(),
 });
 
 export type InviteConsentInvestmentGoalsDetails = z.infer<
