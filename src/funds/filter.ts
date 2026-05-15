@@ -1,20 +1,13 @@
 import type {
   FundCategoryEnum,
-  FundEquitySubCategoryEnum,
-  FundDebtSubCategoryEnum,
-  FundHybridSubCategoryEnum,
-  FundCommoditiesSubCategoryEnum,
+  MarketCapCategoryEnum,
   FundRiskEnum,
   FundRatingEnum,
   FundSortingFieldEnum,
   SortDirectionEnum,
 } from '../masterData/fundsFilter';
 
-export type FundSubCategoryValue =
-  | FundEquitySubCategoryEnum
-  | FundDebtSubCategoryEnum
-  | FundHybridSubCategoryEnum
-  | FundCommoditiesSubCategoryEnum;
+export type FundSubCategoryValue = MarketCapCategoryEnum;
 
 export type FundSortSelection = {
   value: FundSortingFieldEnum;
@@ -39,3 +32,16 @@ export const emptyFilterDrawerSelection: FilterDrawerSelection = {
   ratingValue: null,
   fundHouseValues: [],
 };
+
+export type FundFilter = Omit<FilterDrawerSelection, 'sortBy'>;
+export type FundSortBy = FundSortingFieldEnum;
+
+export interface FundFilterOption {
+  label: string;
+  id: string;
+}
+
+export interface FundFilterOptions {
+  categories: FundFilterOption[];
+  riskLevels: FundFilterOption[];
+}

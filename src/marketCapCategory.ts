@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { MarketCapCategoryEnum, RiskProfileEnum } from './marketCaps';
+import { MarketCapCategoryEnum, RiskProfileEnum } from './masterData';
 
 //this schema/derived type is not equivalent to the prisma model
 //this is used for ui display purpose and

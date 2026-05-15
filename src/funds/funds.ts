@@ -16,6 +16,8 @@ import { colourCodeSchema } from '../colourCode';
 import { compositionSchema } from '../composition';
 import { rtaCodesSchema } from '../rtaCodes';
 import { fundEventsSchema } from '../fundEvents';
+import { FundFilter, FundSortBy } from './filter';
+import { PaginationParams } from '../api';
 
 export const fundsSchema = z.object({
   plan_id: z.string(),
@@ -240,3 +242,5 @@ export type NewFunds = z.infer<typeof NewFundsSchema>;
 export type UpdateFunds = z.infer<typeof UpdateFundsSchema>;
 export type FundInfoApiResponse = z.infer<typeof fundInfoSchema>;
 export type FundPerformanceApiResponse = z.infer<typeof fundPerformanceSchema>;
+
+export type FundListQueryParams = PaginationParams<FundFilter, FundSortBy>;

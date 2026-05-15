@@ -50,6 +50,7 @@ export const businessLoanMasterData: Readonly<BusinessLoanMasterData> =
     }),
   });
 
+export * from './fundCategoryCore';
 export * from './fundsFilter';
 
 export const dashboard = Object.freeze({
@@ -59,3 +60,6 @@ export const dashboard = Object.freeze({
   usedCarLoan: { minRate: 9.5, maxRate: 16 },
   emiCalculator: { minRate: 8.5, maxRate: 12 },
 });
+
+export * from './marketCapCategory';
+export * from './marketCaps'
