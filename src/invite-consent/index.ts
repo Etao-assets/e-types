@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { GoalTypeDetailedEnum } from '../investmentGoalDetails';
 
 /// Lifecycle states for an invite consent request.
 export enum InviteConsentStatus {
@@ -57,6 +58,7 @@ export const InviteConsentInviteeSchema = z.object({
 
 export const InviteConsentInvestmentGoalsDetailsSchema = z.object({
   type: z.string(),
+  goalTypeDetailed: z.nativeEnum(GoalTypeDetailedEnum),
   targetAmount: z.number(),
   targetDate: z.date().nullable(),
 });
