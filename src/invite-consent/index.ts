@@ -55,13 +55,26 @@ export const InviteConsentInviteeSchema = z.object({
   name: z.string().optional(),
 });
 
+export const InviteConsentInvestmentGoalsDetailsSchema = z.object({
+  type: z.string(),
+  targetAmount: z.number(),
+  targetDate: z.date().optional(),
+});
+
+export type InviteConsentInvestmentGoalsDetails = z.infer<
+  typeof InviteConsentInvestmentGoalsDetailsSchema
+>;
+
 export const InviteConsentRequesterSchema = z.object({
   userId: z.string(),
   name: z.string().nullable(),
+  role: z.string().optional(),
+  createdAt: z.date().optional(),
 });
 
 export const InviteConsentDetailsSchema = z.object({
-  group: InviteConsentGroupSchema,
+  groupDetails: InviteConsentGroupSchema,
+  investmentGoalsDetails: InviteConsentInvestmentGoalsDetailsSchema,
   invitees: z.array(InviteConsentInviteeSchema),
   requester: InviteConsentRequesterSchema,
   status: z.nativeEnum(InviteConsentStatus),
