@@ -37,10 +37,12 @@ export const NotificationType = {
   GENERAL: 'GENERAL',
   GROUP_GOAL_INVITATION: 'GROUP_GOAL_INVITATION',
   // Invite Consent
-  INVITE_CONSENT: 'INVITE_CONSENT',
+  INVITE_CONSENT_REQUEST: 'INVITE_CONSENT_REQUEST',
+  INVITE_CONSENT_DECLINED: 'INVITE_CONSENT_DECLINED',
 } as const;
 
-export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType];
+export type NotificationType =
+  (typeof NotificationType)[keyof typeof NotificationType];
 
 export const NotificationEntityType = {
   ORDER: 'order',
@@ -52,7 +54,8 @@ export const NotificationEntityType = {
   CONSENT: 'consent',
 } as const;
 
-export type NotificationEntityType = (typeof NotificationEntityType)[keyof typeof NotificationEntityType];
+export type NotificationEntityType =
+  (typeof NotificationEntityType)[keyof typeof NotificationEntityType];
 
 export interface NotificationItem {
   id: string;
