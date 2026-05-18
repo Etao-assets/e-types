@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { amcSchema } from './amc';
 import { MarketCapCategorySchema } from './marketCapCategory';
-import { RiskProfileEnum } from './marketCaps';
+import { RiskProfileEnum } from './masterData';
 import { DateObjOrString } from './date';
 import { mfPerformanceSchema } from './mfPerformance';
 import { mfPortfolioSchema } from './mfPortfolio';
