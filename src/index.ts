@@ -17,7 +17,6 @@ export * from './profession';
 export * from './goalType';
 export * from './investmentGoal';
 export * from './carousel';
-export * from './masterData';
 export * from './marketCapCategory';
 export * from './amc';
 export * from './mutualFund';

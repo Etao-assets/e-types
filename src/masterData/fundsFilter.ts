@@ -9,6 +9,7 @@ import {
   FundCategoryEnum,
 } from './fundCategoryCore';
 import { MarketCapCategoryEnum } from './marketCaps';
+import { FundRiskColourEnum, FundRiskColourSchema } from './fundRisk';
 
 export {
   FundCategoryEnum,
@@ -31,15 +32,6 @@ export enum SortDirectionEnum {
   DESC = 'desc',
 }
 
-export enum FundRiskEnum {
-  LOW = 'LOW',
-  MODERATELY_LOW = 'MODERATELY_LOW',
-  MODERATE = 'MODERATE',
-  MODERATELY_HIGH = 'MODERATELY_HIGH',
-  HIGH = 'HIGH',
-  VERY_HIGH = 'VERY_HIGH',
-}
-
 export enum FundRatingEnum {
   ONE = 1,
   TWO = 2,
@@ -59,7 +51,6 @@ export const FundHybridSubCategorySchema = z.nativeEnum(MarketCapCategoryEnum);
 export const FundCommoditiesSubCategorySchema = z.nativeEnum(
   MarketCapCategoryEnum,
 );
-export const FundRiskSchema = z.nativeEnum(FundRiskEnum);
 export const FundRatingSchema = z.nativeEnum(FundRatingEnum);
 
 export const FundHouseItemSchema = z.object({
@@ -92,7 +83,7 @@ export const FundSortByItemSchema = z.object({
 });
 
 export const FundRiskItemSchema = z.object({
-  value: FundRiskSchema,
+  value: FundRiskColourSchema,
   label: z.string(),
   isActive: z.boolean(),
 });
@@ -129,7 +120,6 @@ export type FundCommoditiesSubCategory = z.infer<
 >;
 export type FundSortingField = z.infer<typeof FundSortingFieldSchema>;
 export type SortDirection = z.infer<typeof SortDirectionSchema>;
-export type FundRisk = z.infer<typeof FundRiskSchema>;
 export type FundRating = z.infer<typeof FundRatingSchema>;
 export type FundHouseItem = z.infer<typeof FundHouseItemSchema>;
 export type FundSubCategoryItem = z.infer<typeof FundSubCategoryItemSchema>;
@@ -406,20 +396,20 @@ export const fundCategoryOptions: readonly FundCategoryItem[] = Object.freeze([
 ]);
 
 export const fundRiskOptions: readonly FundRiskItem[] = Object.freeze([
-  { value: FundRiskEnum.LOW, label: 'Low', isActive: true },
+  { value: FundRiskColourEnum.LOW, label: 'Low', isActive: true },
   {
-    value: FundRiskEnum.MODERATELY_LOW,
+    value: FundRiskColourEnum.MODERATELY_LOW,
     label: 'Moderately Low',
     isActive: true,
   },
-  { value: FundRiskEnum.MODERATE, label: 'Moderate', isActive: true },
+  { value: FundRiskColourEnum.MODERATE, label: 'Moderate', isActive: true },
   {
-    value: FundRiskEnum.MODERATELY_HIGH,
+    value: FundRiskColourEnum.MODERATELY_HIGH,
     label: 'Moderately High',
     isActive: true,
   },
-  { value: FundRiskEnum.HIGH, label: 'High', isActive: true },
-  { value: FundRiskEnum.VERY_HIGH, label: 'Very High', isActive: true },
+  { value: FundRiskColourEnum.HIGH, label: 'High', isActive: true },
+  { value: FundRiskColourEnum.VERY_HIGH, label: 'Very High', isActive: true },
 ]);
 
 export const fundRatingOptions: readonly FundRatingItem[] = Object.freeze([

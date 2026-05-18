@@ -63,3 +63,4 @@ export const dashboard = Object.freeze({
 
 export * from './marketCapCategory';
 export * from './marketCaps'
+export * from './fundRisk';

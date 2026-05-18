@@ -1,11 +1,11 @@
 import type {
   FundCategoryEnum,
   MarketCapCategoryEnum,
-  FundRiskEnum,
   FundRatingEnum,
   FundSortingFieldEnum,
   SortDirectionEnum,
 } from '../masterData/fundsFilter';
+import { FundRiskColourEnum } from '../masterData/fundRisk';
 
 export type FundSubCategoryValue = MarketCapCategoryEnum;
 
@@ -20,7 +20,7 @@ export type FilterDrawerSelection = {
   categoryValues: Partial<
     Record<FundCategoryEnum, Array<{ value: FundSubCategoryValue }>>
   >;
-  riskValues: FundRiskEnum[];
+  riskValues: FundRiskColourEnum[];
   ratingValue: FundRatingEnum | null;
   fundHouseValues: string[];
 };
