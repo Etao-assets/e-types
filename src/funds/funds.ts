@@ -178,6 +178,7 @@ export const fundInfoSchema = z.object({
     .optional(),
   fundReturns: z
     .object({
+      ret_1day: z.number().nullable().optional(),
       ret_1year: z.number().nullable().optional(),
       ret_2year: z.number().nullable().optional(),
       ret_3year: z.number().nullable().optional(),
