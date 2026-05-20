@@ -5,3 +5,4 @@ export * from './get-redirection.schema';
 export * from './get-fixerra-registration.schema';
 export * from './webhook.schema';
 export * from './fixerraEvent.schema';
+export * from './consolidate-view.schema';
