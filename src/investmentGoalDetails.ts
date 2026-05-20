@@ -72,6 +72,7 @@ export const IndividualPortfolioSchema = z.object({
   fetchedAt:             z.coerce.date().nullable(),
   day1Return:            z.number(),
   totalReturn:           z.number(),
+  holdingsCount:         z.number().int(),
 });
 
 /** Aggregated group portfolio fields (null for individual goals) */
@@ -89,6 +90,7 @@ export const GroupPortfolioSchema = z.object({
   fetchedAt:                 z.coerce.date().nullable(),
   day1Return:                z.number(),
   totalReturn:               z.number(),
+  holdingsCount:             z.number().int(),
 });
 
 /** Merged SIP projection + BSE registration record */
@@ -212,7 +214,7 @@ export const InvestmentGoalDetailsResponseSchema = z.object({
     members:      z.array(MemberEntrySchema),
     memberCounts: MemberCountsSchema,
   }).optional(),
-  owner:              OwnerSchema.nullable()
+  owner:              OwnerSchema.nullable(),
 });
 
 // --- Inferred Types ---
