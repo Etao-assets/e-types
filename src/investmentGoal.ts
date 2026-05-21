@@ -136,3 +136,10 @@ export const MutualFundsInvestmentItemSchema = z.object({
 });
 
 export type MutualFundsInvestmentItem = z.infer<typeof MutualFundsInvestmentItemSchema>;
+
+export const MutualFundsInvestmentListSchema = z.object({
+  lists: z.array(MutualFundsInvestmentItemSchema),
+  totalCount: z.number().int(),
+});
+
+export type MutualFundsInvestmentList = z.infer<typeof MutualFundsInvestmentListSchema>;
