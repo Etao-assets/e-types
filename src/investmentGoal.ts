@@ -115,3 +115,24 @@ export type InvestmentBreakdown = z.infer<typeof InvestmentBreakdownSchema>;
 export type MutualFundsBreakdown = z.infer<typeof MutualFundsBreakdownSchema>;
 export type BankDepositBreakdown = z.infer<typeof BankDepositBreakdownSchema>;
 export type NetworthDetails = z.infer<typeof NetworthDetailsSchema>;
+
+/** Full investment goal record returned by getMutualFundsInvestment (SIP or lumpsum, API status success). */
+export const MutualFundsInvestmentItemSchema = z.object({
+  id: z.string(),
+  type: z.string(),
+  targetAmt: z.number().nullable(),
+  targetDate: z.coerce.date().nullable(),
+  investedAmt: z.number().nullable(),
+  status: z.string(),
+  goalType: z.enum(['INDIVIDUAL_GOAL', 'GROUP_GOAL']),
+  orderId: z.string().nullable(),
+  orderStatus: z.string().nullable(),
+  sipId: z.string().nullable(),
+  sipStatus: z.string().nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  investmentType: z.enum(['SIP', 'LUMPSUM', 'UNKNOWN']),
+  schemeName: z.string().nullable(),
+});
+
+export type MutualFundsInvestmentItem = z.infer<typeof MutualFundsInvestmentItemSchema>;
