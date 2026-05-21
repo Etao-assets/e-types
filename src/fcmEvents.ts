@@ -25,6 +25,10 @@ export enum FCMEventType {
   ENACH_MANDATE_CANCELLED = 'enach_mandate_cancelled', // When an eNACH mandate is cancelled
   INVITE_CONSENT_REQUEST = 'invite_consent_request', // When an active group member receives a request to consent for inviting new members
   INVITE_CONSENT_DECLINED = 'invite_consent_declined', // When a user declines an invite consent request
+  SIP_ORDER_DEPOSIT_SUCCESS = 'sip_order_deposit_success', // When SIP order deposit is successful
+  LUMPSUM_ORDER_DEPOSIT_SUCCESS = 'lumpsum_order_deposit_success', // When lumpsum order deposit is successful
+  RD_ORDER_DEPOSIT_SUCCESS = 'rd_order_deposit_success', // When RD order deposit is successful
+  FD_ORDER_DEPOSIT_SUCCESS = 'fd_order_deposit_success', // When FD order deposit is successful
 }
 
 /**
