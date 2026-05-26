@@ -129,6 +129,7 @@ export const MutualFundsInvestmentItemSchema = z.object({
   planId: z.string().nullable(),
   investedAmount: z.number(),
   returnAmount: z.number(),
+  totalAmount: z.number(),
   xirr: z.number(), 
   investmentType: z.nativeEnum(MutualFundInvestmentType),
   sip: z
