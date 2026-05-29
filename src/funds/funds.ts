@@ -128,6 +128,7 @@ export const fundsSchema = z.object({
   composition: z.array(compositionSchema).nullable().optional(),
   rtaCodes: z.array(rtaCodesSchema).nullable().optional(),
   fundEvents: z.array(fundEventsSchema).nullable().optional(),
+  amcLogo: z.string().nullable().optional(),
 });
 
 export const NewFundsSchema = fundsSchema.omit({
@@ -216,6 +217,7 @@ export const fundInfoSchema = z.object({
       date_from: DateObjOrString.nullable().optional(),
     }),
   ),
+  amcLogo: z.string().nullable().optional(),
 });
 
 export const fundPerformanceSchema = z.object({
