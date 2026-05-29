@@ -75,3 +75,4 @@ export * from './investmentGoalDetails';
 export * from './companyInfo';
 export * from './fixerra';
 export * from './utils';
+export * from './mf-holdings';
