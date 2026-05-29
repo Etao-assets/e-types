@@ -1,21 +1,23 @@
 import { z } from 'zod';
-import { DateObjOrString } from './date';
-import { amcSchema } from './amc';
-import { fundCategorySchema } from './fundCategory';
-import { fundReturnLatestSchema } from './fundReturnLatest';
-import { fundsRatingsSchema } from './fundsRatings';
-import { fundExpenseSchema } from './fundExpense';
-import { navSchema } from './nav';
-import { fundAumSchema } from './fundAum';
-import { holdingsSecurityLatestSchema } from './holdingsSecurityLatest';
-import { fundHoldingsSicSectorwiseImputedLatestSchema } from './fundHoldingsSicSectorwiseImputedLatest';
-import { fundManagerLatestSchema } from './fundManagerLatest';
-import { statsVariablesSchema } from './statsVariables';
-import { fundStyleboxSchema } from './fundStylebox';
-import { colourCodeSchema } from './colourCode';
-import { compositionSchema } from './composition';
-import { rtaCodesSchema } from './rtaCodes';
-import { fundEventsSchema } from './fundEvents';
+import { DateObjOrString } from '../date';
+import { amcSchema } from '../amc';
+import { fundCategorySchema } from '../fundCategory';
+import { fundReturnLatestSchema } from '../fundReturnLatest';
+import { fundsRatingsSchema } from '../fundsRatings';
+import { fundExpenseSchema } from '../fundExpense';
+import { navSchema } from '../nav';
+import { fundAumSchema } from '../fundAum';
+import { holdingsSecurityLatestSchema } from '../holdingsSecurityLatest';
+import { fundHoldingsSicSectorwiseImputedLatestSchema } from '../fundHoldingsSicSectorwiseImputedLatest';
+import { fundManagerLatestSchema } from '../fundManagerLatest';
+import { statsVariablesSchema } from '../statsVariables';
+import { fundStyleboxSchema } from '../fundStylebox';
+import { colourCodeSchema } from '../colourCode';
+import { compositionSchema } from '../composition';
+import { rtaCodesSchema } from '../rtaCodes';
+import { fundEventsSchema } from '../fundEvents';
+import { FundFilter, FundSortBy } from './filter';
+import { PaginationParams } from '../api';
 
 export const fundsSchema = z.object({
   plan_id: z.string(),
@@ -126,6 +128,7 @@ export const fundsSchema = z.object({
   composition: z.array(compositionSchema).nullable().optional(),
   rtaCodes: z.array(rtaCodesSchema).nullable().optional(),
   fundEvents: z.array(fundEventsSchema).nullable().optional(),
+  amcLogo: z.string().nullable().optional(),
 });
 
 export const NewFundsSchema = fundsSchema.omit({
@@ -138,6 +141,109 @@ export const UpdateFundsSchema = fundsSchema
   .omit({ plan_id: true, createdAt: true, updatedAt: true })
   .partial();
 
+export const fundInfoSchema = z.object({
+  plan_id: z.string(),
+  scheme_name: z.string(),
+  min_subsequent_sip_investment: z.number().nullable().optional(),
+  min_initial_investment: z.number().nullable().optional(),
+  min_investment_multiples: z.number().nullable().optional(),
+  min_subsequent_investment_unit: z.number().nullable().optional(),
+  issue_open: z.string().nullable().optional(),
+  sip_allowed: z.boolean().nullable().optional(),
+  lumpsum_allowed: z.boolean().nullable().optional(),
+  amc: z
+    .object({
+      amc_short_name: z.string(),
+      amc_full_name: z.string(),
+    })
+    .nullable()
+    .optional(),
+  marketCapCategory: z
+    .object({
+      category_name: z.string(),
+      primary_category_name: z.string(),
+    })
+    .nullable()
+    .optional(),
+  colourCode: z
+    .object({
+      risk: z.string(),
+    })
+    .nullable()
+    .optional(),
+  fundRatings: z
+    .object({
+      fund_rating: z.number(),
+    })
+    .nullable()
+    .optional(),
+  fundReturns: z
+    .object({
+      ret_1day: z.number().nullable().optional(),
+      ret_1year: z.number().nullable().optional(),
+      ret_2year: z.number().nullable().optional(),
+      ret_3year: z.number().nullable().optional(),
+      ret_4year: z.number().nullable().optional(),
+      ret_5year: z.number().nullable().optional(),
+    })
+    .nullable()
+    .optional(),
+  navRecords: z
+    .object({
+      nav: z.number(),
+      nav_date: DateObjOrString,
+    })
+    .nullable()
+    .optional(),
+  fundExpenses: z
+    .object({
+      expense_ratio: z.number(),
+      as_on_date: DateObjOrString,
+    })
+    .nullable()
+    .optional(),
+  fundAum: z
+    .object({
+      aum: z.number(),
+      as_on_date: DateObjOrString,
+    })
+    .nullable()
+    .optional(),
+  fundManagers: z.array(
+    z.object({
+      name: z.string().nullable().optional(),
+      education: z.string().nullable().optional(),
+      person_type: z.string().nullable().optional(),
+      date_from: DateObjOrString.nullable().optional(),
+    }),
+  ),
+  amcLogo: z.string().nullable().optional(),
+});
+
+export const fundPerformanceSchema = z.object({
+  plan_id: z.string(),
+  navHistory: z.array(
+    z.object({
+      nav: z.number(),
+      nav_date: DateObjOrString,
+    }),
+  ),
+  fundReturns: z
+    .object({
+      ret_1year: z.number().nullable().optional(),
+      ret_2year: z.number().nullable().optional(),
+      ret_3year: z.number().nullable().optional(),
+      ret_4year: z.number().nullable().optional(),
+      ret_5year: z.number().nullable().optional(),
+    })
+    .nullable()
+    .optional(),
+});
+
 export type Funds = z.infer<typeof fundsSchema>;
 export type NewFunds = z.infer<typeof NewFundsSchema>;
 export type UpdateFunds = z.infer<typeof UpdateFundsSchema>;
+export type FundInfoApiResponse = z.infer<typeof fundInfoSchema>;
+export type FundPerformanceApiResponse = z.infer<typeof fundPerformanceSchema>;
+
+export type FundListQueryParams = PaginationParams<FundFilter, FundSortBy>;

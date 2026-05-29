@@ -43,13 +43,15 @@ export const goalSchema = z.object({
   id: z.string(),
   userId: z.string(), // Required field from DB
   type: z.string(),
-  name: z.string(),
+  name: z.string().optional(),
   targetAmt: z
     .union([z.number(), z.string()])
-    .transform(val => (typeof val === 'string' ? val : val.toString())), // Keep as string to match backend
+    .transform(val => (typeof val === 'string' ? val : val.toString()))
+    .optional(), // Keep as string to match backend
   targetDate: z
     .union([z.string(), z.date()])
-    .transform(val => (val instanceof Date ? val.toISOString() : val)),
+    .transform(val => (val instanceof Date ? val.toISOString() : val))
+    .optional(),
   description: z.string(),
   investedAmt: z
     .union([z.number(), z.string(), z.null()])
@@ -80,9 +82,9 @@ export const goalSchema = z.object({
     .nullable(),
 });
 
- // Group Creation
+// Group Creation
 export const createGroupSchema = z.object({
-  name: z.string().min(1).max(255),
+  name: z.string().min(1).max(255).optional(),
   description: z.string().optional(),
   communityGoalId: z.string().cuid().optional(),
   maxMembers: z.number().int().positive().optional(),
@@ -96,6 +98,7 @@ export const createGroupSchema = z.object({
         phone: z.string().optional(),
         userId: z.string().optional(),
         message: z.string().optional(),
+        name: z.string().optional(),
       }),
     )
     .optional()
@@ -108,10 +111,11 @@ export const createGroupSchema = z.object({
   selectedPackages: z.array(z.string().cuid()).optional().default([]),
   selectedServices: z.array(z.string().cuid()).optional().default([]),
   selectedDateId: z.string().cuid().optional().nullable(),
-  targetDate: z.coerce.date(),
+  targetDate: z.coerce.date().optional(),
   targetAmount: z.number().positive().optional(),
   customAmount: z.number().positive().optional().nullable(),
   investmentGoalType: z.string()?.optional(),
+  consentGiven: z.boolean(),
 });
 
 export type CreateGroupInput = z.infer<typeof createGroupSchema>;

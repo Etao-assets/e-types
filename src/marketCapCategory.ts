@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { MarketCapCategoryEnum, RiskProfileEnum } from './marketCaps';
+import { MarketCapCategoryEnum, RiskProfileEnum } from './masterData';
 
 //this schema/derived type is not equivalent to the prisma model
 //this is used for ui display purpose and
 // the id should match the corresponding category data provided by the schemes provider
 export const MarketCapCategorySchema = z.object({
-  id: z.string(),
+  id: z.nativeEnum(MarketCapCategoryEnum),
   category: z.nativeEnum(MarketCapCategoryEnum),
   shortDescription: z.string().min(5, 'Short description is required'),
   longDescription: z
