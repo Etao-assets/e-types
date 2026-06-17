@@ -52,10 +52,10 @@ export const FixerraHoldingsBucketSchema = z.object({
 
 /** The `payload` object present when `success === 1`. */
 export const FixerraConsolidateViewPayloadSchema = z.object({
-  active_holdings:                 FixerraHoldingsBucketSchema,
-  mature_holdings:                 FixerraHoldingsBucketSchema,
-  premature_withdrawal_holdings:   FixerraHoldingsBucketSchema,
-  in_progress_holdings:            FixerraHoldingsBucketSchema,
+  active_holdings:                 FixerraHoldingsBucketSchema.optional(),
+  mature_holdings:                 FixerraHoldingsBucketSchema.optional(),
+  premature_withdrawal_holdings:   FixerraHoldingsBucketSchema.optional(),
+  in_progress_holdings:            FixerraHoldingsBucketSchema.optional(),
   current_gains_till_date:         z.number(),
   current_gains_till_previous_day: z.number(),
 });
