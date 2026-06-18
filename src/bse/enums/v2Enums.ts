@@ -395,6 +395,10 @@ export enum StatusInternal {
   FAILED = 'FAILED',
   SUBMITTED = 'SUBMITTED',
   CANCEL_INITIATED = 'CANCEL_INITIATED',
+  // Internal markers set on an order when fetching BSE detail (allotment/redemption)
+  // fails after all retries, so the data can be re-fetched on the next refresh.
+  ALLOC_FETCH_FAILED_INTR = 'ALLOC_FETCH_FAILED_INTR',
+  REDEEM_FETCH_FAILED_INTR = 'REDEEM_FETCH_FAILED_INTR',
 }
 
 // ===============================
