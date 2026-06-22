@@ -82,7 +82,7 @@ export const OrderStatusFilterParamSchema = z.object({
 export type OrderStatusFilterParam = z.infer<typeof OrderStatusFilterParamSchema>;
 
 export const OrderStatusGetRequestBodySchema = z.object({
-  id: z.string(), // BSE Order ID
+  id: z.number().int().positive(), // BSE Order ID — BSE requires a NUMBER; sending a string is rejected with invalid_json (msgid 622)
   filter_param: OrderStatusFilterParamSchema.optional(),
 });
 
