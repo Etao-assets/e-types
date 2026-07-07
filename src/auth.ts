@@ -63,6 +63,7 @@ export const UserSchema = z.object({
     .union([z.string(), z.date()])
     .transform(val => (typeof val === 'string' ? new Date(val) : val)),
   refreshTokens: z.array(z.any()).optional(), // RefreshToken[] - you can define RefreshTokenSchema separately
+  hasAppPin: z.boolean().optional(),
 });
 
 export type User = z.infer<typeof UserSchema>;
@@ -224,6 +225,7 @@ export interface AuthState {
   isLoading: boolean;
   error: AuthError | null;
   status: AuthStatus;
+  isUnlocked: boolean;
 }
 
 // JWT Token Payload

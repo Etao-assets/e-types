@@ -87,4 +87,6 @@ export enum NAVIGATION {
   PAYMENT_WAITING = 'payment-waiting',
   FIXERRA_WEBVIEW = 'fixerra-webview',
   INVITE_CONSENT = 'invite-consent',
+  PIN_CREATE = 'pin-create',
+  PIN_VERIFY = 'pin-verify',
 }
