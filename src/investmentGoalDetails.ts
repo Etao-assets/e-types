@@ -61,6 +61,7 @@ export const InvestmentGoalDetailCoreSchema = z.object({
   orderId:              z.string().nullable(),
   createdAt:            z.coerce.date(),
   updatedAt:            z.coerce.date(),
+  productType:          z.string().nullable().optional(), // Fixerra deposit product ("FD"|"RD"|"SA"); null for non-Fixerra goals
 });
 
 /** Per-member (individual) computed portfolio */

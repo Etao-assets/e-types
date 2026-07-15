@@ -73,6 +73,10 @@ export enum FixerraSubStateEnum {
   // FD lifecycle sub-states
   FD_MATURED           = 'FD_MATURED',
   PREMATURE_WITHDRAWAL = 'PREMATURE_WITHDRAWAL',
+
+  // RD (Recurring Deposit) sub-states — observed in Suryoday RD webhook captures
+  MANDATE_STATUS       = 'MANDATE_STATUS',       // Auto-debit mandate setup (state: RD_BOOKING)
+  PINCODE_VERIFICATION = 'PINCODE_VERIFICATION', // RD KYC step (state: KYC_VERIFICATION)
 }
 
 export enum FixerraEventStatusEnum {
@@ -192,6 +196,15 @@ export const FixerraWebhookEventDataSchema = z
     vkyc_required:           FixerraBoolLikeSchema.optional(),               // VKYC required flag; may arrive as boolean or string "true"/"false"
     payment_mode:            z.string().optional(),                          // Payment mode selected by the user, e.g. "NETBANKING", "UPI"
     product_type:            FixerraProductTypeSchema.optional(),            // Product category when applicable: FD | RD | SA
+
+    // RD (Recurring Deposit) specific fields — present on RD journeys only
+    installment_amount:           z.union([z.string(), z.number()]).transform(Number).optional(), // Monthly RD installment amount
+    total_investment_amount:      z.union([z.string(), z.number()]).transform(Number).optional(), // Total committed over the RD tenure
+    cummulative_amount:           z.union([z.string(), z.number()]).transform(Number).optional(), // ⚠️ Fixerra's spelling (double-m): amount deposited so far (HOLDING_STATUS)
+    next_installment_date:        z.string().optional(),                                          // ISO date of the next auto-debit (HOLDING_STATUS)
+    total_installments_completed: z.union([z.string(), z.number()]).transform(Number).optional(), // Count of completed RD installments (HOLDING_STATUS)
+    f_user_nominee_id:            z.string().optional(),                                          // Nominee record identifier (present from payment onward)
+    is_ntb:                       FixerraBoolLikeSchema.optional(),                               // New-to-Bank flag (present on some KYC events)
   });
 
 /** Top-level Fixerra webhook event payload */
@@ -253,6 +266,7 @@ export const FixerraStateSubStateMap = {
     FixerraSubStateEnum.AML_VERIFICATION,
     FixerraSubStateEnum.PAN_AADHAAR_VERIFICATION,
     FixerraSubStateEnum.NAME_MATCH_VERIFICATION,
+    FixerraSubStateEnum.PINCODE_VERIFICATION,
   ],
   [FixerraStateEnum.BANK_ACC_DETAILS]: [
     FixerraSubStateEnum.BANK_ACC_DETAILS,
@@ -275,6 +289,9 @@ export const FixerraStateSubStateMap = {
     FixerraSubStateEnum.RD_DETAILS,
     FixerraSubStateEnum.RD_BOOKING_INTENT,
     FixerraSubStateEnum.REVIEW_AND_PAY,
+    FixerraSubStateEnum.MANDATE_STATUS,
+    FixerraSubStateEnum.PAYMENT_STATUS,
+    FixerraSubStateEnum.HOLDING_STATUS,
     FixerraSubStateEnum.ASSISTED_JOURNEY_BOOKING,
   ],
   [FixerraStateEnum.DROP_OFF]: [

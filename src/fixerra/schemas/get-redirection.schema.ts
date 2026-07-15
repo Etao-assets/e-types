@@ -31,6 +31,8 @@ export const fixerraRedirectParamsSchema = z.object({
   /** Campaign / agent-code redirection */
   campaign: z.string().optional(),
   agent_code: z.string().optional(),
+  /** Set to 1 to launch a Recurring Deposit (RD) journey instead of FD */
+  RD: z.union([z.literal(1), z.literal('1'), z.boolean()]).optional(),
 });
 
 export type FixerraRedirectParams = z.infer<typeof fixerraRedirectParamsSchema>;
