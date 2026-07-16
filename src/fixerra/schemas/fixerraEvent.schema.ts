@@ -172,7 +172,7 @@ export const FixerraWebhookEventDataSchema = z
     f_code:                  z.string().optional(),                          // data.issuer.f_code — short issuer code (e.g. "SSFB")
     issuer_type:             z.string().optional(),                          // data.issuer.issuer_type — category (e.g. "SMALL FINANCE BANK")
 
-    product_interest:        z.string().optional(),                          // Interest rate for the selected product
+    product_interest:        z.union([z.string(), z.number()]).transform(Number).optional(), // Interest rate; Fixerra sends numeric 0 on early events, string later — accept both
     tenure:                  z.union([z.string(), z.number()]).transform(Number).optional(), // Selected tenure value
     product_payout_freq:     z.string().optional(),                          // Payout type indicator, e.g. "C" (cumulative) or "NC" (non-cumulative)
     product_interest_freq:   z.string().optional(),                          // Human-readable payout or interest frequency where applicable
