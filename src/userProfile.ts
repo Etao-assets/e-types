@@ -221,6 +221,7 @@ export const UserWithProfileSchema = z.object({
   isPhoneVerified: z.boolean().optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  profilePictureUrl: z.string().optional(),
 
   userProfile: UserKYCProfileSchema.optional(),
   bankAccounts: z.array(BankAccountSchema).optional(),
