@@ -152,6 +152,8 @@ export const GroupDetailSchema = z.object({
   isPrivate:  z.boolean(),
   maxMembers: z.number().int().nullable(),
   createdAt:  z.coerce.date(),
+  /** Full S3 URL of the group's background wallpaper image, resolved server-side. */
+  backgroundImageUrl: z.string().nullable().optional(),
 });
 
 /** A single entry in the memberManagement.members array.

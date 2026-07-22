@@ -231,6 +231,7 @@ export const communityGoalGroupSchema = z.object({
   maxMembers: z.number().int().positive().optional().nullable(),
   isPrivate: z.boolean().default(false),
   investmentGoalId: z.string().cuid().optional().nullable(), // 1:1 with InvestmentGoal for GROUP_GOAL
+  backgroundImageUrl: z.string().nullable().optional(),
   createdAt: z.date().or(z.string()),
   updatedAt: z.date().or(z.string()),
 });

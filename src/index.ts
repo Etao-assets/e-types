@@ -72,6 +72,7 @@ export * from './mandate';
 export * from './fixerra';
 export * from './nullValue';
 export * from './investmentGoalDetails';
+export * from './groupBackground';
 export * from './companyInfo';
 export * from './fixerra';
 export * from './utils';
