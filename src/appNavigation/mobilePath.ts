@@ -89,4 +89,5 @@ export enum NAVIGATION {
   INVITE_CONSENT = 'invite-consent',
   PIN_CREATE = 'pin-create',
   PIN_VERIFY = 'pin-verify',
+  MY_REFERRALS = 'my-referrals',
 }
