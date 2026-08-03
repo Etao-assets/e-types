@@ -87,6 +87,27 @@ export const agencySchema = z.object({
   updatedAt: z.date().or(z.string()),
 });
 
+// Brand schema - matches backend Prisma Brand model.
+// A Brand is the consumer-facing name shown on a goal card (e.g. "Endeavour
+// Ladakh"). It is distinct from an Agency, which is the operator running the
+// trip. Only `name` is guaranteed - every other field is filled in over time.
+export const brandSchema = z.object({
+  id: z.string().cuid(),
+  name: z.string().min(1),
+  contactPerson: z.string().optional().nullable(),
+  phone: z.string().optional().nullable(),
+  email: z.string().optional().nullable(),
+  website: z.string().optional().nullable(),
+  logoUrl: z.string().optional().nullable(),
+  // E.164 digits, no '+' or spaces - spliced into https://wa.me/<number>
+  whatsappNumber: z.string().optional().nullable(),
+  // The "Connect with brand" CTA stays hidden until this is true
+  whatsappEnabled: z.boolean().default(false),
+  isActive: z.boolean().default(true),
+  createdAt: z.date().or(z.string()),
+  updatedAt: z.date().or(z.string()),
+});
+
 // Category schema
 export const communityGoalCategorySchema = z.object({
   id: z.string().cuid(),
@@ -334,6 +355,10 @@ export const communityGoalSchema = z.object({
   agencyId: z.string().cuid(),
   agencyName: z.string().optional(), // Denormalized for API responses
 
+  // Brand fronting this goal (OPTIONAL - the agency above remains the operator)
+  brandId: z.string().cuid().optional().nullable(),
+  brandName: z.string().optional(), // Denormalized for API responses
+
   // Marketing copy
   subtitleShort: z.string().optional().nullable(),
   subtitleLong: z.string().optional().nullable(),
@@ -401,6 +426,7 @@ export const communityGoalWithRelationsSchema = communityGoalSchema.extend({
   category: communityGoalCategorySchema.optional(),
   subCategory: communityGoalSubCategorySchema.optional().nullable(),
   agency: agencySchema.optional(), // Agency providing this goal
+  brand: brandSchema.optional().nullable(), // Brand fronting this goal, if any
   itinerary: z.array(communityGoalItinerarySchema).default([]).optional(),
   availableDates: z
     .array(communityGoalAvailableDateSchema)
@@ -614,6 +640,7 @@ export type GroupMemberStatus = z.infer<typeof GroupMemberStatusEnum>;
 
 // Core entity types
 export type Agency = z.infer<typeof agencySchema>;
+export type Brand = z.infer<typeof brandSchema>;
 export type CommunityGoal = z.infer<typeof communityGoalSchema>;
 export type CommunityGoalWithRelations = z.infer<
   typeof communityGoalWithRelationsSchema
