@@ -141,6 +141,19 @@ export const CommunityGoalDetailSchema = z.object({
     name:    z.string(),
     logoUrl: z.string().nullable(),
   }).nullable(),
+  /**
+   * Brand fronting this goal. Null when no brand is assigned.
+   * `whatsappNumber` is only actionable when `whatsappEnabled` is true —
+   * both must be checked before showing the "Connect with brand" CTA.
+   */
+  brand: z.object({
+    id:              z.string(),
+    name:            z.string(),
+    logoUrl:         z.string().nullable(),
+    website:         z.string().nullable(),
+    whatsappNumber:  z.string().nullable(),
+    whatsappEnabled: z.boolean(),
+  }).nullish(),
 });
 
 /** Group metadata (no financials — those live in portfolio.group) */
