@@ -90,4 +90,5 @@ export enum NAVIGATION {
   PIN_CREATE = 'pin-create',
   PIN_VERIFY = 'pin-verify',
   MY_REFERRALS = 'my-referrals',
+  STORY_VIEWER = 'story-viewer',
 }
