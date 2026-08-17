@@ -166,6 +166,16 @@ export const fundInfoSchema = z.object({
     ])
     .nullable()
     .optional(),
+  // Whether BSE will accept a one-time purchase. Prefer this over
+  // lumpsum_allowed, which is a legacy column that is true for every fund.
+  canInvestLumpsum: z.boolean().nullable().optional(),
+  // Minimum one-time amount BSE accepts. Null when unknown — render no minimum
+  // rather than zero.
+  minLumpsumAmount: z.number().nullable().optional(),
+  lumpsumUnavailableReason: z
+    .enum(['FUND_NOT_ACTIVE', 'SCHEME_NOT_MAPPED', 'PURCHASE_CLOSED_AT_BSE'])
+    .nullable()
+    .optional(),
   amc: z
     .object({
       amc_short_name: z.string(),
