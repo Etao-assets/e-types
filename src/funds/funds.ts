@@ -151,6 +151,21 @@ export const fundInfoSchema = z.object({
   issue_open: z.string().nullable().optional(),
   sip_allowed: z.boolean().nullable().optional(),
   lumpsum_allowed: z.boolean().nullable().optional(),
+  // Whether BSE will actually accept a monthly SIP for this fund. Prefer this
+  // over sip_allowed, which is a legacy column that is true for every fund.
+  canCreateSip: z.boolean().nullable().optional(),
+  // Minimum monthly instalment BSE accepts. Null when unknown — render no
+  // minimum rather than zero.
+  minSipAmount: z.number().nullable().optional(),
+  sipUnavailableReason: z
+    .enum([
+      'FUND_NOT_ACTIVE',
+      'SIP_NOT_SUPPORTED',
+      'SCHEME_NOT_MAPPED',
+      'SIP_CLOSED_AT_BSE',
+    ])
+    .nullable()
+    .optional(),
   amc: z
     .object({
       amc_short_name: z.string(),
