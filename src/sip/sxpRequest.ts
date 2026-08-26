@@ -125,5 +125,90 @@ export const SxPRegisterResponseSchema =bseSuccessResponseSchema.extend({
 // Inferred TypeScript type for response
 export type SxPRegisterResponse = z.infer<typeof SxPRegisterResponseSchema>;
 
+// ===============================
+// SxP Cancellation (BSE wire format)
+// BSE StARMF v2 API §6.2.4.2 sxp_cancel
+// ===============================
+
+/**
+ * Candidate spellings for the SxP-type field in the /sxp_cancel request body,
+ * in the order they should be attempted.
+ *
+ * RESOLVED AGAINST LIVE BSE UAT on 2026-08-25 (member 91011, host
+ * starmfv2demo.bseindia.com). The docs contradict themselves — the §6.2.4.2
+ * spec table (API doc line 2016) declares `sxp_type`, while the §8.3.2.1
+ * example (line 11350) sends `"type": "SIP"` — so it was probed directly:
+ *
+ *   omit the field entirely  -> 400 {"msgid":522,"errcode":"required","field":"Type"}
+ *   "type": "SIP"            -> 400 {"msgid":522,"errcode":"required","field":"Type"}
+ *   "sxp_type": "sip"        -> 400 {"msgid":507,"errcode":"record_not_found",...}
+ *   "sxp_type": "SIP"        -> 400 {"msgid":507,"errcode":"record_not_found",...}
+ *   "sxp_type": "XSIP"       -> 400 {"msgid":507,"errcode":"record_not_found",...}
+ *
+ * `record_not_found` means the payload passed validation and BSE went looking
+ * for the (deliberately non-existent) registration. So:
+ *
+ *   - `sxp_type` is the real field name. BSE ignores `type` outright — the
+ *     chapter-8 example is simply wrong.
+ *   - Casing is tolerated; `sip`, `SIP` and `XSIP` all pass.
+ *
+ * The ladder is kept, trimmed to three, because the probe ran against the UAT
+ * member and production is a different member code — if its gateway ever
+ * disagrees, the caller still resolves at runtime instead of failing outright.
+ * The first entry is the confirmed-good pair, so in practice attempt 1 wins and
+ * the result is cached for the process.
+ *
+ * DO NOT collapse this into sending several keys at once. BSE has live
+ * rejection codes for unexpected fields (561 "{<field>} is not allowed",
+ * 3669 "invalid_field").
+ *
+ * Also confirmed by the same probe: the endpoint path is bare `/sxp_cancel`.
+ * `/v2/sxp_cancel` returns a hard "404 page not found".
+ *
+ * Corroborated 2026-08-25 by BSE's own Postman collection and the StAR MF 2.0
+ * Integration Portal (Live Production), both of which POST to bare
+ * `/sxp_cancel` with `"sxp_type": "SIP"`. Uppercase leads the ladder for that
+ * reason, even though UAT accepts either casing.
+ */
+export const SXP_CANCEL_TYPE_CANDIDATES: ReadonlyArray<{
+  readonly field: 'sxp_type' | 'type';
+  readonly value: string;
+}> = [
+  { field: 'sxp_type', value: 'SIP' },
+  { field: 'sxp_type', value: 'sip' },
+  { field: 'type', value: 'SIP' },
+] as const;
+
+export type SxPCancelTypeVariant = (typeof SXP_CANCEL_TYPE_CANDIDATES)[number];
+
+/** Fixed fields of the /sxp_cancel request body (inside the `data` envelope). */
+export interface SxPCancelRequestBase {
+  /** BSE-assigned SxP registration number — SIP.bseSxpRegNum (API doc line 2013) */
+  reg_no: string;
+  /** sxp_cancel_reason code 1-13, see SxPCancelReasonMapping (§7.4.51) */
+  reason_cd: number;
+  /** Free text; mandatory only when reason_cd is 13 (Others), else '' */
+  reason_cd_msg: string;
+}
+
+/**
+ * Full /sxp_cancel request body. The SxP-type key is added dynamically under
+ * SXP_CANCEL_TYPE_FIELD, hence the index signature.
+ */
+export type SxPCancelRequest = SxPCancelRequestBase & Record<string, string | number>;
+
+/**
+ * Success response. `data.id` is an opaque acknowledgement id (§8.3.2.2 shows
+ * `"id": "4"`); the docs never define what it identifies, so it is logged and
+ * never persisted. The authoritative confirmation is the SXP webhook.
+ */
+export const SxPCancelResponseSchema = bseSuccessResponseSchema.extend({
+  data: z.object({
+    id: z.union([z.string(), z.number()]).describe('Opaque cancellation acknowledgement id'),
+  }),
+});
+
+export type SxPCancelResponse = z.infer<typeof SxPCancelResponseSchema>;
+
 // Export the schema as default
 export default SxPRequestSchema;
