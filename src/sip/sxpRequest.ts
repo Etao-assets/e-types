@@ -174,10 +174,29 @@ export const SXP_CANCEL_TYPE_CANDIDATES: ReadonlyArray<{
   readonly field: 'sxp_type' | 'type';
   readonly value: string;
 }> = [
+  { field: 'sxp_type', value: 'XSIP' },
   { field: 'sxp_type', value: 'SIP' },
   { field: 'sxp_type', value: 'sip' },
   { field: 'type', value: 'SIP' },
 ] as const;
+
+/**
+ * BSE's sxp_type for a mandate-linked SIP.
+ *
+ * Confirmed in production 2026-08-26: cancelling a mandate-linked SIP with
+ * `sxp_type: "SIP"` is refused with
+ * `{"msgid":507,"errcode":"record_not_found","field":"id/type"}` — the
+ * registration number is right, the type is not. `sxp_get` reports these back
+ * as `"sxp_type": "XSIP"` (API doc line 11686).
+ *
+ * The earlier UAT probe could not have caught this: it used a non-existent
+ * registration number, and with no record to match, every type value returns
+ * the same 507.
+ */
+export const SXP_TYPE_MANDATE_LINKED = 'XSIP';
+
+/** BSE's sxp_type for a SIP with no mandate attached. */
+export const SXP_TYPE_STANDALONE = 'SIP';
 
 export type SxPCancelTypeVariant = (typeof SXP_CANCEL_TYPE_CANDIDATES)[number];
 
