@@ -26,7 +26,10 @@ export const updateDraftSipSchema = z.object({
 export const sxpCancelDataSchema = z.object({
   sipId: z.string(),
   reason_cd: z.nativeEnum(SxPCancelReasonMapping),
-  reason_cd_msg: z.string().optional(),
+  // Free text, forwarded verbatim to BSE and stored in the SIP's state
+  // history. Capped because the BSE spec states no limit of its own and this
+  // is user-supplied.
+  reason_cd_msg: z.string().max(255).optional(),
 });
 
 export const sxpTopupDataSchema = z.object({

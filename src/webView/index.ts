@@ -7,6 +7,7 @@ export enum WebviewScreenPurpose {
   ENACH_MANDATE = 'enach_mandate',
   SXP_REG_2FA = 'sxp_reg_2fa',
   MANDATE_CANCEL_2FA = 'mandate_cancel_2fa',
+  SXP_CANCEL_2FA = 'sxp_cancel_2fa',
 }
 
 // --- Schemas ---

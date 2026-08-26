@@ -174,6 +174,7 @@ export const GoalActionsSchema = z.object({
   switchToIndividual: z.boolean().optional(),
   removeGroup: z.boolean().optional(),
   leaveGroup: z.boolean().optional(),
+  cancelSip: z.boolean().optional(),
 });
 
 export const GoalActionResultSchema = z.object({
@@ -199,6 +200,19 @@ export const GoalActionResultSchema = z.object({
     .object({
       canLeave: z.boolean(),
       visible: z.boolean(),
+    })
+    .optional(),
+  /**
+   * Whether the "Cancel SIP" control may be offered. Per product rule, a SIP
+   * that already holds money is not cancellable from the app, so `visible` is
+   * false rather than the button being shown and then rejected.
+   */
+  cancelSip: z
+    .object({
+      canCancel: z.boolean(),
+      visible: z.boolean(),
+      /** Why not, when canCancel is false — for logging, not for display. */
+      reason: z.string().optional(),
     })
     .optional(),
 });
