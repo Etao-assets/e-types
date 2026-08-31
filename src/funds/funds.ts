@@ -163,6 +163,9 @@ export const fundInfoSchema = z.object({
       'SIP_NOT_SUPPORTED',
       'SCHEME_NOT_MAPPED',
       'SIP_CLOSED_AT_BSE',
+      // AMC suspended fresh SIPs via a BSE fund event. Usually temporary, so
+      // the client should say "suspended", not "unavailable".
+      'SIP_SUSPENDED_BY_AMC',
     ])
     .nullable()
     .optional(),
@@ -173,8 +176,30 @@ export const fundInfoSchema = z.object({
   // rather than zero.
   minLumpsumAmount: z.number().nullable().optional(),
   lumpsumUnavailableReason: z
-    .enum(['FUND_NOT_ACTIVE', 'SCHEME_NOT_MAPPED', 'PURCHASE_CLOSED_AT_BSE'])
+    .enum([
+      'FUND_NOT_ACTIVE',
+      'SCHEME_NOT_MAPPED',
+      'PURCHASE_CLOSED_AT_BSE',
+      // AMC suspended lumpsum via a BSE fund event. Usually temporary.
+      'LUMPSUM_SUSPENDED_BY_AMC',
+    ])
     .nullable()
+    .optional(),
+  /**
+   * Non-blocking notices from BSE's fund event log — scheme merging or
+   * closing, existing installments paused. Empty for the vast majority of
+   * funds. Blocking conditions are already reflected in canCreateSip /
+   * canInvestLumpsum above and are not repeated here.
+   */
+  fundAdvisories: z
+    .array(
+      z.object({
+        eventId: z.number(),
+        eventType: z.string().nullable(),
+        message: z.string(),
+        asOnDate: z.string(),
+      }),
+    )
     .optional(),
   amc: z
     .object({
