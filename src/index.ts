@@ -47,6 +47,7 @@ export * from './composition';
 export * from './rtaCodes';
 export * from './eventList';
 export * from './fundEvents';
+export * from './fundEventRestrictions';
 export * from './fundService';
 export * from './estimated-returns';
 export * from './userProfile';
