@@ -35,6 +35,14 @@ export const fundsSchema = z.object({
   min_withdrawl_amount: z.number().nullable().optional(),
   sip: z.boolean(),
   min_subsequent_sip_investment: z.number().nullable().optional(),
+  /**
+   * Minimums the browse list shows. The higher of BSE's own floor and the
+   * fund's own figure — the same value fundInfoSchema returns, so the card,
+   * the fund page and the SIP screen cannot disagree. Null means no minimum is
+   * known; do NOT render it as zero.
+   */
+  minSipAmount: z.number().nullable().optional(),
+  minLumpsumAmount: z.number().nullable().optional(),
   sip_note: z.string().nullable().optional(),
   swp: z.boolean(),
   stp: z.boolean(),
