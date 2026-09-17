@@ -77,6 +77,21 @@ export enum FixerraSubStateEnum {
   // RD (Recurring Deposit) sub-states — observed in Suryoday RD webhook captures
   MANDATE_STATUS       = 'MANDATE_STATUS',       // Auto-debit mandate setup (state: RD_BOOKING)
   PINCODE_VERIFICATION = 'PINCODE_VERIFICATION', // RD KYC step (state: KYC_VERIFICATION)
+
+  /**
+   * Each monthly RD auto-debit AFTER the first (state: RD_BOOKING).
+   * Installment #1 is reported by HOLDING_STATUS; #2 onwards by this event.
+   * Carries `total_installments_completed` + `cummulative_amount`.
+   * Absent from Fixerra's RD webhook doc — found in production traffic only.
+   */
+  INSTALLMENT_STATUS   = 'INSTALLMENT_STATUS',
+
+  /**
+   * Fixerra confirming a partner user was created (state: PROFILE_CREATION).
+   * Informational: we create FixerraPartnerUser ourselves in registerUser,
+   * roughly 0.3 s before this arrives. No state change on receipt.
+   */
+  USER_CREATED         = 'USER_CREATED',
 }
 
 export enum FixerraEventStatusEnum {
@@ -106,6 +121,12 @@ export enum FixerraEventStatusEnum {
   // Booking / payment statuses
   CONFIRMED                  = 'CONFIRMED',
   REFUNDED                   = 'REFUNDED',
+  /**
+   * Auto-debit mandate revoked (sub_state: MANDATE_STATUS). Means no further
+   * installments will be collected — it does NOT mean money already deposited
+   * has been returned. See FixerraWebhookService.handleMandateRevoked.
+   */
+  REVOKED                    = 'REVOKED',
   REFUND_INITIATED           = 'REFUND INITIATED',  // Fixerra sends a space-separated value
   RENEWED                    = 'RENEWED',
   WINBACK_MODAL_PAGE_LOAD    = 'WINBACK_MODAL_PAGE_LOAD',
@@ -135,11 +156,40 @@ export const FixerraBoolLikeSchema = z.union([
   z.enum(['true', 'false']),
 ]);
 
-export const FixerraStateSchema         = z.nativeEnum(FixerraStateEnum);
-export const FixerraSubStateSchema      = z.nativeEnum(FixerraSubStateEnum);
-export const FixerraEventStatusSchema   = z.nativeEnum(FixerraEventStatusEnum);
-export const FixerraProductTypeSchema   = z.nativeEnum(FixerraProductTypeEnum);
-export const FixerraRenewalPreferenceSchema = z.nativeEnum(FixerraRenewalPreferenceEnum);
+/**
+ * A documented enum member, while still accepting any future value Fixerra adds.
+ *
+ * Editors autocomplete the known members; the runtime accepts anything non-empty.
+ * `(string & {})` is the standard trick that keeps literal suggestions alive
+ * inside a union with `string`.
+ */
+type OpenEnum<E extends string> = E | (string & {});
+
+/**
+ * ⚠️ These are deliberately NOT `z.nativeEnum`.
+ *
+ * Between 2026-06-16 and 2026-09-16, `z.nativeEnum` rejected **137** live events
+ * at the route — before any handler ran and before anything was persisted — because
+ * Fixerra emits values that are absent from their own integration doc. Among them:
+ * `INSTALLMENT_STATUS` (every monthly RD debit), `MANDATE_STATUS/REVOKED` (mandate
+ * cancelled) and `USER_CREATED`. Two further values, `MANDATE_STATUS` and
+ * `PINCODE_VERIFICATION`, were dropped 30 times before being patched in reactively.
+ * Nothing but a CloudWatch error line survived any of it.
+ *
+ * Membership is therefore no longer a gate. The envelope is still validated —
+ * these must be present and non-empty strings, and `data` must be the right shape —
+ * so a genuinely malformed payload still fails loudly. What changed is that an
+ * unfamiliar *value* now reaches the handlers, which route on explicit comparisons
+ * and fall through to a logged no-op when they do not recognise it.
+ *
+ * Full analysis: docs/BUG-fixerra-webhook-drops-events.md
+ */
+export const FixerraStateSchema: z.ZodType<FixerraState> = z.string().min(1);
+export const FixerraSubStateSchema: z.ZodType<FixerraSubState> = z.string().min(1);
+export const FixerraEventStatusSchema: z.ZodType<FixerraEventStatus> = z.string().min(1);
+export const FixerraProductTypeSchema: z.ZodType<FixerraProductType> = z.string().min(1);
+export const FixerraRenewalPreferenceSchema: z.ZodType<FixerraRenewalPreference> =
+  z.string().min(1);
 
 /** d1 metadata block — carries the tracing event_id */
 export const FixerraWebhookD1Schema = z
@@ -205,7 +255,11 @@ export const FixerraWebhookEventDataSchema = z
     total_installments_completed: z.union([z.string(), z.number()]).transform(Number).optional(), // Count of completed RD installments (HOLDING_STATUS)
     f_user_nominee_id:            z.string().optional(),                                          // Nominee record identifier (present from payment onward)
     is_ntb:                       FixerraBoolLikeSchema.optional(),                               // New-to-Bank flag (present on some KYC events)
-  });
+  })
+  // Keeps fields Fixerra sends that we do not model yet (e.g. `marketing_campaign`
+  // on PROFILE_CREATION/USER_CREATED) so they reach the logs instead of being
+  // silently stripped. Matches the forward-compatibility note at the top of this file.
+  .passthrough();
 
 /** Top-level Fixerra webhook event payload */
 export const FixerraWebhookEventSchema = z
@@ -218,16 +272,20 @@ export const FixerraWebhookEventSchema = z
     d2:           z.record(z.unknown()).optional(),        // Optional supplementary metadata, typically used for error details
     data:         FixerraWebhookEventDataSchema,           // Journey-specific business payload
   })
+  .passthrough();
 
 // ---------------------------------------------------------------------------
 // Inferred Types
 // ---------------------------------------------------------------------------
 
-export type FixerraState              = z.infer<typeof FixerraStateSchema>;
-export type FixerraSubState           = z.infer<typeof FixerraSubStateSchema>;
-export type FixerraEventStatus        = z.infer<typeof FixerraEventStatusSchema>;
-export type FixerraProductType        = z.infer<typeof FixerraProductTypeSchema>;
-export type FixerraRenewalPreference  = z.infer<typeof FixerraRenewalPreferenceSchema>;
+// Declared as open unions rather than `z.infer<typeof …Schema>`: the schemas are
+// now typed in terms of these, so inferring back from them would be circular.
+// Known members autocomplete; any future Fixerra value is still accepted.
+export type FixerraState              = OpenEnum<`${FixerraStateEnum}`>;
+export type FixerraSubState           = OpenEnum<`${FixerraSubStateEnum}`>;
+export type FixerraEventStatus        = OpenEnum<`${FixerraEventStatusEnum}`>;
+export type FixerraProductType        = OpenEnum<`${FixerraProductTypeEnum}`>;
+export type FixerraRenewalPreference  = OpenEnum<`${FixerraRenewalPreferenceEnum}`>;
 export type FixerraBoolLike           = z.infer<typeof FixerraBoolLikeSchema>;
 export type FixerraWebhookD1          = z.infer<typeof FixerraWebhookD1Schema>;
 export type FixerraIssuerMeta         = z.infer<typeof FixerraIssuerMetaSchema>;
