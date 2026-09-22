@@ -95,8 +95,55 @@ export const cancelLumpSumOrderSchema = z.object({
 });
 export type CancelLumpSumOrder = z.infer<typeof cancelLumpSumOrderSchema>;
 
+// Redeem request (ETAO-facing) — groupKey identifies the lot group to sell from
+export const RedeemRequestSchema = z
+  .object({
+    // three live forms: a sipId, 'lumpsum:<schemeCode>', 'holding:<schemeCode>'
+    groupKey: z.string().min(1),
+    // required only when the lookup returns >1 lot; 1-28, length only and never
+    // a format regex, matching the BSE bound (BSE line 1567)
+    folio: z.string().min(1).max(28).optional(),
+    mode: z.enum(['amount', 'units', 'all']),
+    // required when mode is not 'all'; finite() keeps Infinity out of the unit
+    // and amount arithmetic for in-process callers
+    // No .positive() here: the superRefine below already enforces > 0 with
+    // mode-aware wording, and having both fire surfaced TWO issues on the
+    // same path for one bad field. .finite() stays — it rejects Infinity,
+    // which the refinement's `> 0` check would otherwise accept.
+    value: z.number().finite().optional(),
+  })
+  // .strict() sits on the object, before the refinement: a refined schema is a
+  // ZodEffects and has no .strict(). An unknown key would otherwise be dropped
+  // silently, so a caller's typo'd field never reaches the redemption path
+  .strict()
+  .superRefine((data, ctx) => {
+    if (data.mode === 'all') {
+      // Reject a stray value instead of ignoring it. {mode:'all', value:5000}
+      // is what a UI sends when the user types an amount and then toggles
+      // "redeem all"; accepting both leaves the amount-vs-whole-holding choice
+      // to downstream code that this schema gave no signal to
+      if (data.value !== undefined) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "value must be omitted when mode is 'all'",
+          path: ['value'],
+        });
+      }
+      return;
+    }
+    if (data.value === undefined || data.value <= 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Value is required and must be > 0 unless mode is 'all'",
+        path: ['value'],
+      });
+    }
+  });
+export type RedeemRequest = z.infer<typeof RedeemRequestSchema>;
+
 export const OrderActionsSchema = z.object({
   cancel: z.boolean().optional(),
+  redeem: z.boolean().optional(),
 });
 export type OrderActions = z.infer<typeof OrderActionsSchema>;
 
@@ -104,6 +151,12 @@ export const OrderActionResultSchema = z.object({
   cancel: z
     .object({
       canCancel: z.boolean(),
+      visible: z.boolean(),
+    })
+    .optional(),
+  redeem: z
+    .object({
+      canRedeem: z.boolean(),
       visible: z.boolean(),
     })
     .optional(),

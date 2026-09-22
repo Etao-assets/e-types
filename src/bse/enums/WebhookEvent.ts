@@ -105,6 +105,13 @@ export enum OrderWebhookEvent {
 
   // Not mentioned in BSE doc but observed in webhook logs
   CANCELLED = 'cancelled',
+
+  // Redemption (physical) - webhook doc lines 175-177
+  // State 5: Redemption Completed
+  REDEMPT_RTA_SETTLED = 'redempt_rta_settled',
+
+  // State 6,7: Payout report received from AMC
+  AMC_MIS_PAYOUT_UPDATED = 'amc_mis_payout_updated',
 }
 
 export enum SxpWebhookEvent {
