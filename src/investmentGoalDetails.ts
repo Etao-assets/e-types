@@ -74,6 +74,10 @@ export const IndividualPortfolioSchema = z.object({
   day1Return:            z.number(),
   totalReturn:           z.number(),
   holdingsCount:         z.number().int(),
+  /** Coins this member has earned in this group goal (1 coin = Rs 1).
+   *  Undefined for individual goals and for groups created before the coins
+   *  feature shipped (no GroupCoinsState row => never earns). */
+  coinsEarned:           z.number().int().optional(),
 });
 
 /** Aggregated group portfolio fields (null for individual goals) */
@@ -92,6 +96,16 @@ export const GroupPortfolioSchema = z.object({
   day1Return:                z.number(),
   totalReturn:               z.number(),
   holdingsCount:             z.number().int(),
+  /** Coins earned by all ACTIVE members combined (1 coin = Rs 1). */
+  groupCoinsEarned:          z.number().int().optional(),
+  /** floor(SUM(activeMembers.targetAmt) * 0.5) — the 50% eligibility gate. */
+  coinsGateAmount:           z.number().int().optional(),
+  /** groupCoinsEarned / coinsGateAmount * 100, clamped to 100; 0 when the gate is 0. */
+  coinsProgressPercentage:   z.number().optional(),
+  /** True once the group has crossed the gate. Sticky — never returns to false. */
+  isCoinsEligible:           z.boolean().optional(),
+  /** True once the ledger is frozen; no further coins are ever awarded. */
+  isCoinsFrozen:             z.boolean().optional(),
 });
 
 /** Merged SIP projection + BSE registration record */
@@ -185,6 +199,7 @@ export const MemberEntrySchema = z.object({
   // Confirmed-member fields
   investmentGoalId: z.string().optional(),
   investedAmount:   z.number().optional(), // Decimal
+  coinsEarned:      z.number().int().optional(), // Coins earned in this group goal
   joinedAt:         z.coerce.date().nullable().optional(),
   targetAmt:        z.number().nullable().optional(), // Decimal
   // Invitation-specific fields
