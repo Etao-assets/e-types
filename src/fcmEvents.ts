@@ -29,6 +29,8 @@ export enum FCMEventType {
   LUMPSUM_ORDER_DEPOSIT_SUCCESS = 'lumpsum_order_deposit_success', // When lumpsum order deposit is successful
   RD_ORDER_DEPOSIT_SUCCESS = 'rd_order_deposit_success', // When RD order deposit is successful
   FD_ORDER_DEPOSIT_SUCCESS = 'fd_order_deposit_success', // When FD order deposit is successful
+  GROUP_COINS_GATE_UNLOCKED = 'GROUP_COINS_GATE_UNLOCKED',
+
 }
 
 /**
