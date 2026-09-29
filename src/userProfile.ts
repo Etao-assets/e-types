@@ -227,6 +227,10 @@ export const UserWithProfileSchema = z.object({
   bankAccounts: z.array(BankAccountSchema).optional(),
   nominees: z.array(NomineeSchema).optional(),
   uccRegistration: UccRegistrationSchema.optional(),
+  /** Group goals where the user is an ACTIVE member (creator included). Drives the
+   *  home-screen Games section, which is shown only to group members. Optional so
+   *  older servers that omit it are treated as 0. */
+  activeGroupCount: z.number().int().nonnegative().optional(),
 });
 
 export type UserWithProfile = z.infer<typeof UserWithProfileSchema>;
