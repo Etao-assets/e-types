@@ -56,4 +56,13 @@ export const errorCodes = {
   FIXERRA_AUTH_CODE_MISSING: 'FIXERRA_AUTH_CODE_MISSING',
   FIXERRA_AUTH_CODE_EXPIRED: 'FIXERRA_AUTH_CODE_EXPIRED',
   FIXERRA_GET_REDIRECTION_FAILED: 'FIXERRA_GET_REDIRECTION_FAILED',
+  // Group game
+  GAME_MIN_MEMBERS: 'GAME_MIN_MEMBERS', // fewer than GROUP_GAME_MIN_MEMBERS active members
+  GAME_NOT_ELIGIBLE: 'GAME_NOT_ELIGIBLE', // group has not crossed the coin gate
+  GAME_INVALID_TEAM_SIZE: 'GAME_INVALID_TEAM_SIZE', // not a proper divisor of the active member count
+  GAME_LOCKED: 'GAME_LOCKED', // a score exists; mode/game can no longer change
+  GAME_NOT_STARTED: 'GAME_NOT_STARTED', // creator has not selected a mode and game yet
+  GAME_NOT_OPEN: 'GAME_NOT_OPEN', // round closed or tournament finished
+  GAME_NOT_PARTICIPANT: 'GAME_NOT_PARTICIPANT', // requesting user is not in the current round
+  GAME_NO_TRIES_LEFT: 'GAME_NO_TRIES_LEFT', // all tries used in this round
 };

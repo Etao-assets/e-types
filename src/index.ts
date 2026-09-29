@@ -76,6 +76,7 @@ export * from './fixerra';
 export * from './nullValue';
 export * from './investmentGoalDetails';
 export * from './groupBackground';
+export * from './groupGame';
 export * from './companyInfo';
 export * from './fixerra';
 export * from './utils';
