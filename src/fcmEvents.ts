@@ -18,7 +18,12 @@ export enum FCMEventType {
   LUMPSUM_ORDER_CANCELLED = 'cancelled', // When a lumpsum order is cancelled (after 2FA)
   SXP_ACTIVE = 'sxp_active', // When client completes 2FA authentication for SIP registration
   SXP_ORDER_TRIGGERED = 'sxp_order_triggered', // When a SIP installment order is triggered
+  SXP_AUTOCANCELLED = 'sxp_autocancelled', // When BSE auto-cancels a SIP after 3 consecutive failed installments
+  SXP_CANCELLED = 'sxp_cancelled', // When a SIP is cancelled by the exchange
+  SXP_PAUSED = 'sxp_paused', // When a SIP is paused
+  SXP_MATURED = 'sxp_matured', // When a SIP reaches the end of its term
   PAYMENT_PENDING = 'payment_pending', // When payment is pending after placing lumpsum order
+  PAYMENT_REMINDER = 'payment_reminder', // Visible companion to PAYMENT_PENDING — tells the customer an order is awaiting payment
   ENACH_MANDATE_ACTIVE = 'enach_mandate_active', // When eNACH mandate becomes active
   NOTIFICATION_COUNT_REFRESH = 'notif_refresh', // Silent push to trigger unread count refresh
   UPI_MANDATE_CANCELLED = 'upi_mandate_cancelled', // When a UPI mandate is cancelled
