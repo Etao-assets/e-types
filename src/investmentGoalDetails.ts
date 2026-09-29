@@ -9,6 +9,7 @@
 import { z } from 'zod';
 
 import { NotAvailableShortSchema } from './nullValue';
+import { GroupGameStateSchema } from './groupGame';
 
 // --- Enums ---
 
@@ -106,6 +107,9 @@ export const GroupPortfolioSchema = z.object({
   isCoinsEligible:           z.boolean().optional(),
   /** True once the ledger is frozen; no further coins are ever awarded. */
   isCoinsFrozen:             z.boolean().optional(),
+  /** ACTIVE members needed before the group earns coins or can play (GROUP_GAME_MIN_MEMBERS).
+   *  Below it the client shows an invite nudge instead of the coin counters. */
+  coinsMinMembers:           z.number().int().optional(),
 });
 
 /** Merged SIP projection + BSE registration record */
@@ -246,6 +250,8 @@ export const InvestmentGoalDetailsResponseSchema = z.object({
     memberCounts: MemberCountsSchema,
   }).optional(),
   owner:              OwnerSchema.nullable(),
+  /** Group game state — only for a coin-enabled group goal past the coin gate. See groupGame.ts. */
+  game:               GroupGameStateSchema.optional(),
 });
 
 // --- Inferred Types ---

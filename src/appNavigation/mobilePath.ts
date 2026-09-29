@@ -79,6 +79,7 @@ export enum NAVIGATION {
   ORDER_LISTING = 'order-listing',
   CIRCLE_GOAL_DETAILS = 'circle-goal-details',
   CIRCLE_GOAL_COINS = 'circle-goal-coins',
+  CIRCLE_GAME_SETUP = 'circle-game-setup',
   MUTUAL_FUNDS = 'mutual-funds',
   MUTUAL_FUNDS_DETAIL = 'mutual-funds-detail',
   START_SIP_INVESTMENT = 'start-sip-investment',

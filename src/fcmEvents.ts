@@ -30,6 +30,8 @@ export enum FCMEventType {
   RD_ORDER_DEPOSIT_SUCCESS = 'rd_order_deposit_success', // When RD order deposit is successful
   FD_ORDER_DEPOSIT_SUCCESS = 'fd_order_deposit_success', // When FD order deposit is successful
   GROUP_COINS_GATE_UNLOCKED = 'GROUP_COINS_GATE_UNLOCKED',
+  GROUP_GAME_STARTED = 'GROUP_GAME_STARTED', // Creator selected mode + game, or a rematch round opened; data carries roundNo
+  GROUP_GAME_ENDED = 'GROUP_GAME_ENDED', // Tournament closed, winner decided
 
 }
 
@@ -74,6 +76,15 @@ export interface FCMEventData {
    * Can include mandate details, payment info, etc.
    */
   [key: string]: any;
+}
+
+/**
+ * Group game FCM Data — GROUP_GAME_STARTED / GROUP_GAME_ENDED
+ */
+export interface GroupGameFcmData extends FcmDataBase {
+  groupId: string;
+  /** Round that opened (STARTED) or the final round (ENDED). */
+  roundNo: number;
 }
 
 /**
