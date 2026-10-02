@@ -33,6 +33,15 @@ export enum FCMEventType {
   GROUP_GAME_STARTED = 'GROUP_GAME_STARTED', // Creator selected mode + game, or a rematch round opened; data carries roundNo
   GROUP_GAME_ENDED = 'GROUP_GAME_ENDED', // Tournament closed, winner decided
 
+  // Mutual fund redemption — BSE `order_new` type "r". Sent ONLY for an order
+  // whose orderType is REDEMPTION; purchase and SIP pushes are unchanged. Every
+  // one carries RedemptionFcmData: { type, orderId (BSE order id), event }.
+  // See etao-nextjs docs/mutual-fund-sip-redemption-implementation.md §11.9.
+  REDEMPTION_STATUS_UPDATED = 'redemption_status_updated', // SILENT. A lifecycle stage not listed below — received, order_2fa_pending, sent_to_rta (the FIRST event after 2FA; the 2FA webview advances on it), queued_for_rta, rta_resp_rcvd, amc_mis_payout_updated (payout details refreshed), redempt_payout_attempted. `event` says which.
+  REDEMPTION_FUNDS_RELEASED = 'redemption_funds_released', // redempt_rta_settled — the RTA has released the redemption proceeds
+  REDEMPTION_COMPLETED = 'redemption_completed', // done on a redemption order
+  REDEMPTION_REJECTED = 'redemption_rejected', // rta_rejected / platform_rejected / ops_rejected on a redemption; body carries BSE's reason verbatim; no units were sold
+  REDEMPTION_PAYOUT_FAILED = 'redemption_payout_failed', // redempt_payout_failed / redempt_fund_returned_amc — the bank transfer did not land
 }
 
 /**
@@ -59,6 +68,16 @@ export interface EnachMandateFcmData extends FcmDataBase {
  */
 export interface LumpsumFcmData extends FcmDataBase {
   orderId: string;
+}
+
+/**
+ * Redemption FCM Data — payload of every `REDEMPTION_*` event
+ */
+export interface RedemptionFcmData extends FcmDataBase {
+  /** BSE order id of the redemption order, as a string — the same id `LumpsumFcmData.orderId` carries. */
+  orderId: string;
+  /** The BSE webhook event that produced this push, e.g. `sent_to_rta`, `done`, `rta_rejected`. */
+  event: string;
 }
 
 /**

@@ -87,6 +87,7 @@ import { ValidationSchemas, FormSchemas, CommonValidationRules } from '@e-types/
 
 ### 🔔 Notifications (`notifications.ts`)
 - Push notifications
+- FCM event types (`fcmEvents.ts`) — `FCMEventType`, including the `REDEMPTION_*` mutual-fund redemption pushes and their `RedemptionFcmData` payload
 - Email templates
 - SMS messaging
 - In-app notifications
