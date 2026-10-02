@@ -112,6 +112,20 @@ export enum OrderWebhookEvent {
 
   // State 6,7: Payout report received from AMC
   AMC_MIS_PAYOUT_UPDATED = 'amc_mis_payout_updated',
+
+  // Payout LIFECYCLE events - webhook doc lines 277-280, documented on the DEMAT
+  // redemption chain only. Whether the physical flow emits them is unstated.
+  // Added as insurance (spec section 8.2, revised 2026-09-11): without an enum
+  // member, `z.nativeEnum(OrderWebhookEvent)` in webhook/schemas.ts rejects the
+  // delivery at the route and it is never recorded. These are NOT lifecycle
+  // stages and are never written to orderStatus - see NON_STATUS_EVENTS in the
+  // backend's orderStatusGuard.
+  // Flow 11: PAYOUT attempt to UCC (N/5, N = number of bank accounts on the UCC)
+  REDEMPT_PAYOUT_ATTEMPTED = 'redempt_payout_attempted',
+  // Flow 11: If payout is failed
+  REDEMPT_PAYOUT_FAILED = 'redempt_payout_failed',
+  // Flow 12: If the attempts are exhausted then funds is returned back to AMC
+  REDEMPT_FUND_RETURNED_AMC = 'redempt_fund_returned_amc',
 }
 
 export enum SxpWebhookEvent {
