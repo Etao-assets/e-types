@@ -36,7 +36,7 @@ export const GROUP_GAME_WINDOW_HOURS = 72;
 export const GROUP_GAME_MAX_REMATCHES = 2;
 
 export enum GroupGameKeyEnum {
-  FLAPPY_BIRD = 'FLAPPY_BIRD',
+  GAPWING = 'GAPWING',
 }
 export const GroupGameKeySchema = z.nativeEnum(GroupGameKeyEnum);
 
