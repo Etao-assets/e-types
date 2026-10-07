@@ -81,6 +81,8 @@ export enum NAVIGATION {
   CIRCLE_GOAL_COINS = 'circle-goal-coins',
   CIRCLE_GAME_SETUP = 'circle-game-setup',
   GAMES = 'games',
+  WEEKLY_CONTEST = 'weekly-contest',
+  CONTEST_REGISTER = 'contest-register',
   MUTUAL_FUNDS = 'mutual-funds',
   MUTUAL_FUNDS_DETAIL = 'mutual-funds-detail',
   START_SIP_INVESTMENT = 'start-sip-investment',

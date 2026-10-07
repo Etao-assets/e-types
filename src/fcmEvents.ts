@@ -32,6 +32,14 @@ export enum FCMEventType {
   GROUP_COINS_GATE_UNLOCKED = 'GROUP_COINS_GATE_UNLOCKED',
   GROUP_GAME_STARTED = 'GROUP_GAME_STARTED', // Creator selected mode + game, or a rematch round opened; data carries roundNo
   GROUP_GAME_ENDED = 'GROUP_GAME_ENDED', // Tournament closed, winner decided
+  // Weekly contest between circles (see weeklyContest.ts)
+  CONTEST_QUALIFIED = 'CONTEST_QUALIFIED', // Circle reached CONTEST_QUALIFY_COINS for the first time
+  CONTEST_TEAMS_DRAWN = 'CONTEST_TEAMS_DRAWN', // Creator registered (or re-registered); teams drawn
+  CONTEST_REGISTRATION_CANCELLED = 'CONTEST_REGISTRATION_CANCELLED', // Creator cancelled this week's registration
+  CONTEST_REGISTRATION_REMINDER = 'CONTEST_REGISTRATION_REMINDER', // Friday reminder to creators of qualified, unregistered circles
+  CONTEST_LIVE = 'CONTEST_LIVE', // Saturday: the contest is live
+  CONTEST_CANCELLED = 'CONTEST_CANCELLED', // Fewer than CONTEST_MIN_CIRCLES circles registered
+  CONTEST_RESULT = 'CONTEST_RESULT', // Results are out (data.outcome = ContestTeamOutcomeEnum)
 
   // Mutual fund redemption — BSE `order_new` type "r". Sent ONLY for an order
   // whose orderType is REDEMPTION; purchase and SIP pushes are unchanged. Every
@@ -104,6 +112,18 @@ export interface GroupGameFcmData extends FcmDataBase {
   groupId: string;
   /** Round that opened (STARTED) or the final round (ENDED). */
   roundNo: number;
+}
+
+/**
+ * Weekly contest FCM Data — every CONTEST_* event. FCM data values are strings.
+ */
+export interface ContestFcmData extends FcmDataBase {
+  /** Every CONTEST_* event except CONTEST_QUALIFIED (no contest exists yet). */
+  contestId?: string;
+  groupId?: string;
+  teamId?: string;
+  /** CONTEST_RESULT only: a ContestTeamOutcomeEnum value. */
+  outcome?: string;
 }
 
 /**
