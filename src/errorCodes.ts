@@ -65,4 +65,18 @@ export const errorCodes = {
   GAME_NOT_OPEN: 'GAME_NOT_OPEN', // round closed or tournament finished
   GAME_NOT_PARTICIPANT: 'GAME_NOT_PARTICIPANT', // requesting user is not in the current round
   GAME_NO_TRIES_LEFT: 'GAME_NO_TRIES_LEFT', // all tries used in this round
+  // Weekly contest between circles
+  CONTEST_NOT_FOUND: 'CONTEST_NOT_FOUND',
+  CONTEST_NOT_QUALIFIED: 'CONTEST_NOT_QUALIFIED', // circle has not reached CONTEST_QUALIFY_COINS
+  CONTEST_MIN_MEMBERS: 'CONTEST_MIN_MEMBERS', // fewer than CONTEST_MIN_MEMBERS active members
+  CONTEST_NOT_CREATOR: 'CONTEST_NOT_CREATOR', // only the circle creator can register or cancel
+  CONTEST_REGISTRATION_CLOSED: 'CONTEST_REGISTRATION_CLOSED', // outside Monday 00:00 – Friday 23:59:59 IST
+  CONTEST_INVALID_TEAM_COUNT: 'CONTEST_INVALID_TEAM_COUNT', // not in contestTeamOptions(activeMembers)
+  CONTEST_NOT_REGISTERED: 'CONTEST_NOT_REGISTERED', // nothing to cancel
+  CONTEST_NOT_LIVE: 'CONTEST_NOT_LIVE', // tries can only start on Saturday of a LIVE contest
+  CONTEST_NOT_TEAM_MEMBER: 'CONTEST_NOT_TEAM_MEMBER', // requesting user is not on that team
+  CONTEST_NO_TRIES_LEFT: 'CONTEST_NO_TRIES_LEFT', // the team used all its tries
+  CONTEST_TRY_NOT_FOUND: 'CONTEST_TRY_NOT_FOUND', // unknown try, or started by someone else
+  CONTEST_TRY_ALREADY_SUBMITTED: 'CONTEST_TRY_ALREADY_SUBMITTED', // a try's score can be sent once
+  CONTEST_SUBMIT_TOO_LATE: 'CONTEST_SUBMIT_TOO_LATE', // after submitGraceEndsAt
 };

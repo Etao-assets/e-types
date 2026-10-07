@@ -99,13 +99,13 @@ export const GroupPortfolioSchema = z.object({
   holdingsCount:             z.number().int(),
   /** Coins earned by all ACTIVE members combined (1 coin = Rs 1). */
   groupCoinsEarned:          z.number().int().optional(),
-  /** floor(SUM(activeMembers.targetAmt) * 0.5) — the 50% eligibility gate. */
+  /** CONTEST_QUALIFY_COINS (3,000) — coins a circle needs, once, to qualify for the weekly contest. */
   coinsGateAmount:           z.number().int().optional(),
-  /** groupCoinsEarned / coinsGateAmount * 100, clamped to 100; 0 when the gate is 0. */
+  /** groupCoinsEarned / coinsGateAmount * 100, clamped to 100. */
   coinsProgressPercentage:   z.number().optional(),
-  /** True once the group has crossed the gate. Sticky — never returns to false. */
+  /** True once the circle has reached CONTEST_QUALIFY_COINS. Sticky — never returns to false. */
   isCoinsEligible:           z.boolean().optional(),
-  /** True once the ledger is frozen; no further coins are ever awarded. */
+  /** @deprecated No longer sent — coins are never frozen. Removed in a later cleanup. */
   isCoinsFrozen:             z.boolean().optional(),
   /** ACTIVE members needed before the group earns coins or can play (GROUP_GAME_MIN_MEMBERS).
    *  Below it the client shows an invite nudge instead of the coin counters. */
