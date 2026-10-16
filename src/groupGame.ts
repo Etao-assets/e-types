@@ -37,7 +37,19 @@ export const GROUP_GAME_MAX_REMATCHES = 2;
 
 export enum GroupGameKeyEnum {
   GAPWING = 'GAPWING',
+  /** "Pricklehop" — the key keeps the app's original value so saved best scores stay valid. */
+  ROO_RUSH = 'ROO_RUSH',
+  TILEWINDER = 'TILEWINDER',
 }
+
+/** Display titles (the admin game picker and pushes use these). */
+export const GROUP_GAME_TITLES: Record<GroupGameKeyEnum, string> = {
+  [GroupGameKeyEnum.GAPWING]: 'Gapwing',
+  [GroupGameKeyEnum.ROO_RUSH]: 'Pricklehop',
+  [GroupGameKeyEnum.TILEWINDER]: 'Tilewinder',
+};
+export const groupGameTitle = (key: string): string =>
+  (GROUP_GAME_TITLES as Record<string, string>)[key] ?? key;
 export const GroupGameKeySchema = z.nativeEnum(GroupGameKeyEnum);
 
 export enum GroupGameStatusEnum {

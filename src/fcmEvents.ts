@@ -40,6 +40,16 @@ export enum FCMEventType {
   CONTEST_LIVE = 'CONTEST_LIVE', // Saturday: the contest is live
   CONTEST_CANCELLED = 'CONTEST_CANCELLED', // Fewer than CONTEST_MIN_CIRCLES circles registered
   CONTEST_RESULT = 'CONTEST_RESULT', // Results are out (data.outcome = ContestTeamOutcomeEnum)
+  // Weekly contest v3 (contestRounds.ts)
+  CONTEST_ROUND_OPENED = 'CONTEST_ROUND_OPENED', // The circle can afford an entry this week — "do you wish to contribute?"
+  CONTEST_CONTRIBUTION_REMINDER = 'CONTEST_CONTRIBUTION_REMINDER', // Thursday evening, to members who have not answered
+  CONTEST_RECONFIRM_REQUIRED = 'CONTEST_RECONFIRM_REQUIRED', // A split raised the member's share — confirm or decline
+  CONTEST_ROUND_SHORT = 'CONTEST_ROUND_SHORT', // A cancel left the circle short of the cost (data.cancelledByUserId)
+  CONTEST_ROUND_FALLBACK = 'CONTEST_ROUND_FALLBACK', // The split could not be covered; the circle plays as one team
+  CONTEST_ROUND_NOT_ENTERED = 'CONTEST_ROUND_NOT_ENTERED', // Friday close without an entry (data.reason = ContestRoundNotEnteredReasonEnum)
+  CONTEST_GAME_SET = 'CONTEST_GAME_SET', // The admin set or changed this week's game (data.gameKey)
+  CONTEST_PLAYER_HANDOVER = 'CONTEST_PLAYER_HANDOVER', // The team was passed to the next player (data.activePlayerUserId)
+  CONTEST_REFUNDED = 'CONTEST_REFUNDED', // The week was cancelled; the member's coins are back
 
   // Mutual fund redemption — BSE `order_new` type "r". Sent ONLY for an order
   // whose orderType is REDEMPTION; purchase and SIP pushes are unchanged. Every
@@ -124,6 +134,14 @@ export interface ContestFcmData extends FcmDataBase {
   teamId?: string;
   /** CONTEST_RESULT only: a ContestTeamOutcomeEnum value. */
   outcome?: string;
+  /** CONTEST_ROUND_NOT_ENTERED only: a ContestRoundNotEnteredReasonEnum value. */
+  reason?: string;
+  /** CONTEST_ROUND_SHORT only. */
+  cancelledByUserId?: string;
+  /** CONTEST_GAME_SET only: a GroupGameKeyEnum value. */
+  gameKey?: string;
+  /** CONTEST_PLAYER_HANDOVER only. */
+  activePlayerUserId?: string;
 }
 
 /**

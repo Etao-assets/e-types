@@ -83,6 +83,7 @@ export enum NAVIGATION {
   GAMES = 'games',
   WEEKLY_CONTEST = 'weekly-contest',
   CONTEST_REGISTER = 'contest-register',
+  COIN_WALLET = 'coin-wallet',
   MUTUAL_FUNDS = 'mutual-funds',
   MUTUAL_FUNDS_DETAIL = 'mutual-funds-detail',
   START_SIP_INVESTMENT = 'start-sip-investment',

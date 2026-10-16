@@ -35,7 +35,11 @@ import { GroupGameKeySchema } from './groupGame';
  *    gets no credit.
  */
 
-/** Coins a circle needs, once, to qualify for the weekly contest. */
+/**
+ * @deprecated v3 (see ./contestRounds): entering costs CONTEST_ENTRY_COST coins per
+ * team every week; there is no one-time qualification. Kept until the old
+ * consumers are removed; the value equals CONTEST_ENTRY_COST.
+ */
 export const CONTEST_QUALIFY_COINS = 3000;
 /** Minimum ACTIVE members for a circle to earn coins and to register. */
 export const CONTEST_MIN_MEMBERS = 3;

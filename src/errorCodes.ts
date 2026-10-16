@@ -79,4 +79,17 @@ export const errorCodes = {
   CONTEST_TRY_NOT_FOUND: 'CONTEST_TRY_NOT_FOUND', // unknown try, or started by someone else
   CONTEST_TRY_ALREADY_SUBMITTED: 'CONTEST_TRY_ALREADY_SUBMITTED', // a try's score can be sent once
   CONTEST_SUBMIT_TOO_LATE: 'CONTEST_SUBMIT_TOO_LATE', // after submitGraceEndsAt
+  // Weekly contest v3 (contestRounds.ts)
+  CONTEST_ROUND_NOT_OPEN: 'CONTEST_ROUND_NOT_OPEN', // the circle has no open round this week
+  CONTEST_NO_COINS: 'CONTEST_NO_COINS', // the member's available wallet is 0
+  CONTEST_ALREADY_CONTRIBUTED: 'CONTEST_ALREADY_CONTRIBUTED', // already YES this week
+  CONTEST_NOT_CONTRIBUTED: 'CONTEST_NOT_CONTRIBUTED', // nothing to cancel / not a contributor
+  CONTEST_CANCEL_WINDOW_CLOSED: 'CONTEST_CANCEL_WINDOW_CLOSED', // Friday: contributions can no longer be cancelled
+  CONTEST_NOT_COVERED: 'CONTEST_NOT_COVERED', // the contributors' coins do not cover the chosen split
+  CONTEST_SPLIT_NOT_AVAILABLE: 'CONTEST_SPLIT_NOT_AVAILABLE', // teamCount not in contestSplitOptions(...)
+  CONTEST_RECONFIRM_NOT_PENDING: 'CONTEST_RECONFIRM_NOT_PENDING', // nothing to re-confirm
+  CONTEST_VOTE_INVALID_CANDIDATE: 'CONTEST_VOTE_INVALID_CANDIDATE', // the candidate is not a YES contributor
+  CONTEST_NOT_ACTIVE_PLAYER: 'CONTEST_NOT_ACTIVE_PLAYER', // only the team's active player may start a try
+  CONTEST_HANDOVER_NOT_ALLOWED: 'CONTEST_HANDOVER_NOT_ALLOWED', // not the active player/creator, a try already started, or nobody left
+  CONTEST_GAME_LOCKED: 'CONTEST_GAME_LOCKED', // the game cannot change after Friday 23:59
 };
