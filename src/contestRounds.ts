@@ -56,9 +56,13 @@ import {
  *     self-vote allowed, changeable until close, live COUNTS only. After the draw
  *     each team's player is its most-voted member and the backup the second
  *     (tie → whoever reached that count first; no votes → anyone may play).
+ *   - Teams are previewed from the moment the creator registers: a random draw
+ *     with a fixed seed per round (`previewTeams`), so it changes only when a
+ *     contributor joins or leaves, and the Friday close reproduces it.
  *  Friday 23:59 close (one step)
- *   - Final shares charged (ledger debits), teams drawn at random among the
- *     contributors, votes locked, "teams drawn" push with player and backup.
+ *   - Final shares charged (ledger debits), teams drawn among the contributors
+ *     (same seeded draw as the preview), votes locked, "teams drawn" push with
+ *     player and backup.
  *  Admin picks the game
  *   - The admin picks Saturday's game from the admin panel (expected Friday). If
  *     nothing is picked by close, last week's game carries over. Members see the
@@ -310,6 +314,29 @@ export const ContestMyContributionSchema = z.object({
 });
 export type ContestMyContribution = z.infer<typeof ContestMyContributionSchema>;
 
+/** One member of a previewed team. */
+export const ContestPreviewTeamMemberSchema = z.object({
+  userId: z.string(),
+  name: z.string().nullable(),
+  isMe: z.boolean(),
+});
+export type ContestPreviewTeamMember = z.infer<typeof ContestPreviewTeamMemberSchema>;
+
+/**
+ * A provisional team of a registered round: the draw for the chosen split
+ * (`pendingTeamCount ?? teamCount`) with a fixed seed per round, so it is stable
+ * across reads, changes only when a contributor joins or leaves, and the Friday
+ * close reproduces it. Members are listed in draw order.
+ */
+export const ContestPreviewTeamSchema = z.object({
+  /** 1-based, same numbering as the final `ContestRoundTeam.index`. */
+  index: z.number().int(),
+  /** `{circle}` for one team, `{circle} — Team {index}` for a split. */
+  name: z.string(),
+  members: z.array(ContestPreviewTeamMemberSchema),
+});
+export type ContestPreviewTeam = z.infer<typeof ContestPreviewTeamSchema>;
+
 export const ContestRoundSchema = z.object({
   status: ContestRoundStatusSchema,
   notEnteredReason: ContestRoundNotEnteredReasonSchema.nullable(),
@@ -338,6 +365,8 @@ export const ContestRoundSchema = z.object({
   fellBackToOneTeam: z.boolean(),
   contributors: z.array(ContestContributorSchema),
   me: ContestMyContributionSchema,
+  /** Provisional teams, empty until the creator registers (see ContestPreviewTeamSchema). */
+  previewTeams: z.array(ContestPreviewTeamSchema).default([]),
 });
 export type ContestRound = z.infer<typeof ContestRoundSchema>;
 
