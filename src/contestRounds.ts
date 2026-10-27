@@ -74,7 +74,10 @@ import {
  *     to reach the score.
  *   - Fewer than CONTEST_MIN_CIRCLES circles entered → the week is cancelled and
  *     everyone refunded. The contest runs but has no winner → coins stay spent.
- *   - One coupon per winning team, shared among themselves, sent by ETAO.
+ *   - One coupon per winning team, sent by the admin from the admin panel and
+ *     shown in the app under My coupons for CONTEST_COUPON_VALID_HOURS; any member
+ *     may Redeem it once (an acknowledgement, not consumption). See
+ *     MyContestCouponSchema.
  */
 
 /** Coins one team costs for one week. Spent for good, win or lose. */
@@ -426,3 +429,67 @@ export const ContestWeekResponseSchema = z.object({
   result: ContestResultSchema.nullable(),
 });
 export type ContestWeekResponse = z.infer<typeof ContestWeekResponseSchema>;
+
+// ---------------------------------------------------------------------------
+// Coupons — sent by the admin, delivered in the app to the winning team
+// ---------------------------------------------------------------------------
+
+export enum ContestCouponStatusEnum {
+  /** Sent, not redeemed, not expired. */
+  LIVE = 'LIVE',
+  /** Redeemed and not yet expired — content still visible. */
+  REDEEMED = 'REDEEMED',
+  /** CONTEST_COUPON_VALID_HOURS passed — content withheld, entry greyed. */
+  EXPIRED = 'EXPIRED',
+}
+export const ContestCouponStatusSchema = z.nativeEnum(ContestCouponStatusEnum);
+
+/** Fixed validity of a sent coupon, in hours from `sentAt`. */
+export const CONTEST_COUPON_VALID_HOURS = 48;
+/** Max length of the coupon text the admin types. */
+export const CONTEST_COUPON_TEXT_MAX = 2000;
+/** Lifetime of the presigned image / PDF links in a response. */
+export const CONTEST_COUPON_LINK_TTL_SECONDS = 60 * 60;
+
+/**
+ * One coupon as the requesting member sees it. `status` is computed by the
+ * server (the only truth about expiry); `imageUrl` / `pdfUrl` are presigned for
+ * CONTEST_COUPON_LINK_TTL_SECONDS and null once EXPIRED, as is `text`.
+ */
+export const MyContestCouponSchema = z.object({
+  id: z.string(),
+  contestId: z.string(),
+  weekKey: z.string(),
+  /** "19 – 25 Oct 2026" — the same label the admin sees. */
+  weekLabel: z.string(),
+  teamName: z.string(),
+  groupName: z.string(),
+  /** Admin's text; null when the coupon is image-only or EXPIRED. */
+  text: z.string().nullable(),
+  /** An image was attached (true even when EXPIRED and the URL is withheld). */
+  hasImage: z.boolean(),
+  /** Presigned, CONTEST_COUPON_LINK_TTL_SECONDS; null when no image or EXPIRED. */
+  imageUrl: z.string().nullable(),
+  /** Presigned PDF (image + text + week + team); null when EXPIRED. */
+  pdfUrl: z.string().nullable(),
+  sentAt: z.coerce.date(),
+  expiresAt: z.coerce.date(),
+  status: ContestCouponStatusSchema,
+  redeemedAt: z.coerce.date().nullable(),
+  redeemedByUserId: z.string().nullable(),
+  /** Short display name of the redeemer, e.g. "Ram". */
+  redeemedByName: z.string().nullable(),
+  /** The requesting member is the one who redeemed. */
+  redeemedByMe: z.boolean(),
+});
+export type MyContestCoupon = z.infer<typeof MyContestCouponSchema>;
+
+/** GET /contests/coupons — LIVE/REDEEMED first (newest sentAt), then EXPIRED. */
+export const MyContestCouponsResponseSchema = z.object({
+  coupons: z.array(MyContestCouponSchema),
+});
+export type MyContestCouponsResponse = z.infer<typeof MyContestCouponsResponseSchema>;
+
+/** POST /contests/coupons/:couponId/redeem — returns the fresh coupon. */
+export const RedeemContestCouponResponseSchema = MyContestCouponSchema;
+export type RedeemContestCouponResponse = z.infer<typeof RedeemContestCouponResponseSchema>;
