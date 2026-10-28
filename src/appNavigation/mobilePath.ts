@@ -84,6 +84,8 @@ export enum NAVIGATION {
   WEEKLY_CONTEST = 'weekly-contest',
   CONTEST_REGISTER = 'contest-register',
   COIN_WALLET = 'coin-wallet',
+  MY_COUPONS = 'my-coupons',
+  COUPON_DETAIL = 'coupon-detail',
   MUTUAL_FUNDS = 'mutual-funds',
   MUTUAL_FUNDS_DETAIL = 'mutual-funds-detail',
   START_SIP_INVESTMENT = 'start-sip-investment',

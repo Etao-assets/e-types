@@ -26,13 +26,14 @@ import { GroupGameKeySchema } from './groupGame';
  *    try is the team's score. Scores of tries started before the end are accepted
  *    until `submitGraceEndsAt` (CONTEST_SUBMIT_GRACE_MINUTES after the end).
  *  - Validity: the contest runs only if at least CONTEST_MIN_CIRCLES different
- *    circles registered (otherwise CANCELLED). A winner exists only if at least
- *    CONTEST_MIN_CIRCLES different circles actually played (a team "played" = it
- *    started at least one try) and the highest best score is > 0.
+ *    circles registered (otherwise CANCELLED and refunded). Once it runs, a circle
+ *    or team that does not play forfeits (walkover): the top-ranked team wins even
+ *    if it is the only one that played, with any best score > 0; nobody scoring
+ *    → no winner.
  *  - Winner: highest best score; a tie goes to the team that reached that score
- *    first. One coupon per week to the winning TEAM (delivered by ETAO outside the
- *    app). Teams of the same circle compete as separate teams; the parent circle
- *    gets no credit.
+ *    first. One coupon per week to the winning TEAM, sent by the admin and shown
+ *    in the app (MyContestCouponSchema in contestRounds.ts). Teams of the same
+ *    circle compete as separate teams; the parent circle gets no credit.
  */
 
 /**
