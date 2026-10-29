@@ -75,8 +75,13 @@ import {
  *   - Fewer than CONTEST_MIN_CIRCLES circles entered → the week is cancelled and
  *     everyone refunded. The contest runs but has no winner → coins stay spent.
  *   - One coupon per winning team, sent by the admin from the admin panel and
- *     shown in the app under My coupons for CONTEST_COUPON_VALID_HOURS; any member
- *     may Redeem it once (an acknowledgement, not consumption). See
+ *     shown in the app under My coupons for CONTEST_COUPON_VALID_HOURS. Every
+ *     member scratches their own foil to reveal it — the scratch is recorded per
+ *     member (proof of receipt; the content is withheld until then) — and any
+ *     member who has scratched may Redeem it once (an acknowledgement that the
+ *     team used it, not consumption). Members who have not scratched are
+ *     reminded CONTEST_COUPON_REMINDER_AFTER_HOURS after the send and
+ *     CONTEST_COUPON_REMINDER_BEFORE_EXPIRY_HOURS before expiry. See
  *     MyContestCouponSchema.
  */
 
@@ -450,11 +455,27 @@ export const CONTEST_COUPON_VALID_HOURS = 48;
 export const CONTEST_COUPON_TEXT_MAX = 2000;
 /** Lifetime of the presigned image / PDF links in a response. */
 export const CONTEST_COUPON_LINK_TTL_SECONDS = 60 * 60;
+/** Hours after `sentAt` at which recipients who have not scratched are reminded once (CONTEST_COUPON_REMINDER). */
+export const CONTEST_COUPON_REMINDER_AFTER_HOURS = 24;
+/** Hours before `expiresAt` at which recipients who have not scratched are reminded once more. */
+export const CONTEST_COUPON_REMINDER_BEFORE_EXPIRY_HOURS = 2;
+
+/** One teammate's scratch (reveal) of the coupon. */
+export const ContestCouponRevealSchema = z.object({
+  userId: z.string(),
+  /** Short display name, e.g. "Ram" (same rule as `redeemedByName`). */
+  name: z.string(),
+  /** The requesting member (the contest week API marks team members the same way). */
+  isMe: z.boolean(),
+  revealedAt: z.coerce.date(),
+});
+export type ContestCouponReveal = z.infer<typeof ContestCouponRevealSchema>;
 
 /**
  * One coupon as the requesting member sees it. `status` is computed by the
  * server (the only truth about expiry); `imageUrl` / `pdfUrl` are presigned for
- * CONTEST_COUPON_LINK_TTL_SECONDS and null once EXPIRED, as is `text`.
+ * CONTEST_COUPON_LINK_TTL_SECONDS and null once EXPIRED, as is `text`. All three
+ * are also null until the requesting member has scratched (`revealedByMe`).
  */
 export const MyContestCouponSchema = z.object({
   id: z.string(),
@@ -464,13 +485,13 @@ export const MyContestCouponSchema = z.object({
   weekLabel: z.string(),
   teamName: z.string(),
   groupName: z.string(),
-  /** Admin's text; null when the coupon is image-only or EXPIRED. */
+  /** Admin's text; null when the coupon is image-only, EXPIRED, or not yet revealed by the requesting member. */
   text: z.string().nullable(),
-  /** An image was attached (true even when EXPIRED and the URL is withheld). */
+  /** An image was attached (true even when the URL is withheld: EXPIRED or not yet revealed). */
   hasImage: z.boolean(),
-  /** Presigned, CONTEST_COUPON_LINK_TTL_SECONDS; null when no image or EXPIRED. */
+  /** Presigned, CONTEST_COUPON_LINK_TTL_SECONDS; null when no image, EXPIRED, or not yet revealed by the requesting member. */
   imageUrl: z.string().nullable(),
-  /** Presigned PDF (image + text + week + team); null when EXPIRED. */
+  /** Presigned PDF (image + text + week + team); null when EXPIRED or not yet revealed by the requesting member. */
   pdfUrl: z.string().nullable(),
   sentAt: z.coerce.date(),
   expiresAt: z.coerce.date(),
@@ -481,6 +502,18 @@ export const MyContestCouponSchema = z.object({
   redeemedByName: z.string().nullable(),
   /** The requesting member is the one who redeemed. */
   redeemedByMe: z.boolean(),
+  /**
+   * The requesting member has scratched (revealed) the coupon. Until then
+   * `text`, `imageUrl` and `pdfUrl` are null and Redeem is refused
+   * (COUPON_NOT_REVEALED). Recorded once per member, on every device.
+   */
+  revealedByMe: z.boolean(),
+  /** When the requesting member scratched it; null until then. */
+  revealedAt: z.coerce.date().nullable(),
+  /** Members of the winning team the coupon was sent to. */
+  recipientCount: z.number().int().nonnegative(),
+  /** Every teammate who has scratched, the requesting member included, earliest first. */
+  reveals: z.array(ContestCouponRevealSchema),
 });
 export type MyContestCoupon = z.infer<typeof MyContestCouponSchema>;
 
@@ -493,3 +526,11 @@ export type MyContestCouponsResponse = z.infer<typeof MyContestCouponsResponseSc
 /** POST /contests/coupons/:couponId/redeem — returns the fresh coupon. */
 export const RedeemContestCouponResponseSchema = MyContestCouponSchema;
 export type RedeemContestCouponResponse = z.infer<typeof RedeemContestCouponResponseSchema>;
+
+/**
+ * POST /contests/coupons/:couponId/reveal — records the requesting member's
+ * scratch (idempotent) and returns the fresh coupon with its content.
+ * COUPON_EXPIRED after CONTEST_COUPON_VALID_HOURS.
+ */
+export const RevealContestCouponResponseSchema = MyContestCouponSchema;
+export type RevealContestCouponResponse = z.infer<typeof RevealContestCouponResponseSchema>;
