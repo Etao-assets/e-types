@@ -32,8 +32,9 @@ import { GroupGameKeySchema } from './groupGame';
  *    → no winner.
  *  - Winner: highest best score; a tie goes to the team that reached that score
  *    first. One coupon per week to the winning TEAM, sent by the admin and shown
- *    in the app (MyContestCouponSchema in contestRounds.ts). Teams of the same
- *    circle compete as separate teams; the parent circle gets no credit.
+ *    in the app; each member scratches to reveal it (MyContestCouponSchema in
+ *    contestRounds.ts). Teams of the same circle compete as separate teams; the
+ *    parent circle gets no credit.
  */
 
 /**

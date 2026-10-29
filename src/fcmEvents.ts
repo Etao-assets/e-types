@@ -52,6 +52,7 @@ export enum FCMEventType {
   CONTEST_REFUNDED = 'CONTEST_REFUNDED', // The week was cancelled; the member's coins are back
   CONTEST_COUPON_SENT = 'CONTEST_COUPON_SENT', // The admin sent the coupon (data.couponId); open My coupons
   CONTEST_COUPON_REDEEMED = 'CONTEST_COUPON_REDEEMED', // A teammate redeemed it (data.couponId, data.redeemedByUserId)
+  CONTEST_COUPON_REMINDER = 'CONTEST_COUPON_REMINDER', // The member has not scratched a sent coupon (data.couponId): 24 h after the send and 2 h before expiry; open the coupon
 
   // Mutual fund redemption — BSE `order_new` type "r". Sent ONLY for an order
   // whose orderType is REDEMPTION; purchase and SIP pushes are unchanged. Every
@@ -144,7 +145,7 @@ export interface ContestFcmData extends FcmDataBase {
   gameKey?: string;
   /** CONTEST_PLAYER_HANDOVER only. */
   activePlayerUserId?: string;
-  /** CONTEST_COUPON_SENT and CONTEST_COUPON_REDEEMED. */
+  /** CONTEST_COUPON_SENT, CONTEST_COUPON_REDEEMED and CONTEST_COUPON_REMINDER. */
   couponId?: string;
   /** CONTEST_COUPON_REDEEMED only. */
   redeemedByUserId?: string;

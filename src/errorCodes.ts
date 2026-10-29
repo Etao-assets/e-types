@@ -97,4 +97,6 @@ export const errorCodes = {
   COUPON_ALREADY_REDEEMED: 'COUPON_ALREADY_REDEEMED', // somebody on the team pressed Redeem first
   COUPON_CONTENT_REQUIRED: 'COUPON_CONTENT_REQUIRED', // the admin sent neither text nor image
   COUPON_REDEEMED_CANNOT_UNDO: 'COUPON_REDEEMED_CANNOT_UNDO', // admin Undo after a redeem
+  COUPON_NOT_REVEALED: 'COUPON_NOT_REVEALED', // Redeem before scratching — the member must reveal the coupon first
+  COUPON_SCRATCHED_CANNOT_UNDO: 'COUPON_SCRATCHED_CANNOT_UNDO', // admin Undo after a member scratched (the code is out)
 };
