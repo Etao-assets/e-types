@@ -45,6 +45,7 @@ export const errorCodes = {
   INVESTMENT_GOAL_MISSING: 'INVESTMENT_GOAL_MISSING',
 
   USER_NOT_FOUND: 'USER_NOT_FOUND',
+  UNDERAGE: 'UNDERAGE', // date of birth is under MIN_AGE_YEARS (18) — registration and UCC DOB writes
 
   // Fixerra
   FIXERRA_ERROR: 'FIXERRA_ERROR',

@@ -64,6 +64,7 @@ export const UserSchema = z.object({
     .transform(val => (typeof val === 'string' ? new Date(val) : val)),
   refreshTokens: z.array(z.any()).optional(), // RefreshToken[] - you can define RefreshTokenSchema separately
   hasAppPin: z.boolean().optional(),
+  dateOfBirth: z.string().nullable().optional(), // YYYY-MM-DD as returned by the API; null until the user provides it
 });
 
 export type User = z.infer<typeof UserSchema>;

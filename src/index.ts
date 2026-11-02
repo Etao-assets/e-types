@@ -3,6 +3,7 @@ export * from './api';
 export * from './mobile';
 export * from './otp';
 export * from './register';
+export * from './age';
 export * from './influencer';
 export * from './errorResponse';
 export * from './errorCodes';
