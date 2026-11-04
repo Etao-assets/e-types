@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { DOB_REGEX } from './age';
 import {
   CONTEST_MAX_TEAMS,
   ContestCircleTeamSchema,
@@ -420,6 +421,48 @@ export const ContestWeekWindowSchema = ContestWindowSchema.extend({
 });
 export type ContestWeekWindow = z.infer<typeof ContestWeekWindowSchema>;
 
+// ---------------------------------------------------------------------------
+// 18+ consent (plans 21/22/23) — recorded server-side once per user per
+// wording version; the app renders what `consent.status` says.
+// ---------------------------------------------------------------------------
+
+/** Bump when the consent wording changes: every member is asked again. */
+export const CONTEST_CONSENT_VERSION = '1.0';
+
+export enum ContestConsentStatusEnum {
+  /** No accepted row for CONTEST_CONSENT_VERSION: the app shows the consent before the contest. */
+  REQUIRED = 'REQUIRED',
+  ACCEPTED = 'ACCEPTED',
+  /** The date of birth on file is under 18: blocked regardless of any consent row. */
+  UNDERAGE = 'UNDERAGE',
+}
+export const ContestConsentStatusSchema = z.nativeEnum(ContestConsentStatusEnum);
+
+/** The requesting user's consent state (GET /contests/current `consent`, and after POST /contests/consent). */
+export const ContestConsentSchema = z.object({
+  status: ContestConsentStatusSchema,
+  /** The CONTEST_CONSENT_VERSION the server currently expects. */
+  version: z.string(),
+  acceptedAt: z.coerce.date().nullable(),
+  /** YYYY-MM-DD: the KYC dob when it is a valid ISO date, else users.dateOfBirth; null when neither. */
+  dobOnFile: z.string().nullable(),
+  /** true when no date of birth is on file: the consent must collect one (18+). */
+  needsDob: z.boolean(),
+});
+export type ContestConsent = z.infer<typeof ContestConsentSchema>;
+
+/**
+ * POST /contests/consent body. `dob` is shape-only on purpose (not dobSchema):
+ * the server is the single 18+ judge, using the IST date, and answers 422
+ * UNDERAGE; a `dob` sent while one is already on file is ignored.
+ */
+export const ContestConsentRequestSchema = z.object({
+  version: z.string(),
+  dob: z.string().regex(DOB_REGEX, 'Date of birth must be in YYYY-MM-DD format').optional(),
+  appVersion: z.string().max(32).optional(),
+});
+export type ContestConsentRequest = z.infer<typeof ContestConsentRequestSchema>;
+
 /**
  * GET /contests/current (v3) — this week for the requesting user. `circles` holds
  * every circle of the user with ≥ CONTEST_MIN_MEMBERS active members (the card
@@ -432,6 +475,8 @@ export const ContestWeekResponseSchema = z.object({
   circles: z.array(ContestWeekCircleSchema),
   leaderboard: z.array(ContestLeaderboardRowSchema),
   result: ContestResultSchema.nullable(),
+  /** 18+ consent state of the requesting user (plan 22). */
+  consent: ContestConsentSchema,
 });
 export type ContestWeekResponse = z.infer<typeof ContestWeekResponseSchema>;
 

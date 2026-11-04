@@ -93,6 +93,8 @@ export const errorCodes = {
   CONTEST_NOT_ACTIVE_PLAYER: 'CONTEST_NOT_ACTIVE_PLAYER', // only the team's active player may start a try
   CONTEST_HANDOVER_NOT_ALLOWED: 'CONTEST_HANDOVER_NOT_ALLOWED', // not the active player/creator, a try already started, or nobody left
   CONTEST_GAME_LOCKED: 'CONTEST_GAME_LOCKED', // the game cannot change after Friday 23:59
+  CONTEST_CONSENT_REQUIRED: 'CONTEST_CONSENT_REQUIRED', // 403: accept the 18+ consent (CONTEST_CONSENT_VERSION) before contest actions
+  CONTEST_CONSENT_STALE: 'CONTEST_CONSENT_STALE', // 409: the consent wording changed — refetch GET /contests/current and accept again
   COUPON_NOT_FOUND: 'COUPON_NOT_FOUND', // no coupon with that id, or the member is not a recipient
   COUPON_EXPIRED: 'COUPON_EXPIRED', // CONTEST_COUPON_VALID_HOURS passed — cannot redeem or download
   COUPON_ALREADY_REDEEMED: 'COUPON_ALREADY_REDEEMED', // somebody on the team pressed Redeem first

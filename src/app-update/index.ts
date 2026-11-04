@@ -3,6 +3,8 @@ import { z } from 'zod';
 // Zod schema for app update config input
 export const appUpdateConfigSchema = z.object({
   forceUpdate: z.boolean(),
+  /** Plan 22: contest actions are refused until the member accepts the 18+ consent. Flip together with forceUpdate once the consent build is live. */
+  contestConsentEnforced: z.boolean().default(false),
   iosVersion: z
     .string()
     .regex(
@@ -27,6 +29,7 @@ export const appUpdateConfigSchema = z.object({
 
 export interface AppUpdateConfigInput {
   forceUpdate: boolean;
+  contestConsentEnforced?: boolean;
   iosVersion: string;
   androidVersion: string;
   iosBuildNumber: number;
@@ -37,6 +40,7 @@ export interface AppUpdateConfigInput {
 export interface AppUpdateConfig {
   id: string;
   forceUpdate: boolean;
+  contestConsentEnforced: boolean;
   iosVersion: string;
   androidVersion: string;
   iosBuildNumber: number;
