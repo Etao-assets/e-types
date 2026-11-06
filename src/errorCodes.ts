@@ -68,15 +68,15 @@ export const errorCodes = {
   GAME_NO_TRIES_LEFT: 'GAME_NO_TRIES_LEFT', // all tries used in this round
   // Weekly contest between circles
   CONTEST_NOT_FOUND: 'CONTEST_NOT_FOUND',
-  CONTEST_NOT_QUALIFIED: 'CONTEST_NOT_QUALIFIED', // circle has not reached CONTEST_QUALIFY_COINS
+  CONTEST_NOT_QUALIFIED: 'CONTEST_NOT_QUALIFIED', // v4: the circle's coins are below CONTEST_QUALIFY_GROUP_COINS (groupCoins.ts)
   CONTEST_MIN_MEMBERS: 'CONTEST_MIN_MEMBERS', // fewer than CONTEST_MIN_MEMBERS active members
   CONTEST_NOT_CREATOR: 'CONTEST_NOT_CREATOR', // only the circle creator can register or cancel
   CONTEST_REGISTRATION_CLOSED: 'CONTEST_REGISTRATION_CLOSED', // outside Monday 00:00 – Friday 23:59:59 IST
-  CONTEST_INVALID_TEAM_COUNT: 'CONTEST_INVALID_TEAM_COUNT', // not in contestTeamOptions(activeMembers)
+  CONTEST_INVALID_TEAM_COUNT: 'CONTEST_INVALID_TEAM_COUNT', // not in contestTeamOptions(yesCount) (v3: activeMembers)
   CONTEST_NOT_REGISTERED: 'CONTEST_NOT_REGISTERED', // nothing to cancel
   CONTEST_NOT_LIVE: 'CONTEST_NOT_LIVE', // tries can only start on Saturday of a LIVE contest
   CONTEST_NOT_TEAM_MEMBER: 'CONTEST_NOT_TEAM_MEMBER', // requesting user is not on that team
-  CONTEST_NO_TRIES_LEFT: 'CONTEST_NO_TRIES_LEFT', // the team used all its tries
+  CONTEST_NO_TRIES_LEFT: 'CONTEST_NO_TRIES_LEFT', // v4: the player used all their tries (v3: the team)
   CONTEST_TRY_NOT_FOUND: 'CONTEST_TRY_NOT_FOUND', // unknown try, or started by someone else
   CONTEST_TRY_ALREADY_SUBMITTED: 'CONTEST_TRY_ALREADY_SUBMITTED', // a try's score can be sent once
   CONTEST_SUBMIT_TOO_LATE: 'CONTEST_SUBMIT_TOO_LATE', // after submitGraceEndsAt
@@ -95,6 +95,14 @@ export const errorCodes = {
   CONTEST_GAME_LOCKED: 'CONTEST_GAME_LOCKED', // the game cannot change after Friday 23:59
   CONTEST_CONSENT_REQUIRED: 'CONTEST_CONSENT_REQUIRED', // 403: accept the 18+ consent (CONTEST_CONSENT_VERSION) before contest actions
   CONTEST_CONSENT_STALE: 'CONTEST_CONSENT_STALE', // 409: the consent wording changed — refetch GET /contests/current and accept again
+  // Weekly contest v4 (contestParticipation.ts)
+  CONTEST_NOT_ENOUGH_YES: 'CONTEST_NOT_ENOUGH_YES', // fewer than CONTEST_MIN_YES members said yes this week — the creator cannot register yet
+  CONTEST_ALREADY_YES_ELSEWHERE: 'CONTEST_ALREADY_YES_ELSEWHERE', // 409: the member's YES is in another circle this week (data.groupId, data.groupName) — resend with switch: true to move it
+  CONTEST_LOCKED_ELSEWHERE: 'CONTEST_LOCKED_ELSEWHERE', // another circle registered with this member this week — no YES here until next week
+  CONTEST_ANSWER_LOCKED: 'CONTEST_ANSWER_LOCKED', // this circle registered with the member — the YES cannot be withdrawn this week
+  CONTEST_NOT_PLAYER: 'CONTEST_NOT_PLAYER', // only the team's players (CONTEST_PLAYERS_PER_TEAM) may start a try
+  CONTEST_VOTING_CLOSED: 'CONTEST_VOTING_CLOSED', // votes are accepted only after the registration and before Saturday 00:00 IST
+  CONTEST_TEAM_NOT_VOTING: 'CONTEST_TEAM_NOT_VOTING', // a team of exactly CONTEST_PLAYERS_PER_TEAM has no vote: everyone plays
   COUPON_NOT_FOUND: 'COUPON_NOT_FOUND', // no coupon with that id, or the member is not a recipient
   COUPON_EXPIRED: 'COUPON_EXPIRED', // CONTEST_COUPON_VALID_HOURS passed — cannot redeem or download
   COUPON_ALREADY_REDEEMED: 'COUPON_ALREADY_REDEEMED', // somebody on the team pressed Redeem first

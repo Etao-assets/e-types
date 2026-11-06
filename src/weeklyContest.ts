@@ -8,23 +8,24 @@ import { GroupGameKeySchema } from './groupGame';
  * Shared contract between etao-nextjs (server) and etao-mobile (client). The
  * server decides everything below; the client only renders what it is sent.
  *
- * Rules (product decisions):
- *  - Coins: 1 coin per ₹1 invested by any ACTIVE member of a circle with at least
- *    CONTEST_MIN_MEMBERS active members. No cap, never deducted.
- *  - Qualification: a circle that reaches CONTEST_QUALIFY_COINS coins is qualified
- *    ONCE and stays qualified.
- *  - Registration: every week, Monday 00:00 – Friday 23:59:59 IST, only the circle
- *    creator registers a qualified circle with at least CONTEST_MIN_MEMBERS active
- *    members. The creator may optionally split the circle into teams
- *    (`contestTeamOptions`); the server assigns members to teams at random, as
+ * Rules (v4, November 2026 — the rule book is ./groupCoins and ./contestParticipation;
+ * this file keeps the calendar, leaderboard, try and score shapes):
+ *  - Coins belong to the CIRCLE and come from circle activity only (500 on
+ *    creation once name, target amount and target date are set; 500 per member
+ *    who joins; cap 1,500). Nothing money-, KYC- or identity-related gates the
+ *    game. A circle with CONTEST_QUALIFY_GROUP_COINS coins takes part every week.
+ *  - Registration: every week, Monday 00:00 – Friday 23:59:59 IST, members of a
+ *    qualified circle answer "Play this week?"; the circle creator registers once
+ *    CONTEST_MIN_YES said yes and may split the YES members into teams
+ *    (`contestTeamOptions(yesCount)`); the server draws the teams at random, as
  *    evenly as possible (`contestTeamSizes`). Re-registering before Friday ends
  *    replaces the registration and re-draws the teams; cancelling is allowed until
- *    Friday ends. Registering is free.
- *  - Play: Saturday 00:00 – 23:59:59 IST. Each team SHARES `triesPerTeam` tries
- *    (default CONTEST_DEFAULT_TRIES_PER_TEAM, stored per contest so it can change
- *    later); any member of the team may play; a try counts when it STARTS. The best
- *    try is the team's score. Scores of tries started before the end are accepted
- *    until `submitGraceEndsAt` (CONTEST_SUBMIT_GRACE_MINUTES after the end).
+ *    Friday ends. Registering is free. One person plays for one circle per week.
+ *  - Play: Saturday 00:00 – 23:59:59 IST. Each of a team's three PLAYERS has
+ *    `triesPerPlayer` tries (default CONTEST_TRIES_PER_PLAYER, stored per contest
+ *    so it can change later); a try counts when it STARTS. The best try of any
+ *    player is the team's score. Scores of tries started before the end are
+ *    accepted until `submitGraceEndsAt` (CONTEST_SUBMIT_GRACE_MINUTES after the end).
  *  - Validity: the contest runs only if at least CONTEST_MIN_CIRCLES different
  *    circles registered (otherwise CANCELLED and refunded). Once it runs, a circle
  *    or team that does not play forfeits (walkover): the top-ranked team wins even
@@ -38,14 +39,17 @@ import { GroupGameKeySchema } from './groupGame';
  */
 
 /**
- * @deprecated v3 (see ./contestRounds): entering costs CONTEST_ENTRY_COST coins per
- * team every week; there is no one-time qualification. Kept until the old
- * consumers are removed; the value equals CONTEST_ENTRY_COST.
+ * @deprecated v4: qualification is CONTEST_QUALIFY_GROUP_COINS (./groupCoins).
+ * Not read by any consumer; removed in a later cleanup.
  */
 export const CONTEST_QUALIFY_COINS = 3000;
-/** Minimum ACTIVE members for a circle to earn coins and to register. */
+/** Minimum ACTIVE members for a circle to appear in the weekly contest, and the YES count needed to register (CONTEST_MIN_YES). */
 export const CONTEST_MIN_MEMBERS = 3;
-/** Default tries a team shares per contest. Each contest stores its own value. */
+/**
+ * @deprecated v4: tries are per PLAYER (CONTEST_TRIES_PER_PLAYER in
+ * ./contestParticipation); the stored per-contest value is served as
+ * `triesPerPlayer`. Kept so v3 consumers compile; removed in a later cleanup.
+ */
 export const CONTEST_DEFAULT_TRIES_PER_TEAM = 3;
 /** Most teams one circle can enter in a single contest. */
 export const CONTEST_MAX_TEAMS = 3;
@@ -112,7 +116,8 @@ export const ContestTeamOutcomeSchema = z.nativeEnum(ContestTeamOutcomeEnum);
 // --- Team-split helpers (server validates with these; client renders with them) ---
 
 /**
- * Team counts the creator may choose for `activeMembers` members:
+ * Team counts the creator may choose. v4 passes the number of members who said
+ * YES this week (`yesCount`); the parameter name is historical.
  *   below CONTEST_MIN_MEMBERS → [] (cannot register)
  *   3–5   → [1]          (no split question)
  *   6–10  → [1, 2]
@@ -163,7 +168,7 @@ export const RegisterContestSchema = z.object({
 });
 export type RegisterContest = z.infer<typeof RegisterContestSchema>;
 
-/** POST /contests/current/tries — any member of the team, Saturday only. Uses one try. */
+/** POST /contests/current/tries — one of the team's PLAYERS (v4), Saturday only. Uses one of the player's tries. */
 export const StartContestTrySchema = z.object({
   teamId: z.string().min(1),
 });
@@ -185,7 +190,15 @@ export const ContestWindowSchema = z.object({
   status: ContestStatusSchema,
   phase: ContestPhaseSchema,
   gameKey: GroupGameKeySchema,
+  /** @deprecated v4: same value as `triesPerPlayer`; kept for v3 consumers. */
   triesPerTeam: z.number().int(),
+  /**
+   * v4: tries EACH PLAYER has on Saturday (CONTEST_TRIES_PER_PLAYER unless the
+   * contest stores another value). Optional only so v3 servers and clients keep
+   * compiling; the v4 server always sends it and v4 clients fall back to
+   * CONTEST_TRIES_PER_PLAYER when absent.
+   */
+  triesPerPlayer: z.number().int().optional(),
   registrationOpensAt: z.coerce.date(),
   /** Exclusive: registration is open while now < registrationClosesAt (Saturday 00:00 IST). */
   registrationClosesAt: z.coerce.date(),
@@ -300,7 +313,7 @@ export type CurrentContestResponse = z.infer<typeof CurrentContestResponseSchema
 export const StartContestTryResponseSchema = z.object({
   tryId: z.string(),
   attemptNo: z.number().int(),
-  /** Tries left for the team AFTER this one. */
+  /** v4: tries left for the requesting PLAYER after this one (v3: for the team). */
   triesLeft: z.number().int(),
   /** Same as the contest's playEndsAt — the game ends the run at this instant. */
   playEndsAt: z.coerce.date(),

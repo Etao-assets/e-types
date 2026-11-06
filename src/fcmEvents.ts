@@ -29,24 +29,28 @@ export enum FCMEventType {
   LUMPSUM_ORDER_DEPOSIT_SUCCESS = 'lumpsum_order_deposit_success', // When lumpsum order deposit is successful
   RD_ORDER_DEPOSIT_SUCCESS = 'rd_order_deposit_success', // When RD order deposit is successful
   FD_ORDER_DEPOSIT_SUCCESS = 'fd_order_deposit_success', // When FD order deposit is successful
-  GROUP_COINS_GATE_UNLOCKED = 'GROUP_COINS_GATE_UNLOCKED',
+  GROUP_COINS_GATE_UNLOCKED = 'GROUP_COINS_GATE_UNLOCKED', // @deprecated v4: never sent; CONTEST_QUALIFIED is the qualification push
   GROUP_GAME_STARTED = 'GROUP_GAME_STARTED', // Creator selected mode + game, or a rematch round opened; data carries roundNo
   GROUP_GAME_ENDED = 'GROUP_GAME_ENDED', // Tournament closed, winner decided
   // Weekly contest between circles (see weeklyContest.ts)
-  CONTEST_QUALIFIED = 'CONTEST_QUALIFIED', // Circle reached CONTEST_QUALIFY_COINS for the first time
+  CONTEST_QUALIFIED = 'CONTEST_QUALIFIED', // v4: the circle reached CONTEST_QUALIFY_GROUP_COINS (groupCoins.ts) — it can take part every week from now on
   CONTEST_TEAMS_DRAWN = 'CONTEST_TEAMS_DRAWN', // Creator registered (or re-registered); teams drawn
   CONTEST_REGISTRATION_CANCELLED = 'CONTEST_REGISTRATION_CANCELLED', // Creator cancelled this week's registration
-  CONTEST_REGISTRATION_REMINDER = 'CONTEST_REGISTRATION_REMINDER', // Friday reminder to creators of qualified, unregistered circles
+  CONTEST_REGISTRATION_REMINDER = 'CONTEST_REGISTRATION_REMINDER', // @deprecated: never sent (v4 uses CONTEST_READY_TO_REGISTER)
   CONTEST_LIVE = 'CONTEST_LIVE', // Saturday: the contest is live
   CONTEST_CANCELLED = 'CONTEST_CANCELLED', // Fewer than CONTEST_MIN_CIRCLES circles registered
   CONTEST_RESULT = 'CONTEST_RESULT', // Results are out (data.outcome = ContestTeamOutcomeEnum)
-  // Weekly contest v3 (contestRounds.ts)
+  // Weekly contest v4 (contestParticipation.ts / groupCoins.ts)
+  CONTEST_PLAY_PROMPT = 'CONTEST_PLAY_PROMPT', // Monday morning: "Play this week?" to every active member of a qualified circle (data.groupId)
+  CONTEST_ANSWER_REMINDER = 'CONTEST_ANSWER_REMINDER', // Thursday evening, to members of qualified circles who have not answered (data.groupId)
+  CONTEST_READY_TO_REGISTER = 'CONTEST_READY_TO_REGISTER', // To the creator: CONTEST_MIN_YES members said yes, or more said yes after the registration (data.groupId, data.yesCount)
+  // Weekly contest v3 (contestRounds.ts) — @deprecated v4: ROUND_OPENED, CONTRIBUTION_REMINDER, RECONFIRM_REQUIRED, ROUND_SHORT, ROUND_FALLBACK, PLAYER_HANDOVER and REFUNDED are no longer sent; enum values kept for old app builds
   CONTEST_ROUND_OPENED = 'CONTEST_ROUND_OPENED', // The circle can afford an entry this week — "do you wish to contribute?"
   CONTEST_CONTRIBUTION_REMINDER = 'CONTEST_CONTRIBUTION_REMINDER', // Thursday evening, to members who have not answered
   CONTEST_RECONFIRM_REQUIRED = 'CONTEST_RECONFIRM_REQUIRED', // A split raised the member's share — confirm or decline
   CONTEST_ROUND_SHORT = 'CONTEST_ROUND_SHORT', // A cancel left the circle short of the cost (data.cancelledByUserId)
   CONTEST_ROUND_FALLBACK = 'CONTEST_ROUND_FALLBACK', // The split could not be covered; the circle plays as one team
-  CONTEST_ROUND_NOT_ENTERED = 'CONTEST_ROUND_NOT_ENTERED', // Friday close without an entry (data.reason = ContestRoundNotEnteredReasonEnum)
+  CONTEST_ROUND_NOT_ENTERED = 'CONTEST_ROUND_NOT_ENTERED', // Registration closed without an entry (data.reason = ContestRoundNotEnteredReasonEnum: v4 NOT_REGISTERED or TOO_FEW_YES)
   CONTEST_GAME_SET = 'CONTEST_GAME_SET', // The admin set or changed this week's game (data.gameKey)
   CONTEST_PLAYER_HANDOVER = 'CONTEST_PLAYER_HANDOVER', // The team was passed to the next player (data.activePlayerUserId)
   CONTEST_REFUNDED = 'CONTEST_REFUNDED', // The week was cancelled; the member's coins are back
@@ -143,8 +147,10 @@ export interface ContestFcmData extends FcmDataBase {
   cancelledByUserId?: string;
   /** CONTEST_GAME_SET only: a GroupGameKeyEnum value. */
   gameKey?: string;
-  /** CONTEST_PLAYER_HANDOVER only. */
+  /** CONTEST_PLAYER_HANDOVER only (v3, no longer sent). */
   activePlayerUserId?: string;
+  /** CONTEST_READY_TO_REGISTER only (v4): members who said yes, as a string. */
+  yesCount?: string;
   /** CONTEST_COUPON_SENT, CONTEST_COUPON_REDEEMED and CONTEST_COUPON_REMINDER. */
   couponId?: string;
   /** CONTEST_COUPON_REDEEMED only. */
