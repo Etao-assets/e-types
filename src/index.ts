@@ -80,6 +80,8 @@ export * from './groupBackground';
 export * from './groupGame';
 export * from './weeklyContest';
 export * from './contestRounds';
+export * from './groupCoins';
+export * from './contestParticipation';
 export * from './companyInfo';
 export * from './fixerra';
 export * from './utils';

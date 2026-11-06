@@ -83,7 +83,7 @@ export enum NAVIGATION {
   GAMES = 'games',
   WEEKLY_CONTEST = 'weekly-contest',
   CONTEST_REGISTER = 'contest-register',
-  COIN_WALLET = 'coin-wallet',
+  COIN_WALLET = 'coin-wallet', // @deprecated v4: the wallet screen is removed; kept so old pushes still resolve
   MY_COUPONS = 'my-coupons',
   COUPON_DETAIL = 'coupon-detail',
   MUTUAL_FUNDS = 'mutual-funds',

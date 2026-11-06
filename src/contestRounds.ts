@@ -13,6 +13,16 @@ import {
 /**
  * Weekly contest v3 — coins are a WALLET, entering COSTS coins, members CONTRIBUTE.
  *
+ * @deprecated v4 (November 2026): the wallet / contribution / share / refund
+ * economy in this file is no longer served — coins come from circle activity
+ * (./groupCoins) and members simply answer "Play this week?"
+ * (./contestParticipation). Everything below `ContestWeekWindowSchema` that is
+ * NOT about the 18+ consent or the coupons is kept only so the v3 consumers
+ * compile until the v4 plans land, and is removed in a later cleanup. The
+ * consent section, the coupon section, `ContestWeekWindowSchema`,
+ * `ContestPreviewTeamSchema`, `ContestRoundStatusEnum` and
+ * `ContestRoundNotEnteredReasonEnum` stay in use.
+ *
  * Shared contract between etao-nextjs (server) and etao-mobile (client). The
  * server decides everything; the client renders what it is sent. This module is
  * additive: the week/contest, leaderboard, try and score shapes in
@@ -95,7 +105,7 @@ export const CONTEST_CONTRIBUTION_CANCEL_DAYS = 4;
 
 // --- Enums ------------------------------------------------------------------
 
-/** A circle's weekly round. */
+/** A circle's weekly round (v3) — v4 reuses the same four states for a circle's weekly participation. */
 export enum ContestRoundStatusEnum {
   /** Contributions open; the creator has not registered yet. */
   OPEN = 'OPEN',
@@ -115,6 +125,8 @@ export enum ContestRoundNotEnteredReasonEnum {
   SHORT_OF_COINS = 'SHORT_OF_COINS',
   /** At close the circle had fewer than CONTEST_MIN_MEMBERS active members. */
   TOO_FEW_MEMBERS = 'TOO_FEW_MEMBERS',
+  /** v4: at close fewer than CONTEST_MIN_YES members had said yes, so the creator could not register. */
+  TOO_FEW_YES = 'TOO_FEW_YES',
 }
 export const ContestRoundNotEnteredReasonSchema = z.nativeEnum(
   ContestRoundNotEnteredReasonEnum,
@@ -416,7 +428,7 @@ export const ContestWeekWindowSchema = ContestWindowSchema.extend({
   /** The admin set this week's game explicitly (false → last week's game carried over). */
   gamePicked: z.boolean(),
   gamePickedAt: z.coerce.date().nullable(),
-  /** Friday 00:00 IST. */
+  /** Friday 00:00 IST. @deprecated v4: nothing is cancelled at this instant any more; still sent for v3 consumers. */
   cancelCutoffAt: z.coerce.date(),
 });
 export type ContestWeekWindow = z.infer<typeof ContestWeekWindowSchema>;

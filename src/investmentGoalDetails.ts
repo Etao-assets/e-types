@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 import { NotAvailableShortSchema } from './nullValue';
 import { GroupGameStateSchema } from './groupGame';
+import { GroupCoinsSchema } from './groupCoins';
 
 // --- Enums ---
 
@@ -75,9 +76,7 @@ export const IndividualPortfolioSchema = z.object({
   day1Return:            z.number(),
   totalReturn:           z.number(),
   holdingsCount:         z.number().int(),
-  /** Coins this member has earned in this group goal (1 coin = Rs 1).
-   *  Undefined for individual goals and for groups created before the coins
-   *  feature shipped (no GroupCoinsState row => never earns). */
+  /** @deprecated v4: no longer sent — coins belong to the circle (`groupPortfolio.groupCoins`). */
   coinsEarned:           z.number().int().optional(),
 });
 
@@ -97,19 +96,21 @@ export const GroupPortfolioSchema = z.object({
   day1Return:                z.number(),
   totalReturn:               z.number(),
   holdingsCount:             z.number().int(),
-  /** Coins earned by all ACTIVE members combined (1 coin = Rs 1). */
+  /** @deprecated v4: no longer sent — see `groupCoins`. */
   groupCoinsEarned:          z.number().int().optional(),
-  /** CONTEST_QUALIFY_COINS (3,000) — coins a circle needs, once, to qualify for the weekly contest. */
+  /** @deprecated v4: no longer sent — see `groupCoins.qualifyAt`. */
   coinsGateAmount:           z.number().int().optional(),
-  /** groupCoinsEarned / coinsGateAmount * 100, clamped to 100. */
+  /** @deprecated v4: no longer sent — compute from `groupCoins` (groupCoinsProgressPercent). */
   coinsProgressPercentage:   z.number().optional(),
-  /** True once the circle has reached CONTEST_QUALIFY_COINS. Sticky — never returns to false. */
+  /** @deprecated v4: no longer sent — see `groupCoins.qualified`. */
   isCoinsEligible:           z.boolean().optional(),
   /** @deprecated No longer sent — coins are never frozen. Removed in a later cleanup. */
   isCoinsFrozen:             z.boolean().optional(),
   /** ACTIVE members needed before the group earns coins or can play (GROUP_GAME_MIN_MEMBERS).
    *  Below it the client shows an invite nudge instead of the coin counters. */
   coinsMinMembers:           z.number().int().optional(),
+  /** v4 (groupCoins.ts): the circle's activity coins, progress and credit lines. Undefined for individual goals. */
+  groupCoins:                GroupCoinsSchema.optional(),
 });
 
 /** Merged SIP projection + BSE registration record */
@@ -203,7 +204,7 @@ export const MemberEntrySchema = z.object({
   // Confirmed-member fields
   investmentGoalId: z.string().optional(),
   investedAmount:   z.number().optional(), // Decimal
-  coinsEarned:      z.number().int().optional(), // Coins earned in this group goal
+  coinsEarned:      z.number().int().optional(), // @deprecated v4: no longer sent — coins belong to the circle
   joinedAt:         z.coerce.date().nullable().optional(),
   targetAmt:        z.number().nullable().optional(), // Decimal
   // Invitation-specific fields
