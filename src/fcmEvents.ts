@@ -34,6 +34,7 @@ export enum FCMEventType {
   GROUP_GAME_ENDED = 'GROUP_GAME_ENDED', // Tournament closed, winner decided
   // Weekly contest between circles (see weeklyContest.ts)
   CONTEST_QUALIFIED = 'CONTEST_QUALIFIED', // v4: the circle reached CONTEST_QUALIFY_GROUP_COINS (groupCoins.ts) — it can take part every week from now on
+  GROUP_COINS_CREDITED = 'GROUP_COINS_CREDITED', // v4: circle coins were just credited (today: the creation 500, sent to the creator only); data = GroupCoinsFcmData
   CONTEST_TEAMS_DRAWN = 'CONTEST_TEAMS_DRAWN', // Creator registered (or re-registered); teams drawn
   CONTEST_REGISTRATION_CANCELLED = 'CONTEST_REGISTRATION_CANCELLED', // Creator cancelled this week's registration
   CONTEST_REGISTRATION_REMINDER = 'CONTEST_REGISTRATION_REMINDER', // @deprecated: never sent (v4 uses CONTEST_READY_TO_REGISTER)
@@ -120,6 +121,25 @@ export interface FCMEventData {
    * Can include mandate details, payment info, etc.
    */
   [key: string]: any;
+}
+
+/**
+ * Circle coins FCM Data — GROUP_COINS_CREDITED. FCM data values are strings.
+ * Sent after the credit's transaction committed, once per ledger row (the row
+ * itself is written once, so the push can never repeat). Today only the
+ * creation credit (GroupCoinReasonEnum.GROUP_CREATED) is pushed, to the
+ * circle's creator.
+ */
+export interface GroupCoinsFcmData extends FcmDataBase {
+  groupId: string;
+  /** The recipient's own investment goal in that circle — what the circle coins screen takes as `goalId`. */
+  investmentGoalId: string;
+  /** A GroupCoinReasonEnum value. */
+  reason: string;
+  /** Coins this event credited, e.g. "500". */
+  coins: string;
+  /** The circle's total after the credit, e.g. "500". */
+  total: string;
 }
 
 /**
