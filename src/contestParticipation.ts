@@ -222,15 +222,31 @@ export const ContestPlayTeamSchema = ContestCircleTeamSchema.extend({
 });
 export type ContestPlayTeam = z.infer<typeof ContestPlayTeamSchema>;
 
-/** One of the requesting member's circles with at least CONTEST_MIN_MEMBERS active members. */
+/**
+ * One of the requesting member's circles — every ACTIVE membership, including
+ * circles with fewer than CONTEST_MIN_MEMBERS active members (since 2026-11-08,
+ * so the app can nudge "invite N more"; before that, small circles were omitted).
+ */
 export const ContestCircleWeekSchema = z.object({
   groupId: z.string(),
   groupName: z.string(),
   isCreator: z.boolean(),
   creatorName: z.string().nullable(),
   activeMemberCount: z.number().int(),
+  /**
+   * Active members still missing before the circle can take part:
+   * max(0, CONTEST_MIN_MEMBERS - activeMemberCount), computed by the server.
+   * 0 for every circle that is big enough. Defaults to 0 so a payload from an
+   * older backend still parses.
+   */
+  membersNeeded: z.number().int().min(0).default(0),
   coins: GroupCoinsSummarySchema,
-  /** null until the circle is qualified (the card then shows the coins progress instead). */
+  /**
+   * null until the circle is qualified and big enough (the card then shows the
+   * coins progress, or the members nudge when `membersNeeded` > 0). A circle
+   * that registered and later dropped below CONTEST_MIN_MEMBERS keeps its
+   * round, so `participation` can be set while `membersNeeded` > 0.
+   */
   participation: ContestParticipationSchema.nullable(),
   /** The circle's teams this week (empty until registered), ordered by index. */
   teams: z.array(ContestPlayTeamSchema),
@@ -245,13 +261,22 @@ export const ContestMyWeekSchema = z.object({
   /** The circle that registered with me this week; null until a registration locks me. */
   lockedGroupId: z.string().nullable(),
   lockedGroupName: z.string().nullable(),
+  /**
+   * true once the member has ever been drawn onto a contest team, in any week
+   * (v3 or v4). The app hides the "Create a circle" button of the how-it-works
+   * explainer for such a member. Defaults to false for payloads from an older
+   * backend.
+   */
+  playedBefore: z.boolean().default(false),
 });
 export type ContestMyWeek = z.infer<typeof ContestMyWeekSchema>;
 
 /**
  * GET /contests/current (v4) — this week for the requesting member. `circles`
- * holds every circle of the member with at least CONTEST_MIN_MEMBERS active
- * members; the card shows the coins progress for unqualified ones. `leaderboard`
+ * holds every ACTIVE circle of the member, small ones included (`membersNeeded`
+ * > 0); the card shows the members nudge for those, the coins progress for
+ * unqualified ones. An empty `circles` means the member has no circle: the app
+ * shows the how-it-works explainer instead. `leaderboard`
  * is empty before Saturday. `result` is null until finalized or cancelled.
  */
 export const ContestWeekPayloadSchema = z.object({
