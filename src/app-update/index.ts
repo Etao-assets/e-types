@@ -5,6 +5,8 @@ export const appUpdateConfigSchema = z.object({
   forceUpdate: z.boolean(),
   /** Plan 22: contest actions are refused until the member accepts the 18+ consent. Flip together with forceUpdate once the consent build is live. */
   contestConsentEnforced: z.boolean().default(false),
+  /** Creator weekly pick: while false, rounds open automatically as before and the app shows no dropdown. Flip together with forceUpdate once the pick build is live. */
+  contestCreatorPickEnforced: z.boolean().default(false),
   iosVersion: z
     .string()
     .regex(
@@ -30,6 +32,7 @@ export const appUpdateConfigSchema = z.object({
 export interface AppUpdateConfigInput {
   forceUpdate: boolean;
   contestConsentEnforced?: boolean;
+  contestCreatorPickEnforced?: boolean;
   iosVersion: string;
   androidVersion: string;
   iosBuildNumber: number;
@@ -41,6 +44,7 @@ export interface AppUpdateConfig {
   id: string;
   forceUpdate: boolean;
   contestConsentEnforced: boolean;
+  contestCreatorPickEnforced: boolean;
   iosVersion: string;
   androidVersion: string;
   iosBuildNumber: number;

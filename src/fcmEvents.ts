@@ -45,6 +45,10 @@ export enum FCMEventType {
   CONTEST_PLAY_PROMPT = 'CONTEST_PLAY_PROMPT', // Monday morning: "Play this week?" to every active member of a qualified circle (data.groupId)
   CONTEST_ANSWER_REMINDER = 'CONTEST_ANSWER_REMINDER', // Thursday evening, to members of qualified circles who have not answered (data.groupId)
   CONTEST_READY_TO_REGISTER = 'CONTEST_READY_TO_REGISTER', // To the creator: CONTEST_MIN_YES members said yes, or more said yes after the registration (data.groupId, data.yesCount)
+  CONTEST_PICK_PROMPT = 'CONTEST_PICK_PROMPT', // Monday 09:00 IST, to a creator with no confirmed pick: "Pick which circle plays this week" (switch ON)
+  CONTEST_PICK_LAST_CHANCE = 'CONTEST_PICK_LAST_CHANCE', // Thursday 18:00 IST, to a creator still without a confirmed pick (switch ON)
+  CONTEST_PICK_ELIGIBLE = 'CONTEST_PICK_ELIGIBLE', // To the creator: the soft-picked circle became eligible — confirm it (data.groupId)
+  CONTEST_CIRCLE_SCHEDULED = 'CONTEST_CIRCLE_SCHEDULED', // To the members of the circle the creator just confirmed: say yes if you are in (data.groupId)
   // Weekly contest v3 (contestRounds.ts) — @deprecated v4: ROUND_OPENED, CONTRIBUTION_REMINDER, RECONFIRM_REQUIRED, ROUND_SHORT, ROUND_FALLBACK, PLAYER_HANDOVER and REFUNDED are no longer sent; enum values kept for old app builds
   CONTEST_ROUND_OPENED = 'CONTEST_ROUND_OPENED', // The circle can afford an entry this week — "do you wish to contribute?"
   CONTEST_CONTRIBUTION_REMINDER = 'CONTEST_CONTRIBUTION_REMINDER', // Thursday evening, to members who have not answered

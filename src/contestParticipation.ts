@@ -65,6 +65,31 @@ import {
  *     forfeits those tries — there is no backup and no handover.
  *   - Winner, walkover, no-winner, coupon and 18+ consent rules are unchanged
  *     (./weeklyContest, ./contestRounds coupon section).
+ *  The creator's weekly pick (November 2026, behind the admin switch
+ *  `appUpdateConfig.contestCreatorPickEnforced`)
+ *   - While the switch is ON, a circle takes part in a week only after its
+ *     CREATOR picked it for that week and CONFIRMED the pick. Every creator picks
+ *     one of the circles they created, every week, even with a single circle.
+ *     Picking and confirming are open from Monday 00:00 IST until the stored
+ *     `cancelCutoffAt` (Friday 00:00 IST, "Thursday night").
+ *   - Confirming requires the circle to be ELIGIBLE: qualified
+ *     (CONTEST_QUALIFY_GROUP_COINS) and at least CONTEST_MIN_MEMBERS active
+ *     members. A confirmed pick is LOCKED for the week (CONTEST_PICK_LOCKED);
+ *     cancelling the registration does not unlock it. Confirming opens the
+ *     circle's round and pushes CONTEST_CIRCLE_SCHEDULED to its members.
+ *   - A pick of a not-yet-eligible circle is SOFT: no round, no push, changeable
+ *     until the deadline; when the circle becomes eligible the creator is pushed
+ *     CONTEST_PICK_ELIGIBLE and confirms. A soft pick never locks on its own.
+ *   - The creator's other circles are closed for the week
+ *     (`ContestCircleWeek.weekState` CLOSED_OTHER_PICK); a circle whose creator
+ *     has not confirmed yet is AWAITING_PICK; answering or registering there is
+ *     refused with CONTEST_PICK_REQUIRED. A pick of a circle that no longer
+ *     exists, or whose creator changed, is void: the creator may pick again.
+ *   - Nothing carries over: every Monday starts with no pick. Monday 09:00 IST
+ *     CONTEST_PICK_PROMPT and Thursday 18:00 IST CONTEST_PICK_LAST_CHANCE go to
+ *     creators without a confirmed pick.
+ *   - While the switch is OFF nothing above applies: rounds open automatically
+ *     as before and `pick` is served with `enforced: false`.
  *  Nothing here involves money, KYC or identity documents.
  */
 
@@ -78,6 +103,25 @@ export const CONTEST_VOTES_PER_MEMBER = 3;
 export const CONTEST_TRIES_PER_PLAYER = 3;
 
 // --- Enums --------------------------------------------------------------------
+
+/** Why a circle has no yes/no panel this week (creator pick, switch ON). */
+export enum ContestCircleWeekStateEnum {
+  OPEN = 'OPEN',
+  AWAITING_PICK = 'AWAITING_PICK',
+  CLOSED_OTHER_PICK = 'CLOSED_OTHER_PICK',
+}
+export const ContestCircleWeekStateSchema = z.nativeEnum(ContestCircleWeekStateEnum);
+
+/** The creator's pick for the week. */
+export enum ContestPickStateEnum {
+  /** No pick this week. */
+  NONE = 'NONE',
+  /** Picked but not confirmed: the circle was not eligible at pick time. Changeable until the deadline. (Cancel in the confirmation dialog clears the pick instead.) */
+  SOFT = 'SOFT',
+  /** Confirmed: locked for the week; the circle's round is open. */
+  CONFIRMED = 'CONFIRMED',
+}
+export const ContestPickStateSchema = z.nativeEnum(ContestPickStateEnum);
 
 /** A member's answer to "Play this week?". No answer has no row and is rendered as null. */
 export enum ContestAnswerEnum {
@@ -240,6 +284,16 @@ export const ContestCircleWeekSchema = z.object({
    * older backend still parses.
    */
   membersNeeded: z.number().int().min(0).default(0),
+  /**
+   * Creator-pick state of this circle for the week (switch ON only; OPEN while
+   * the switch is OFF or the circle's round exists). AWAITING_PICK: the creator
+   * has not confirmed any pick yet; CLOSED_OTHER_PICK: the creator confirmed
+   * another circle (`pickedGroupName`). In both cases `participation` is null
+   * and the app shows an informational card instead of the yes/no panel.
+   */
+  weekState: ContestCircleWeekStateSchema.default(ContestCircleWeekStateEnum.OPEN),
+  /** The circle the creator confirmed instead, for CLOSED_OTHER_PICK; null otherwise. */
+  pickedGroupName: z.string().nullable().default(null),
   coins: GroupCoinsSummarySchema,
   /**
    * null until the circle is qualified and big enough (the card then shows the
@@ -271,6 +325,66 @@ export const ContestMyWeekSchema = z.object({
 });
 export type ContestMyWeek = z.infer<typeof ContestMyWeekSchema>;
 
+// --- Creator pick (switch ON) -----------------------------------------------------
+
+/** One circle the requesting member created, as a dropdown option. */
+export const ContestPickCircleSchema = z.object({
+  groupId: z.string(),
+  groupName: z.string(),
+  /** Qualified (CONTEST_QUALIFY_GROUP_COINS) and at least CONTEST_MIN_MEMBERS active members. */
+  eligible: z.boolean(),
+  membersNeeded: z.number().int().min(0),
+  coins: z.number().int().min(0),
+  qualifyAt: z.number().int(),
+  /** true for the circle currently picked (soft or confirmed). */
+  picked: z.boolean(),
+});
+export type ContestPickCircle = z.infer<typeof ContestPickCircleSchema>;
+
+/**
+ * `ContestWeekPayload.pick` — the requesting member's creator pick for the week.
+ * Served to everyone; `circles` is empty for a member who created no circle.
+ * `enforced` false (switch OFF) → the app shows no dropdown and every other
+ * field is informational.
+ */
+export const ContestPickSchema = z.object({
+  enforced: z.boolean(),
+  /** Picking / confirming are refused from this instant (the week's cancelCutoffAt, Friday 00:00 IST). */
+  deadlineAt: z.coerce.date(),
+  state: ContestPickStateSchema,
+  groupId: z.string().nullable(),
+  groupName: z.string().nullable(),
+  confirmedAt: z.coerce.date().nullable(),
+  /** Phase REGISTRATION, before the deadline, state not CONFIRMED, at least one circle. */
+  canPick: z.boolean(),
+  /** A SOFT pick whose circle is eligible now: the Confirm button. */
+  canConfirm: z.boolean(),
+  /** The circles the member created (dropdown options), name order. */
+  circles: z.array(ContestPickCircleSchema),
+});
+export type ContestPick = z.infer<typeof ContestPickSchema>;
+
+/**
+ * POST /contests/current/pick — select (or change) the week's circle. Eligible
+ * circle → the app must call confirm next (this call alone saves a SOFT pick);
+ * refused CONTEST_PICK_LOCKED once confirmed, CONTEST_PICK_CLOSED after the
+ * deadline, CONTEST_PICK_NOT_CREATOR for a circle the member did not create.
+ * Returns the fresh ContestWeekPayload.
+ */
+export const PickContestCircleSchema = z.object({
+  groupId: z.string().min(1),
+});
+export type PickContestCircle = z.infer<typeof PickContestCircleSchema>;
+
+/**
+ * POST /contests/current/pick/confirm — lock the pick for the week; opens the
+ * circle's round and pushes CONTEST_CIRCLE_SCHEDULED to its members. Refused
+ * CONTEST_PICK_NOT_ELIGIBLE when the circle cannot take part yet. Idempotent on
+ * the same circle. DELETE /contests/current/pick clears a SOFT pick (no body).
+ */
+export const ConfirmContestPickSchema = PickContestCircleSchema;
+export type ConfirmContestPick = PickContestCircle;
+
 /**
  * GET /contests/current (v4) — this week for the requesting member. `circles`
  * holds every ACTIVE circle of the member, small ones included (`membersNeeded`
@@ -282,6 +396,8 @@ export type ContestMyWeek = z.infer<typeof ContestMyWeekSchema>;
 export const ContestWeekPayloadSchema = z.object({
   contest: ContestWeekWindowSchema,
   me: ContestMyWeekSchema,
+  /** The creator pick (see ContestPickSchema); null from a backend without the feature. */
+  pick: ContestPickSchema.nullable().default(null),
   circles: z.array(ContestCircleWeekSchema),
   leaderboard: z.array(ContestLeaderboardRowSchema),
   result: ContestResultSchema.nullable(),
