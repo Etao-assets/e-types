@@ -103,6 +103,11 @@ export const errorCodes = {
   CONTEST_NOT_PLAYER: 'CONTEST_NOT_PLAYER', // only the team's players (CONTEST_PLAYERS_PER_TEAM) may start a try
   CONTEST_VOTING_CLOSED: 'CONTEST_VOTING_CLOSED', // votes are accepted only after the registration and before Saturday 00:00 IST
   CONTEST_TEAM_NOT_VOTING: 'CONTEST_TEAM_NOT_VOTING', // a team of exactly CONTEST_PLAYERS_PER_TEAM has no vote: everyone plays
+  CONTEST_PICK_LOCKED: 'CONTEST_PICK_LOCKED', // 409: the creator's pick is confirmed for this week — try again next week
+  CONTEST_PICK_CLOSED: 'CONTEST_PICK_CLOSED', // 409: picking/confirming closed (after Thursday night, or the week is not in registration)
+  CONTEST_PICK_NOT_ELIGIBLE: 'CONTEST_PICK_NOT_ELIGIBLE', // 422: confirm refused — the circle is not qualified or has fewer than CONTEST_MIN_MEMBERS active members
+  CONTEST_PICK_NOT_CREATOR: 'CONTEST_PICK_NOT_CREATOR', // 403: only the circle's creator picks it
+  CONTEST_PICK_REQUIRED: 'CONTEST_PICK_REQUIRED', // 409: the circle's creator has not confirmed it for this week — no answers or registration (switch ON)
   COUPON_NOT_FOUND: 'COUPON_NOT_FOUND', // no coupon with that id, or the member is not a recipient
   COUPON_EXPIRED: 'COUPON_EXPIRED', // CONTEST_COUPON_VALID_HOURS passed — cannot redeem or download
   COUPON_ALREADY_REDEEMED: 'COUPON_ALREADY_REDEEMED', // somebody on the team pressed Redeem first
