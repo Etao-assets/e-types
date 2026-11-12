@@ -5,6 +5,7 @@
 import { z } from 'zod';
 import { mobileNumberSchema } from './mobile';
 import { otpSchema } from './otp';
+import { AgeDeclarationStatusSchema } from './ageDeclaration';
 
 // Enums for runtime values
 export enum UserStatus {
@@ -65,6 +66,8 @@ export const UserSchema = z.object({
   refreshTokens: z.array(z.any()).optional(), // RefreshToken[] - you can define RefreshTokenSchema separately
   hasAppPin: z.boolean().optional(),
   dateOfBirth: z.string().nullable().optional(), // YYYY-MM-DD as returned by the API; null until the user provides it
+  /** 18+ self-declaration state (login / verify-signup / GET /auth/me). Absent on a server without the feature: the app then shows no pop-up. */
+  ageDeclaration: AgeDeclarationStatusSchema.optional(),
 });
 
 export type User = z.infer<typeof UserSchema>;

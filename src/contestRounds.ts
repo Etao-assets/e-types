@@ -445,10 +445,23 @@ export enum ContestConsentStatusEnum {
   /** No accepted row for CONTEST_CONSENT_VERSION: the app shows the consent before the contest. */
   REQUIRED = 'REQUIRED',
   ACCEPTED = 'ACCEPTED',
-  /** The date of birth on file is under 18: blocked regardless of any consent row. */
+  /**
+   * Blocked regardless of any consent row: the date of birth on file is under
+   * 18, or the user answered NO to the 18+ declaration (ageDeclaration.ts).
+   * `underageReason` says which.
+   */
   UNDERAGE = 'UNDERAGE',
 }
 export const ContestConsentStatusSchema = z.nativeEnum(ContestConsentStatusEnum);
+
+/** Why a consent is UNDERAGE. A date of birth under 18 wins over a declaration (an admin reset cannot lift it). */
+export enum ContestUnderageReasonEnum {
+  /** The date of birth on file (KYC or profile) is under 18. */
+  DOB = 'DOB',
+  /** The user's current answer to the 18+ declaration is NO. */
+  DECLARATION = 'DECLARATION',
+}
+export const ContestUnderageReasonSchema = z.nativeEnum(ContestUnderageReasonEnum);
 
 /** The requesting user's consent state (GET /contests/current `consent`, and after POST /contests/consent). */
 export const ContestConsentSchema = z.object({
@@ -458,15 +471,23 @@ export const ContestConsentSchema = z.object({
   acceptedAt: z.coerce.date().nullable(),
   /** YYYY-MM-DD: the KYC dob when it is a valid ISO date, else users.dateOfBirth; null when neither. */
   dobOnFile: z.string().nullable(),
-  /** true when no date of birth is on file: the consent must collect one (18+). */
+  /**
+   * true when the consent must collect a date of birth (18+): none is on file
+   * AND the user has no current YES 18+ declaration. A confirmed YES stands in
+   * for the date of birth.
+   */
   needsDob: z.boolean(),
+  /** Set only when `status` is UNDERAGE; null or absent otherwise (and on a server without the declaration). */
+  underageReason: ContestUnderageReasonSchema.nullable().optional(),
 });
 export type ContestConsent = z.infer<typeof ContestConsentSchema>;
 
 /**
  * POST /contests/consent body. `dob` is shape-only on purpose (not dobSchema):
  * the server is the single 18+ judge, using the IST date, and answers 422
- * UNDERAGE; a `dob` sent while one is already on file is ignored.
+ * UNDERAGE; a `dob` sent while one is already on file is ignored. `dob` may be
+ * omitted when `consent.needsDob` is false (a date of birth is on file, or the
+ * user has a current YES 18+ declaration).
  */
 export const ContestConsentRequestSchema = z.object({
   version: z.string(),

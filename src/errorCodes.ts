@@ -95,6 +95,9 @@ export const errorCodes = {
   CONTEST_GAME_LOCKED: 'CONTEST_GAME_LOCKED', // the game cannot change after Friday 23:59
   CONTEST_CONSENT_REQUIRED: 'CONTEST_CONSENT_REQUIRED', // 403: accept the 18+ consent (CONTEST_CONSENT_VERSION) before contest actions
   CONTEST_CONSENT_STALE: 'CONTEST_CONSENT_STALE', // 409: the consent wording changed — refetch GET /contests/current and accept again
+  // 18+ self-declaration (ageDeclaration.ts)
+  AGE_DECLARATION_STALE: 'AGE_DECLARATION_STALE', // 409: the pop-up wording changed — refetch GET /auth/me and ask again
+  AGE_DECLARATION_ALREADY_ANSWERED: 'AGE_DECLARATION_ALREADY_ANSWERED', // 409: a different answer is already saved; only an admin reset lets the user answer again
   // Weekly contest v4 (contestParticipation.ts)
   CONTEST_NOT_ENOUGH_YES: 'CONTEST_NOT_ENOUGH_YES', // fewer than CONTEST_MIN_YES members said yes this week — the creator cannot register yet
   CONTEST_ALREADY_YES_ELSEWHERE: 'CONTEST_ALREADY_YES_ELSEWHERE', // 409: the member's YES is in another circle this week (data.groupId, data.groupName) — resend with switch: true to move it
