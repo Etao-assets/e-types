@@ -42,22 +42,24 @@ import {
  *     the YES is LOCKED for the week (CONTEST_ANSWER_LOCKED) and every other
  *     circle sees the member as unavailable (CONTEST_LOCKED_ELSEWHERE).
  *   - The creator registers once at least CONTEST_MIN_YES members said YES
- *     (RegisterContestSchema from ./weeklyContest; teamCount ∈
- *     contestTeamOptions(yesCount)). The creator need not be YES; a creator who
- *     is not YES is not on a team. Registering locks the YES members and draws
- *     the teams (same seeded draw as v3, `previewTeams`). Members who say YES
- *     after the registration are not on a team until the creator re-registers
- *     ("update teams"); the creator is pushed CONTEST_READY_TO_REGISTER when
- *     that happens. Re-registering re-draws the teams and clears that circle's
- *     votes. The creator may cancel the registration until Saturday 00:00 IST,
- *     which unlocks the members.
+ *     (RegisterContestSchema from ./weeklyContest). Since November 2026 a circle
+ *     is never split: the whole circle plays as ONE team made of every member who
+ *     said YES, named after the circle (`previewTeams` has that one team). The
+ *     creator need not be YES; a creator who is not YES is not on the team.
+ *     Registering locks the YES members. A member who says YES after the
+ *     registration joins the team at once and is locked too (no push to anyone,
+ *     no "update teams"). Registering a circle that is already registered
+ *     changes nothing (the team and its votes stay). The creator may cancel the
+ *     registration until Saturday 00:00 IST, which unlocks the members.
  *  Players and votes
  *   - A team of exactly CONTEST_PLAYERS_PER_TEAM: everyone is a player.
  *   - A larger team: every member casts up to CONTEST_VOTES_PER_MEMBER votes for
  *     distinct teammates (self allowed, ContestPlayerVoteSchema), changeable until
  *     Saturday 00:00 IST; counts are visible, voters are not. At Saturday 00:00
  *     IST the CONTEST_PLAYERS_PER_TEAM most-voted members become the players;
- *     ties, and members with no votes, rank by who said YES first.
+ *     ties, and members with no votes, rank by who said YES first. Voting opens
+ *     as soon as the team grows past CONTEST_PLAYERS_PER_TEAM; a member who joins
+ *     late has no votes and the latest YES, so ranks last until votes change it.
  *  Saturday
  *   - Each player has CONTEST_TRIES_PER_PLAYER tries (StartContestTrySchema; the
  *     server refuses non-players with CONTEST_NOT_PLAYER). The team's score is
@@ -206,23 +208,26 @@ export const ContestParticipationSchema = z.object({
   yesCount: z.number().int(),
   /** CONTEST_MIN_YES. */
   minYes: z.number().int(),
-  /** YES members not on a team of the current registration (said yes after it). 0 when not registered. */
+  /**
+   * @deprecated One team per circle since November 2026: a late YES joins the team
+   * at once, so this is 0 (kept for older builds). YES members not on the team.
+   */
   yesAfterRegistration: z.number().int(),
-  /** Chosen team count (1 until the creator picks). */
+  /** @deprecated One team per circle since November 2026: always 1 for new registrations. */
   teamCount: z.number().int(),
-  /** contestTeamOptions(yesCount) from ./weeklyContest; [] below CONTEST_MIN_YES. */
+  /** @deprecated One team per circle since November 2026: [1] once yesCount >= minYes, else []. */
   teamOptions: z.array(z.number().int()),
   registeredAt: z.coerce.date().nullable(),
   registeredByName: z.string().nullable(),
-  /** Creator, phase REGISTRATION, yesCount >= minYes, status OPEN or REGISTERED. */
+  /** Creator, phase REGISTRATION, yesCount >= minYes, status OPEN (not yet registered). */
   canRegister: z.boolean(),
-  /** Creator, status REGISTERED, phase REGISTRATION (re-register: new team count or late YES members). */
+  /** @deprecated One team per circle since November 2026: always false (nothing to re-register). */
   canChangeTeams: z.boolean(),
   canCancelRegistration: z.boolean(),
   /** Every ACTIVE member, creator first, then by answer time. */
   members: z.array(ContestWeekMemberSchema),
   me: ContestMyAnswerSchema,
-  /** Teams drawn at registration (seeded, stable until re-registration); empty before. */
+  /** The circle's one team once registered (members in player-ranking order); empty before. */
   previewTeams: z.array(ContestPreviewTeamSchema).default([]),
 });
 export type ContestParticipation = z.infer<typeof ContestParticipationSchema>;

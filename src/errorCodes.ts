@@ -72,7 +72,7 @@ export const errorCodes = {
   CONTEST_MIN_MEMBERS: 'CONTEST_MIN_MEMBERS', // fewer than CONTEST_MIN_MEMBERS active members
   CONTEST_NOT_CREATOR: 'CONTEST_NOT_CREATOR', // only the circle creator can register or cancel
   CONTEST_REGISTRATION_CLOSED: 'CONTEST_REGISTRATION_CLOSED', // outside Monday 00:00 – Friday 23:59:59 IST
-  CONTEST_INVALID_TEAM_COUNT: 'CONTEST_INVALID_TEAM_COUNT', // not in contestTeamOptions(yesCount) (v3: activeMembers)
+  CONTEST_INVALID_TEAM_COUNT: 'CONTEST_INVALID_TEAM_COUNT', // @deprecated: never sent since one team per circle (November 2026); was: not in contestTeamOptions(yesCount)
   CONTEST_NOT_REGISTERED: 'CONTEST_NOT_REGISTERED', // nothing to cancel
   CONTEST_NOT_LIVE: 'CONTEST_NOT_LIVE', // tries can only start on Saturday of a LIVE contest
   CONTEST_NOT_TEAM_MEMBER: 'CONTEST_NOT_TEAM_MEMBER', // requesting user is not on that team

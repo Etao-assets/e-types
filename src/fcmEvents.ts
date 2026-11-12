@@ -35,7 +35,7 @@ export enum FCMEventType {
   // Weekly contest between circles (see weeklyContest.ts)
   CONTEST_QUALIFIED = 'CONTEST_QUALIFIED', // v4: the circle reached CONTEST_QUALIFY_GROUP_COINS (groupCoins.ts) — it can take part every week from now on
   GROUP_COINS_CREDITED = 'GROUP_COINS_CREDITED', // v4: circle coins were just credited (today: the creation 500, sent to the creator only); data = GroupCoinsFcmData
-  CONTEST_TEAMS_DRAWN = 'CONTEST_TEAMS_DRAWN', // Creator registered (or re-registered); teams drawn
+  CONTEST_TEAMS_DRAWN = 'CONTEST_TEAMS_DRAWN', // Creator registered the circle; to the members on its one team
   CONTEST_REGISTRATION_CANCELLED = 'CONTEST_REGISTRATION_CANCELLED', // Creator cancelled this week's registration
   CONTEST_REGISTRATION_REMINDER = 'CONTEST_REGISTRATION_REMINDER', // @deprecated: never sent (v4 uses CONTEST_READY_TO_REGISTER)
   CONTEST_LIVE = 'CONTEST_LIVE', // Saturday: the contest is live
@@ -44,7 +44,7 @@ export enum FCMEventType {
   // Weekly contest v4 (contestParticipation.ts / groupCoins.ts)
   CONTEST_PLAY_PROMPT = 'CONTEST_PLAY_PROMPT', // Monday morning: "Play this week?" to every active member of a qualified circle (data.groupId)
   CONTEST_ANSWER_REMINDER = 'CONTEST_ANSWER_REMINDER', // Thursday evening, to members of qualified circles who have not answered (data.groupId)
-  CONTEST_READY_TO_REGISTER = 'CONTEST_READY_TO_REGISTER', // To the creator: CONTEST_MIN_YES members said yes, or more said yes after the registration (data.groupId, data.yesCount)
+  CONTEST_READY_TO_REGISTER = 'CONTEST_READY_TO_REGISTER', // To the creator of a not-yet-registered circle: CONTEST_MIN_YES members said yes (data.groupId, data.yesCount)
   CONTEST_PICK_PROMPT = 'CONTEST_PICK_PROMPT', // Monday 09:00 IST, to a creator with no confirmed pick: "Pick which circle plays this week" (switch ON)
   CONTEST_PICK_LAST_CHANCE = 'CONTEST_PICK_LAST_CHANCE', // Thursday 18:00 IST, to a creator still without a confirmed pick (switch ON)
   CONTEST_PICK_ELIGIBLE = 'CONTEST_PICK_ELIGIBLE', // To the creator: the soft-picked circle became eligible — confirm it (data.groupId)
