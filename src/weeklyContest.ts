@@ -16,11 +16,11 @@ import { GroupGameKeySchema } from './groupGame';
  *    game. A circle with CONTEST_QUALIFY_GROUP_COINS coins takes part every week.
  *  - Registration: every week, Monday 00:00 – Friday 23:59:59 IST, members of a
  *    qualified circle answer "Play this week?"; the circle creator registers once
- *    CONTEST_MIN_YES said yes and may split the YES members into teams
- *    (`contestTeamOptions(yesCount)`); the server draws the teams at random, as
- *    evenly as possible (`contestTeamSizes`). Re-registering before Friday ends
- *    replaces the registration and re-draws the teams; cancelling is allowed until
- *    Friday ends. Registering is free. One person plays for one circle per week.
+ *    CONTEST_MIN_YES said yes. Since November 2026 a circle is never split: the
+ *    whole circle plays as ONE team of every member who said yes (circle vs
+ *    circle), and a member who says yes after the registration joins that team at
+ *    once. Cancelling is allowed until Friday ends. Registering is free. One
+ *    person plays for one circle per week.
  *  - Play: Saturday 00:00 – 23:59:59 IST. Each of a team's three PLAYERS has
  *    `triesPerPlayer` tries (default CONTEST_TRIES_PER_PLAYER, stored per contest
  *    so it can change later); a try counts when it STARTS. The best try of any
@@ -51,7 +51,11 @@ export const CONTEST_MIN_MEMBERS = 3;
  * `triesPerPlayer`. Kept so v3 consumers compile; removed in a later cleanup.
  */
 export const CONTEST_DEFAULT_TRIES_PER_TEAM = 3;
-/** Most teams one circle can enter in a single contest. */
+/**
+ * Most teams one circle could enter in a single contest (the old split). Since
+ * November 2026 every circle enters as exactly one team; kept as the bound of the
+ * deprecated `RegisterContestSchema.teamCount`.
+ */
 export const CONTEST_MAX_TEAMS = 3;
 /** Different circles needed for a contest to run and for a winner to exist. */
 export const CONTEST_MIN_CIRCLES = 2;
@@ -113,10 +117,14 @@ export enum ContestTeamOutcomeEnum {
 }
 export const ContestTeamOutcomeSchema = z.nativeEnum(ContestTeamOutcomeEnum);
 
-// --- Team-split helpers (server validates with these; client renders with them) ---
+// --- Team-split helpers ---
 
 /**
- * Team counts the creator may choose. v4 passes the number of members who said
+ * @deprecated One team per circle since November 2026: neither the server nor the
+ * app uses this any more. Kept for older builds; to be removed with the unused
+ * team-count columns.
+ *
+ * Team counts the creator could choose. v4 passed the number of members who said
  * YES this week (`yesCount`); the parameter name is historical.
  *   below CONTEST_MIN_MEMBERS → [] (cannot register)
  *   3–5   → [1]          (no split question)
@@ -137,6 +145,8 @@ export const contestTeamOptions = (activeMembers: number): number[] => {
 };
 
 /**
+ * @deprecated One team per circle since November 2026 (see contestTeamOptions).
+ *
  * Team sizes for an even split — sizes differ by at most 1, larger teams first.
  *   (9, 2) → [5, 4]   (10, 2) → [5, 5]   (7, 2) → [4, 3]   (11, 3) → [4, 4, 3]
  * Returns [] for an invalid combination.
@@ -159,12 +169,17 @@ export const contestTeamSizes = (activeMembers: number, teamCount: number): numb
 
 /**
  * POST /contests/current/registrations — circle creator only, registration window
- * only. Creates or replaces this week's registration and re-draws the teams.
+ * only, once CONTEST_MIN_YES members said yes. Registers the whole circle as ONE
+ * team of every member who said yes. Registering a circle that is already
+ * registered changes nothing (the team and its votes stay).
  */
 export const RegisterContestSchema = z.object({
   groupId: z.string().min(1),
-  /** Must be one of contestTeamOptions(activeMembers). */
-  teamCount: z.number().int().min(1).max(CONTEST_MAX_TEAMS),
+  /**
+   * @deprecated One team per circle since November 2026: ignored by the server.
+   * Optional so builds that still send a team count keep working.
+   */
+  teamCount: z.number().int().min(1).max(CONTEST_MAX_TEAMS).optional(),
 });
 export type RegisterContest = z.infer<typeof RegisterContestSchema>;
 
