@@ -49,7 +49,7 @@ export enum FCMEventType {
   CONTEST_PICK_LAST_CHANCE = 'CONTEST_PICK_LAST_CHANCE', // Thursday 18:00 IST, to a creator still without a confirmed pick (switch ON)
   CONTEST_PICK_ELIGIBLE = 'CONTEST_PICK_ELIGIBLE', // To the creator: the soft-picked circle became eligible — confirm it (data.groupId)
   CONTEST_CIRCLE_SCHEDULED = 'CONTEST_CIRCLE_SCHEDULED', // To the members of the circle the creator just confirmed: say yes if you are in (data.groupId)
-  // Weekly contest v3 (contestRounds.ts) — @deprecated v4: ROUND_OPENED, CONTRIBUTION_REMINDER, RECONFIRM_REQUIRED, ROUND_SHORT, ROUND_FALLBACK, PLAYER_HANDOVER and REFUNDED are no longer sent; enum values kept for old app builds
+  // Weekly contest v3 (contestRounds.ts) — @deprecated v4: ROUND_OPENED, CONTRIBUTION_REMINDER, RECONFIRM_REQUIRED, ROUND_SHORT, ROUND_FALLBACK and REFUNDED are no longer sent; enum values kept for old app builds. PLAYER_HANDOVER is sent again since November 2026 (v4 pass to a backup).
   CONTEST_ROUND_OPENED = 'CONTEST_ROUND_OPENED', // The circle can afford an entry this week — "do you wish to contribute?"
   CONTEST_CONTRIBUTION_REMINDER = 'CONTEST_CONTRIBUTION_REMINDER', // Thursday evening, to members who have not answered
   CONTEST_RECONFIRM_REQUIRED = 'CONTEST_RECONFIRM_REQUIRED', // A split raised the member's share — confirm or decline
@@ -57,7 +57,7 @@ export enum FCMEventType {
   CONTEST_ROUND_FALLBACK = 'CONTEST_ROUND_FALLBACK', // The split could not be covered; the circle plays as one team
   CONTEST_ROUND_NOT_ENTERED = 'CONTEST_ROUND_NOT_ENTERED', // Registration closed without an entry (data.reason = ContestRoundNotEnteredReasonEnum: v4 NOT_REGISTERED or TOO_FEW_YES)
   CONTEST_GAME_SET = 'CONTEST_GAME_SET', // The admin set or changed this week's game (data.gameKey)
-  CONTEST_PLAYER_HANDOVER = 'CONTEST_PLAYER_HANDOVER', // The team was passed to the next player (data.activePlayerUserId)
+  CONTEST_PLAYER_HANDOVER = 'CONTEST_PLAYER_HANDOVER', // v4 (Nov 2026), to the recipient only: a teammate passed their Saturday spot to them, they now play (data.contestId, data.groupId, data.teamId, data.activePlayerUserId = the recipient). v3: the team was passed to the next player
   CONTEST_REFUNDED = 'CONTEST_REFUNDED', // The week was cancelled; the member's coins are back
   CONTEST_COUPON_SENT = 'CONTEST_COUPON_SENT', // The admin sent the coupon (data.couponId); open My coupons
   CONTEST_COUPON_REDEEMED = 'CONTEST_COUPON_REDEEMED', // A teammate redeemed it (data.couponId, data.redeemedByUserId)
@@ -171,7 +171,7 @@ export interface ContestFcmData extends FcmDataBase {
   cancelledByUserId?: string;
   /** CONTEST_GAME_SET only: a GroupGameKeyEnum value. */
   gameKey?: string;
-  /** CONTEST_PLAYER_HANDOVER only (v3, no longer sent). */
+  /** CONTEST_PLAYER_HANDOVER only: the member who now plays (v4: the push recipient, the backup). */
   activePlayerUserId?: string;
   /** CONTEST_READY_TO_REGISTER only (v4): members who said yes, as a string. */
   yesCount?: string;

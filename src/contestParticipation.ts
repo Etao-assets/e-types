@@ -64,7 +64,17 @@ import {
  *   - Each player has CONTEST_TRIES_PER_PLAYER tries (StartContestTrySchema; the
  *     server refuses non-players with CONTEST_NOT_PLAYER). The team's score is
  *     the best try of any of its players. A player who never plays simply
- *     forfeits those tries — there is no backup and no handover.
+ *     forfeits those tries.
+ *   - Passing to a backup (November 2026, PassContestSpotSchema): on a team with
+ *     more than CONTEST_PLAYERS_PER_TEAM members, a CURRENT player who has not
+ *     started a try may pass their spot during Saturday play. The spot goes to
+ *     the next member in the vote order who is neither playing nor passed; that
+ *     backup gets the full tries and a CONTEST_PLAYER_HANDOVER push (nobody else
+ *     is notified). Only the player can pass their own spot, a pass is final for
+ *     the week, and it is refused with CONTEST_HANDOVER_NOT_ALLOWED once they
+ *     started a try or when nobody is left to take the spot (a team of exactly
+ *     CONTEST_PLAYERS_PER_TEAM included). The member who passed stays on the
+ *     team (and shares a won coupon); `ContestTeamCandidate.passed` marks them.
  *   - Winner, walkover, no-winner, coupon and 18+ consent rules are unchanged
  *     (./weeklyContest, ./contestRounds coupon section).
  *  The creator's weekly pick (November 2026, behind the admin switch
@@ -161,6 +171,20 @@ export const ContestPlayerVoteSchema = z.object({
 });
 export type ContestPlayerVote = z.infer<typeof ContestPlayerVoteSchema>;
 
+/**
+ * POST /contests/current/passes — a current player passes their Saturday spot to
+ * the next member in the vote order (teams larger than CONTEST_PLAYERS_PER_TEAM
+ * only, before their first try, final). Returns the fresh ContestWeekPayload;
+ * repeating it changes nothing. Refusals: CONTEST_NOT_LIVE (not Saturday play),
+ * CONTEST_NOT_TEAM_MEMBER, CONTEST_NOT_PLAYER (not a current player),
+ * CONTEST_HANDOVER_NOT_ALLOWED (a try already started, or nobody left), and the
+ * 18+ / consent refusals shared with the other contest actions.
+ */
+export const PassContestSpotSchema = z.object({
+  teamId: z.string().min(1),
+});
+export type PassContestSpot = z.infer<typeof PassContestSpotSchema>;
+
 // --- This week, per circle ----------------------------------------------------------
 
 /** One ACTIVE member of the circle and their answer this week. */
@@ -239,12 +263,19 @@ export const ContestTeamCandidateSchema = z.object({
   isMe: z.boolean(),
   /** Votes received so far (visible to everyone on the team; voters are not). */
   voteCount: z.number().int(),
-  /** One of the team's players. Always true on a team of exactly CONTEST_PLAYERS_PER_TEAM. */
+  /** One of the team's players (after any passes). Always true on a team of exactly CONTEST_PLAYERS_PER_TEAM. */
   isPlayer: z.boolean(),
   /** Player's own tries; 0 for non-players and before Saturday. */
   triesUsed: z.number().int(),
   triesLeft: z.number().int(),
   bestScore: z.number().int().nullable(),
+  /**
+   * Passed their player spot this week (Saturday, final), so not a player any
+   * more. Optional: absent (treat as false) from servers older than the pass feature.
+   */
+  passed: z.boolean().optional(),
+  /** Short name of the member who took the spot when this member passed; null or absent otherwise. */
+  passedToName: z.string().nullable().optional(),
 });
 export type ContestTeamCandidate = z.infer<typeof ContestTeamCandidateSchema>;
 
@@ -262,12 +293,23 @@ export const ContestPlayTeamSchema = ContestCircleTeamSchema.extend({
   canVote: z.boolean(),
   /** When the players were fixed (Saturday 00:00 IST); null before. */
   playersFixedAt: z.coerce.date().nullable(),
-  /** The requesting member is one of the team's players. */
+  /** The requesting member is one of the team's players (after any passes). */
   isPlayer: z.boolean(),
   /** isPlayer, contest LIVE, myTriesLeft > 0. */
   canPlay: z.boolean(),
   myTriesUsed: z.number().int(),
   myTriesLeft: z.number().int(),
+  /**
+   * The requesting member may pass their spot now (PassContestSpotSchema): a
+   * current player of a team larger than CONTEST_PLAYERS_PER_TEAM, contest LIVE,
+   * no try started, not passed, and a teammate is left to take the spot.
+   * Optional: absent (treat as false) from servers older than the pass feature.
+   */
+  canPass: z.boolean().optional(),
+  /** Who would take the spot if the requesting member passed now (only when canPass); null or absent otherwise. */
+  passBackupUserId: z.string().nullable().optional(),
+  /** Short name of that member, for the "Pass your spot to …?" confirmation; null or absent otherwise. */
+  passBackupName: z.string().nullable().optional(),
 });
 export type ContestPlayTeam = z.infer<typeof ContestPlayTeamSchema>;
 
