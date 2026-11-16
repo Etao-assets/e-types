@@ -563,6 +563,15 @@ export const MyContestCouponSchema = z.object({
   weekLabel: z.string(),
   teamName: z.string(),
   groupName: z.string(),
+  /**
+   * Id of the winning circle (the community goal group the winning team played
+   * for). The app matches on this to show the coupon inside that circle: the
+   * bell on the circle's goal card and the Coupon section on the circle page.
+   * Never match on `groupName` — two circles can share a name. Optional: absent
+   * from a server that predates the field; null when the winning team's row is
+   * gone. Either way the coupon is still listed in My coupons.
+   */
+  groupId: z.string().nullable().optional(),
   /** Admin's text; null when the coupon is image-only, EXPIRED, or not yet revealed by the requesting member. */
   text: z.string().nullable(),
   /** An image was attached (true even when the URL is withheld: EXPIRED or not yet revealed). */
