@@ -91,7 +91,7 @@ export const errorCodes = {
   CONTEST_RECONFIRM_NOT_PENDING: 'CONTEST_RECONFIRM_NOT_PENDING', // nothing to re-confirm
   CONTEST_VOTE_INVALID_CANDIDATE: 'CONTEST_VOTE_INVALID_CANDIDATE', // the candidate is not a YES contributor
   CONTEST_NOT_ACTIVE_PLAYER: 'CONTEST_NOT_ACTIVE_PLAYER', // only the team's active player may start a try
-  CONTEST_HANDOVER_NOT_ALLOWED: 'CONTEST_HANDOVER_NOT_ALLOWED', // not the active player/creator, a try already started, or nobody left
+  CONTEST_HANDOVER_NOT_ALLOWED: 'CONTEST_HANDOVER_NOT_ALLOWED', // 409 v4 pass (POST /contests/current/passes, Nov 2026): the player already started a try, or nobody is left to take the spot (a team of exactly CONTEST_PLAYERS_PER_TEAM included). v3: not the active player/creator, a try already started, or nobody left
   CONTEST_GAME_LOCKED: 'CONTEST_GAME_LOCKED', // the game cannot change after Friday 23:59
   CONTEST_CONSENT_REQUIRED: 'CONTEST_CONSENT_REQUIRED', // 403: accept the 18+ consent (CONTEST_CONSENT_VERSION) before contest actions
   CONTEST_CONSENT_STALE: 'CONTEST_CONSENT_STALE', // 409: the consent wording changed — refetch GET /contests/current and accept again
