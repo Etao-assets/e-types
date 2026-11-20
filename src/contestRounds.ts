@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { DOB_REGEX } from './age';
+import { ContestUnlockRequestSchema } from './ageUnlockRequest';
 import {
   CONTEST_MAX_TEAMS,
   ContestCircleTeamSchema,
@@ -479,6 +480,12 @@ export const ContestConsentSchema = z.object({
   needsDob: z.boolean(),
   /** Set only when `status` is UNDERAGE; null or absent otherwise (and on a server without the declaration). */
   underageReason: ContestUnderageReasonSchema.nullable().optional(),
+  /**
+   * 18+ unlock request state (ageUnlockRequest.ts). Non-null only when `status`
+   * is UNDERAGE with `underageReason` DECLARATION; null or absent otherwise
+   * (and on a server without the feature).
+   */
+  unlockRequest: ContestUnlockRequestSchema.nullable().optional(),
 });
 export type ContestConsent = z.infer<typeof ContestConsentSchema>;
 

@@ -88,6 +88,7 @@ import { ValidationSchemas, FormSchemas, CommonValidationRules } from '@e-types/
 ### 🔔 Notifications (`notifications.ts`)
 - Push notifications
 - FCM event types (`fcmEvents.ts`) — `FCMEventType`, including the `REDEMPTION_*` mutual-fund redemption pushes and their `RedemptionFcmData` payload
+- 18+ unlock requests (`ageUnlockRequest.ts`) — the message a person locked by their own "under 18" answer sends to Etao, `consent.unlockRequest` in `GET /contests/current`, and the `CONTEST_AGE_UNLOCK_*` pushes
 - Email templates
 - SMS messaging
 - In-app notifications

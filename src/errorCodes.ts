@@ -98,6 +98,10 @@ export const errorCodes = {
   // 18+ self-declaration (ageDeclaration.ts)
   AGE_DECLARATION_STALE: 'AGE_DECLARATION_STALE', // 409: the pop-up wording changed — refetch GET /auth/me and ask again
   AGE_DECLARATION_ALREADY_ANSWERED: 'AGE_DECLARATION_ALREADY_ANSWERED', // 409: a different answer is already saved; only an admin reset lets the user answer again
+  // 18+ unlock requests (ageUnlockRequest.ts)
+  AGE_UNLOCK_NOT_ALLOWED: 'AGE_UNLOCK_NOT_ALLOWED', // 409: the contest is not locked by the user's own NO answer (not locked, or locked by a date of birth on file) — no request can be sent
+  AGE_UNLOCK_ALREADY_PENDING: 'AGE_UNLOCK_ALREADY_PENDING', // 409: a request is already waiting for review — refetch GET /contests/current
+  AGE_UNLOCK_ALREADY_REVIEWED: 'AGE_UNLOCK_ALREADY_REVIEWED', // 409 (admin panel): the request was already approved or declined
   // Weekly contest v4 (contestParticipation.ts)
   CONTEST_NOT_ENOUGH_YES: 'CONTEST_NOT_ENOUGH_YES', // fewer than CONTEST_MIN_YES members said yes this week — the creator cannot register yet
   CONTEST_ALREADY_YES_ELSEWHERE: 'CONTEST_ALREADY_YES_ELSEWHERE', // 409: the member's YES is in another circle this week (data.groupId, data.groupName) — resend with switch: true to move it

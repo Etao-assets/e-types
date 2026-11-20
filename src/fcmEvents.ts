@@ -62,6 +62,8 @@ export enum FCMEventType {
   CONTEST_COUPON_SENT = 'CONTEST_COUPON_SENT', // The admin sent the coupon (data.couponId); open My coupons
   CONTEST_COUPON_REDEEMED = 'CONTEST_COUPON_REDEEMED', // A teammate redeemed it (data.couponId, data.redeemedByUserId)
   CONTEST_COUPON_REMINDER = 'CONTEST_COUPON_REMINDER', // The member has not scratched a sent coupon (data.couponId): 24 h after the send and 2 h before expiry; open the coupon
+  CONTEST_AGE_UNLOCK_APPROVED = 'CONTEST_AGE_UNLOCK_APPROVED', // The admin approved the member's 18+ unlock request (ageUnlockRequest.ts): the 18+ question is asked again — refetch GET /auth/me. No data besides `type`
+  CONTEST_AGE_UNLOCK_DECLINED = 'CONTEST_AGE_UNLOCK_DECLINED', // The admin declined the member's 18+ unlock request: still locked, a new request may be sent — refetch GET /contests/current. No data besides `type`
 
   // Mutual fund redemption — BSE `order_new` type "r". Sent ONLY for an order
   // whose orderType is REDEMPTION; purchase and SIP pushes are unchanged. Every
@@ -159,7 +161,7 @@ export interface GroupGameFcmData extends FcmDataBase {
  * Weekly contest FCM Data — every CONTEST_* event. FCM data values are strings.
  */
 export interface ContestFcmData extends FcmDataBase {
-  /** Every CONTEST_* event except CONTEST_QUALIFIED (no contest exists yet). */
+  /** Every CONTEST_* event except CONTEST_QUALIFIED (no contest exists yet) and the two CONTEST_AGE_UNLOCK_* events (about the account, not a week). */
   contestId?: string;
   groupId?: string;
   teamId?: string;
