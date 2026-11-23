@@ -30,6 +30,14 @@ import { z } from 'zod';
  *    Permanent by construction. One CONTEST_QUALIFIED push when it happens.
  *  - Go-live: circles that exist when v4 ships are credited by the same rules.
  *
+ * v5 (November 2026): a circle's coins are USED UP by its first weekly contest
+ * that actually starts (`used` / `usedAt` below). What the circle earned is not
+ * reduced: `coins`, `qualified` and `qualifiedAt` keep describing the earned
+ * total, the cap still stops any further credit, and the circle stays qualified.
+ * From then on the members pay the contest entry from their own coins
+ * (./memberCoins). The "no wallet, nothing is spent" rule above describes circle
+ * coins before v5.
+ *
  * Storage (server): the existing `points_ledger` table, one row per credit with
  * `reason` = GroupCoinReasonEnum, `refType` = GroupCoinRefTypeEnum and `refId`
  * as documented on the enum, unique per (userId, refType, refId). Rows written by
@@ -115,6 +123,14 @@ export const GroupCoinsSummarySchema = z.object({
   qualified: z.boolean(),
   /** When the circle first qualified; null until then. */
   qualifiedAt: z.coerce.date().nullable(),
+  /**
+   * v5: the circle's coins were used up by its first weekly contest that
+   * started. `coins`, `qualified` and `qualifiedAt` do not change when that
+   * happens. Absent from servers older than v5: treat as false.
+   */
+  used: z.boolean().optional(),
+  /** v5: when the circle's coins were used; null or absent until then. */
+  usedAt: z.coerce.date().nullable().optional(),
 });
 export type GroupCoinsSummary = z.infer<typeof GroupCoinsSummarySchema>;
 
