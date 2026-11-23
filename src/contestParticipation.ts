@@ -29,7 +29,13 @@ import {
  * Rules (product decisions, final):
  *  Who may take part
  *   - A circle takes part once its coins reach CONTEST_QUALIFY_GROUP_COINS
- *     (./groupCoins) — every week from then on, nothing to pay, nothing to hold.
+ *     (./groupCoins) — every week from then on.
+ *   - v5 (./memberCoins): the circle's own coins pay for its first contest that
+ *     starts. Afterwards a member needs CONTEST_MIN_COINS_TO_JOIN personal coins
+ *     to say YES (CONTEST_LOW_COINS otherwise) and everyone on the team pays an
+ *     equal share of CONTEST_ENTRY_COINS (contestMemberShare). Coins are taken
+ *     only when the Saturday contest starts; nothing is held before and nothing
+ *     is refunded after. `ContestEntrySchema` tells the app what to show.
  *  The week (calendar unchanged: Mon 00:00 – Sat 00:00 IST registration, Saturday play,
  *  results Sunday, reminder Thursday 18:00 IST)
  *   - Every ACTIVE member of a qualified circle is asked "Play this week?" and
@@ -187,6 +193,48 @@ export type PassContestSpot = z.infer<typeof PassContestSpotSchema>;
 
 // --- This week, per circle ----------------------------------------------------------
 
+/** v5: who pays a circle's contest entry in a given week. */
+export enum ContestEntryPaidByEnum {
+  /** The circle's own coins (its first contest that starts). */
+  CIRCLE = 'CIRCLE',
+  /** The members on the team, an equal share each. */
+  MEMBERS = 'MEMBERS',
+}
+export const ContestEntryPaidBySchema = z.nativeEnum(ContestEntryPaidByEnum);
+
+/** v5: whether a member holds enough coins to say yes. Never a balance. */
+export enum ContestMemberCoinStatusEnum {
+  ENOUGH = 'ENOUGH',
+  LOW = 'LOW',
+}
+export const ContestMemberCoinStatusSchema = z.nativeEnum(ContestMemberCoinStatusEnum);
+
+/** v5: the coins side of a circle's week, for the requesting member. */
+export const ContestEntrySchema = z.object({
+  /** Who pays this week: the circle while its own coins are unused, else the members. Once charged, who paid. */
+  paidBy: ContestEntryPaidBySchema,
+  /** CONTEST_ENTRY_COINS. */
+  cost: z.number().int(),
+  /** CONTEST_MIN_COINS_TO_JOIN. */
+  minCoins: z.number().int(),
+  /** The requesting member's own balance. */
+  myCoins: z.number().int(),
+  /** true when the circle pays, else myCoins >= minCoins. */
+  myCoinsEnough: z.boolean(),
+  /**
+   * MEMBERS only: what the requesting member pays or would pay — the share for
+   * the current number of yes answers (counting the member if they have not said
+   * yes yet), or the charged share once `charged`. null when the circle pays.
+   */
+  myShare: z.number().int().nullable(),
+  /** Coins were taken for this week (the contest went live). */
+  charged: z.boolean(),
+  chargedAt: z.coerce.date().nullable(),
+  /** MEMBERS and charged: coins taken from the requesting member (0 when not on the team); null otherwise. */
+  myCharged: z.number().int().nullable(),
+});
+export type ContestEntry = z.infer<typeof ContestEntrySchema>;
+
 /** One ACTIVE member of the circle and their answer this week. */
 export const ContestWeekMemberSchema = z.object({
   userId: z.string(),
@@ -200,6 +248,11 @@ export const ContestWeekMemberSchema = z.object({
   onTeam: z.boolean(),
   /** Holds a YES in, or is locked into, ANOTHER circle this week: cannot play here. */
   unavailable: z.boolean(),
+  /**
+   * v5: ENOUGH / LOW while the members pay and the week is not yet charged;
+   * null or absent otherwise (the circle pays, already charged, older server).
+   */
+  coinStatus: ContestMemberCoinStatusSchema.nullable().optional(),
 });
 export type ContestWeekMember = z.infer<typeof ContestWeekMemberSchema>;
 
@@ -253,6 +306,8 @@ export const ContestParticipationSchema = z.object({
   me: ContestMyAnswerSchema,
   /** The circle's one team once registered (members in player-ranking order); empty before. */
   previewTeams: z.array(ContestPreviewTeamSchema).default([]),
+  /** v5: the coins side of this week. Absent from servers older than v5. */
+  entry: ContestEntrySchema.nullable().optional(),
 });
 export type ContestParticipation = z.infer<typeof ContestParticipationSchema>;
 

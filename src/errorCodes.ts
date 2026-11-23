@@ -107,6 +107,7 @@ export const errorCodes = {
   CONTEST_ALREADY_YES_ELSEWHERE: 'CONTEST_ALREADY_YES_ELSEWHERE', // 409: the member's YES is in another circle this week (data.groupId, data.groupName) — resend with switch: true to move it
   CONTEST_LOCKED_ELSEWHERE: 'CONTEST_LOCKED_ELSEWHERE', // another circle registered with this member this week — no YES here until next week
   CONTEST_ANSWER_LOCKED: 'CONTEST_ANSWER_LOCKED', // this circle registered with the member — the YES cannot be withdrawn this week
+  CONTEST_LOW_COINS: 'CONTEST_LOW_COINS', // v5, 409: saying YES needs CONTEST_MIN_COINS_TO_JOIN personal coins once the circle's own coins are used (details: { balance, required })
   CONTEST_NOT_PLAYER: 'CONTEST_NOT_PLAYER', // only the team's players (CONTEST_PLAYERS_PER_TEAM) may start a try
   CONTEST_VOTING_CLOSED: 'CONTEST_VOTING_CLOSED', // votes are accepted only after the registration and before Saturday 00:00 IST
   CONTEST_TEAM_NOT_VOTING: 'CONTEST_TEAM_NOT_VOTING', // a team of exactly CONTEST_PLAYERS_PER_TEAM has no vote: everyone plays

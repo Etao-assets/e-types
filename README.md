@@ -88,6 +88,7 @@ import { ValidationSchemas, FormSchemas, CommonValidationRules } from '@e-types/
 ### 🔔 Notifications (`notifications.ts`)
 - Push notifications
 - FCM event types (`fcmEvents.ts`) — `FCMEventType`, including the `REDEMPTION_*` mutual-fund redemption pushes and their `RedemptionFcmData` payload
+- Member coins (`memberCoins.ts`) — personal coins earned by daily activity (finish a game, enter the App PIN, sign in; 100 each, once every 24 hours), the wallet and history shapes of `GET /coins/me`, and the weekly contest entry rules (`CONTEST_ENTRY_COINS`, `CONTEST_MIN_COINS_TO_JOIN`, `contestMemberShare`); the contest side is `ContestEntrySchema` in `contestParticipation.ts`
 - 18+ unlock requests (`ageUnlockRequest.ts`) — the message a person locked by their own "under 18" answer sends to Etao, `consent.unlockRequest` in `GET /contests/current`, and the `CONTEST_AGE_UNLOCK_*` pushes
 - Email templates
 - SMS messaging

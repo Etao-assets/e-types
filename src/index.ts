@@ -83,6 +83,7 @@ export * from './groupGame';
 export * from './weeklyContest';
 export * from './contestRounds';
 export * from './groupCoins';
+export * from './memberCoins';
 export * from './contestParticipation';
 export * from './companyInfo';
 export * from './fixerra';
