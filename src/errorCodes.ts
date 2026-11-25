@@ -106,7 +106,8 @@ export const errorCodes = {
   CONTEST_NOT_ENOUGH_YES: 'CONTEST_NOT_ENOUGH_YES', // fewer than CONTEST_MIN_YES members said yes this week — the creator cannot register yet
   CONTEST_ALREADY_YES_ELSEWHERE: 'CONTEST_ALREADY_YES_ELSEWHERE', // 409: the member's YES is in another circle this week (data.groupId, data.groupName) — resend with switch: true to move it
   CONTEST_LOCKED_ELSEWHERE: 'CONTEST_LOCKED_ELSEWHERE', // another circle registered with this member this week — no YES here until next week
-  CONTEST_ANSWER_LOCKED: 'CONTEST_ANSWER_LOCKED', // this circle registered with the member — the YES cannot be withdrawn this week
+  CONTEST_ANSWER_LOCKED: 'CONTEST_ANSWER_LOCKED', // this circle registered with the member — the YES cannot be withdrawn this week (servers before plan 49; since plan 49 a NO leaves the team, see CONTEST_TEAM_AT_MINIMUM)
+  CONTEST_TEAM_AT_MINIMUM: 'CONTEST_TEAM_AT_MINIMUM', // plan 49, 409: leaving would leave fewer than CONTEST_MIN_YES members on the registered team (details: { teamSize, minPlayers })
   CONTEST_LOW_COINS: 'CONTEST_LOW_COINS', // v5, 409: saying YES needs CONTEST_MIN_COINS_TO_JOIN personal coins once the circle's own coins are used (details: { balance, required })
   CONTEST_NOT_PLAYER: 'CONTEST_NOT_PLAYER', // only the team's players (CONTEST_PLAYERS_PER_TEAM) may start a try
   CONTEST_VOTING_CLOSED: 'CONTEST_VOTING_CLOSED', // votes are accepted only after the registration and before Saturday 00:00 IST
