@@ -58,6 +58,7 @@ export enum FCMEventType {
   CONTEST_ROUND_NOT_ENTERED = 'CONTEST_ROUND_NOT_ENTERED', // Registration closed without an entry (data.reason = ContestRoundNotEnteredReasonEnum: v4 NOT_REGISTERED or TOO_FEW_YES)
   CONTEST_GAME_SET = 'CONTEST_GAME_SET', // The admin set or changed this week's game (data.gameKey)
   CONTEST_PLAYER_HANDOVER = 'CONTEST_PLAYER_HANDOVER', // v4 (Nov 2026), to the recipient only: a teammate passed their Saturday spot to them, they now play (data.contestId, data.groupId, data.teamId, data.activePlayerUserId = the recipient). v3: the team was passed to the next player
+  CONTEST_MEMBER_LEFT = 'CONTEST_MEMBER_LEFT', // Plan 49, to the circle's creator only: a member left the registered team during registration (data.contestId, data.groupId)
   CONTEST_REFUNDED = 'CONTEST_REFUNDED', // The week was cancelled; the member's coins are back
   CONTEST_COUPON_SENT = 'CONTEST_COUPON_SENT', // The admin sent the coupon (data.couponId); open My coupons
   CONTEST_COUPON_REDEEMED = 'CONTEST_COUPON_REDEEMED', // A teammate redeemed it (data.couponId, data.redeemedByUserId)

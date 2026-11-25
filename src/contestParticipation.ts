@@ -45,8 +45,15 @@ import {
  *     circles. Saying YES in a second circle is refused with
  *     CONTEST_ALREADY_YES_ELSEWHERE until the app resends with `switch: true`,
  *     which withdraws the first YES. Once a circle registers with the member,
- *     the YES is LOCKED for the week (CONTEST_ANSWER_LOCKED) and every other
- *     circle sees the member as unavailable (CONTEST_LOCKED_ELSEWHERE).
+ *     the YES is LOCKED for the week and every other circle sees the member as
+ *     unavailable (CONTEST_LOCKED_ELSEWHERE).
+ *   - Leaving a registered team (plan 49, November 2026): a locked member may
+ *     still leave the team by answering NO until registration closes, as long
+ *     as more than CONTEST_MIN_YES members are on it, so at least
+ *     CONTEST_MIN_YES stay (`ContestMyAnswer.canLeave`). On a team of exactly
+ *     CONTEST_MIN_YES the NO is refused with CONTEST_TEAM_AT_MINIMUM. The circle
+ *     stays registered; the creator is told (CONTEST_MEMBER_LEFT). Servers
+ *     before plan 49 refuse every such NO with CONTEST_ANSWER_LOCKED.
  *   - The creator registers once at least CONTEST_MIN_YES members said YES
  *     (RegisterContestSchema from ./weeklyContest). Since November 2026 a circle
  *     is never split: the whole circle plays as ONE team made of every member who
@@ -262,8 +269,20 @@ export const ContestMyAnswerSchema = z.object({
   answeredAt: z.coerce.date().nullable(),
   /** Phase REGISTRATION, circle qualified, not locked here or elsewhere. */
   canAnswer: z.boolean(),
-  /** YES here and this circle registered with me: the answer cannot change this week. */
+  /**
+   * YES here and this circle registered with me. Before plan 49 the answer could
+   * not change this week; since plan 49 a NO leaves the team while `canLeave`.
+   */
   locked: z.boolean(),
+  /**
+   * Plan 49: this circle registered with me (`locked`) and I may leave its team
+   * now — registration phase, and more than CONTEST_MIN_YES members are on my
+   * team (at least CONTEST_MIN_YES stay). false otherwise, including on a team
+   * of exactly CONTEST_MIN_YES (a NO is then refused with
+   * CONTEST_TEAM_AT_MINIMUM). Absent from servers before plan 49: a locked
+   * answer cannot change.
+   */
+  canLeave: z.boolean().optional(),
   /** My YES is in another circle: saying YES here needs `switch: true`. */
   yesElsewhereGroupId: z.string().nullable(),
   yesElsewhereGroupName: z.string().nullable(),
