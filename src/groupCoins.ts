@@ -38,6 +38,14 @@ import { z } from 'zod';
  * (./memberCoins). The "no wallet, nothing is spent" rule above describes circle
  * coins before v5.
  *
+ * Plan 51 (November 2026): the Circle Coins screen also shows what the coins
+ * were used for. `left` is the number the app shows for the circle (the earned
+ * total until the circle's coins are used, 0 from then on) and `activity` is
+ * the full list: every credit plus one CONTEST_ENTRY line for each weekly
+ * contest whose coins were taken — the circle's own coins for its first
+ * contest, the members' coins afterwards. Nothing new is stored for it: the
+ * contest lines are read from the charge already recorded on each contest round.
+ *
  * Storage (server): the existing `points_ledger` table, one row per credit with
  * `reason` = GroupCoinReasonEnum, `refType` = GroupCoinRefTypeEnum and `refId`
  * as documented on the enum, unique per (userId, refType, refId). Rows written by
@@ -96,6 +104,14 @@ export const groupCoinsJoinsToQualify = (coins: number, creationPending: boolean
   return Math.max(0, Math.ceil((CONTEST_QUALIFY_GROUP_COINS - expected) / GROUP_COINS_JOIN_CREDIT));
 };
 
+/**
+ * Coins the circle still has: what it earned until its coins are used
+ * (GroupCoinsSummarySchema.used), 0 from then on.
+ *   (1000, false) → 1000;  (1500, false) → 1500;  (1500, true) → 0.
+ */
+export const groupCoinsLeft = (coins: number, used: boolean): number =>
+  used ? 0 : Math.max(0, coins);
+
 // --- Response shapes --------------------------------------------------------------
 
 /** One credit line of a circle, newest first in `GroupCoinsSchema.entries`. */
@@ -110,6 +126,52 @@ export const GroupCoinEntrySchema = z.object({
   createdAt: z.coerce.date(),
 });
 export type GroupCoinEntry = z.infer<typeof GroupCoinEntrySchema>;
+
+/** What one line of a circle's coin activity is about (plan 51). */
+export enum GroupCoinActivityKindEnum {
+  GROUP_CREATED = 'GROUP_CREATED',
+  MEMBER_JOINED = 'MEMBER_JOINED',
+  /** The coins of one weekly contest the circle played were taken. */
+  CONTEST_ENTRY = 'CONTEST_ENTRY',
+}
+export const GroupCoinActivityKindSchema = z.nativeEnum(GroupCoinActivityKindEnum);
+
+/**
+ * Who paid a contest entry. Same values as ContestEntryPaidByEnum
+ * (./contestParticipation), which cannot be imported here because that
+ * module imports this one.
+ */
+export enum GroupCoinPaidByEnum {
+  CIRCLE = 'CIRCLE',
+  MEMBERS = 'MEMBERS',
+}
+export const GroupCoinPaidBySchema = z.nativeEnum(GroupCoinPaidByEnum);
+
+/** One line of `GroupCoinsSchema.activity`, newest first (plan 51). */
+export const GroupCoinActivitySchema = z.object({
+  /** Stable within one circle: 'created', `joined:${userId}`, `contest:${contestId}` ('contest:pool' when the contest is not known). */
+  id: z.string(),
+  kind: GroupCoinActivityKindSchema,
+  /**
+   * Signed. GROUP_CREATED / MEMBER_JOINED: the coins actually written
+   * (cap-aware), positive. CONTEST_ENTRY: always -CONTEST_ENTRY_COINS
+   * (./memberCoins), also when the members' shares add up to less
+   * (7 × 214 = 1,498).
+   */
+  coins: z.number().int(),
+  /** The credit time; for CONTEST_ENTRY the moment the coins were taken (the contest went live). */
+  at: z.coerce.date(),
+  /** GROUP_CREATED / MEMBER_JOINED: the member the credit is attributed to. null for CONTEST_ENTRY. */
+  userId: z.string().nullable(),
+  name: z.string().nullable(),
+  /** The credit is attributed to the viewer. false for CONTEST_ENTRY. */
+  isMe: z.boolean(),
+  /** CONTEST_ENTRY: who paid. null for a credit. */
+  paidBy: GroupCoinPaidBySchema.nullable(),
+  /** CONTEST_ENTRY paid by MEMBERS: the coins each paying member was charged that week. null otherwise. */
+  share: z.number().int().nullable(),
+});
+export type GroupCoinActivity = z.infer<typeof GroupCoinActivitySchema>;
 
 /** The short form every contest payload carries per circle (ContestCircleWeekSchema.coins). */
 export const GroupCoinsSummarySchema = z.object({
@@ -131,6 +193,12 @@ export const GroupCoinsSummarySchema = z.object({
   used: z.boolean().optional(),
   /** v5: when the circle's coins were used; null or absent until then. */
   usedAt: z.coerce.date().nullable().optional(),
+  /**
+   * Plan 51: the coins the circle still has — groupCoinsLeft(coins, used).
+   * This is the number the app shows as the circle's coins. Absent from
+   * servers before plan 51: use groupCoinsLeft(coins, used === true).
+   */
+  left: z.number().int().optional(),
 });
 export type GroupCoinsSummary = z.infer<typeof GroupCoinsSummarySchema>;
 
@@ -152,5 +220,11 @@ export const GroupCoinsSchema = GroupCoinsSummarySchema.extend({
   /** groupCoinsJoinsToQualify(coins, !creationCredited && !creationDetailsComplete); 0 once qualified. */
   joinsToQualify: z.number().int(),
   entries: z.array(GroupCoinEntrySchema),
+  /**
+   * Plan 51: everything that happened to the circle's coins, newest first —
+   * the credits of `entries` plus one CONTEST_ENTRY line per weekly contest
+   * whose coins were taken. Absent from servers before plan 51: render `entries`.
+   */
+  activity: z.array(GroupCoinActivitySchema).optional(),
 });
 export type GroupCoins = z.infer<typeof GroupCoinsSchema>;
